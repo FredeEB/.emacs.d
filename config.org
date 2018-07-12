@@ -1,24 +1,4 @@
 * Fixes
-** Basics
-#+BEGIN_SRC emacs-lisp
-   (setq scroll-conservatively 100)
-   (defalias 'yes-or-no-p 'y-or-n-p)
-   (tool-bar-mode -1)
-   (menu-bar-mode -1)
-   (scroll-bar-mode -1)
-   (setq inhibit-startup-message t)
-   (setq initial-scratch-message "")
-   (setq ring-bell-function 'ignore)
-   (setq tab-width 3)
-   (setq indent-tabs-mode 1)
-   (global-subword-mode 1)
-   (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
-   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
-   (global-set-key (kbd "C-x C-b") 'ibuffer)
-   (setq default-directory "~/")
-   (setq tramp-default-method "plink")
-   (global-set-key (kbd "C-c o") 'ff-find-other-file)
-#+END_SRC
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
 (use-package evil 
@@ -34,6 +14,32 @@
     "k" 'evil-window-up
     "l" 'evil-window-right))
 #+END_SRC
+** Basics
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+  (setq ring-bell-function 'ignore)
+  (setq tab-width 3)
+  (setq indent-tabs-mode 1)
+  (global-subword-mode 1)
+  (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
+  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (setq default-directory "~/")
+  (setq tramp-default-method "plink")
+  (global-set-key (kbd "C-c o") 'ff-find-other-file)
+#+END_SRC
+** SSH-stuff
+   #+BEGIN_SRC emacs-lisp
+(setenv "SSH_ASKPASS" "git-gui--askpass")
+     (use-package ssh-agency
+       :ensure t)
+	     #+END_SRC
 ** conf opts
 *** edit
 #+BEGIN_SRC emacs-lisp
