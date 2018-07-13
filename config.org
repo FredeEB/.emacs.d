@@ -1,0 +1,276 @@
+* Fixes
+** evil-mode
+#+BEGIN_SRC emacs-lisp
+(use-package evil 
+  :ensure t
+  :init
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+  (evil-mode 1)
+  :config
+  (evil-leader/set-key
+    "h" 'evil-window-left
+    "j" 'evil-window-down
+    "k" 'evil-window-up
+    "l" 'evil-window-right))
+#+END_SRC
+** Basics
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+  (setq ring-bell-function 'ignore)
+  (setq tab-width 3)
+  (setq indent-tabs-mode 1)
+  (global-subword-mode 1)
+  (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
+  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (setq default-directory "~/")
+  (setq tramp-default-method "plink")
+  (global-set-key (kbd "C-c o") 'ff-find-other-file)
+#+END_SRC
+** SSH-stuff
+   #+BEGIN_SRC emacs-lisp
+(setenv "SSH_ASKPASS" "git-gui--askpass")
+     (use-package ssh-agency
+       :ensure t)
+	     #+END_SRC
+** conf opts
+*** edit
+#+BEGIN_SRC emacs-lisp
+  (defun config-visit()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+END_SRC
+*** update
+#+BEGIN_SRC emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+END_SRC
+** org mode
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (C . T)))
+  ;; agenda and stuff
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  
+  (setq org-capture-templates
+	'(("j" "Journal" entry (file+datetree "~/org/Journal.org" "Entries")
+	   "* %?\nEntered on %U\n %i\n %a")))
+  
+  (setq org-agenda-diary-file '("~/org/Journal.org"))
+  
+  (setq org-agenda-files '("~/org/agenda.org")) 
+#+END_SRC
+* Packages
+** agressive indent
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-indent
+ :ensure t
+ :init
+ (aggressive-indent-global-mode 1))
+#+END_SRC					 		       		   			     		 	      		  	       	    			     	  	      	   	       	    	 	     	         	   		    	       	             	     	                           #+END_SRC
+** avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind
+  ("M-s" . avy-goto-char))
+#+END_SRC
+** beacon
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :ensure t
+  :init
+  (beacon-mode 1))
+#+END_SRC
+** cmake stuff
+#+BEGIN_SRC emacs-lisp
+  (use-package cmake-ide
+    :ensure t
+    :init
+    (cmake-ide-setup))
+#+END_SRC
+
+** company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :init
+    (global-company-mode) 
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3))
+
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "C-j") #'company-select-next)
+    (define-key company-active-map (kbd "C-k") #'company-select-previous))
+
+  (use-package company-irony
+    :ensure t  
+    :config
+    (require 'company)
+    (use-package company-irony-c-headers
+      :ensure t)
+    (add-to-list 'company-backends 'company-irony))
+
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (with-eval-after-load 'company
+    (add-hook 'c++-mode-hook 'company-mode)
+    (add-hook 'c-mode-hook 'company-mode))
+     
+(when (boundp 'w32-pipe-read-delay)
+  (setq w32-pipe-read-delay 0))
+;; Set the buffer size to 64K on Windows (from the original 4K)
+(when (boundp 'w32-pipe-buffer-size)
+  (setq irony-server-w32-pipe-buffer-size (* 64 1024))) 
+#+END_SRC
+** Dmenu
+#+BEGIN_SRC emacs-lisp
+(use-package dmenu
+  :ensure
+  :bind
+  ("M-SPC" . 'dmenu))
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+   :ensure t
+   :init
+   (global-flycheck-mode t))
+#+END_SRC
+** Hungry delete
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+  :ensure t
+  :config (global-hungry-delete-mode))
+#+END_SRC
+** IDO
+*** IDO main
+#+BEGIN_SRC emacs-lisp
+(setq ido-enable-flex-matching nil)
+(setq ido-create-new-buffer nil)
+(setq ido-everywhere t)
+(ido-mode)
+#+END_SRC
+*** IDO vertical
+#+BEGIN_SRC emacs-lisp
+(use-package ido-vertical-mode
+  :ensure t
+  :init
+  (ido-vertical-mode 1))
+#+END_SRC
+** jedi
+#+BEGIN_SRC emacs-lisp
+(use-package jedi
+  :ensure t
+  :init
+  (use-package company-jedi
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+  (jedi:install-server))
+#+END_SRC
+** linum-relative
+#+BEGIN_SRC emacs-lisp
+(use-package linum-relative
+  :ensure t
+  :config
+  (linum-relative-global-mode 1)
+  (linum-relative-on)
+  (setq linum-relative-current-symbol ""))
+#+END_SRC
+** magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind
+    ("C-x g" . 'magit-status))
+#+END_SRC
+** rainbow
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :init
+  (rainbow-mode 1))
+(use-package rainbow-delimiters
+  :ensure t
+  :init
+  (rainbow-delimiters-mode))
+#+END_SRC
+** smex
+#+BEGIN_SRC emacs-lisp
+(use-package smex
+  :ensure t
+  :init (smex-initialize)
+  :bind
+  ("M-x" . smex))
+#+END_SRC
+** spaceline
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :ensure t
+  :config
+  (require 'spaceline-config)
+  (setq powerline-default-separator (quote arrow))
+  (spaceline-spacemacs-theme))
+#+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1)
+    :config
+    (require 'yasnippet-snippets))
+
+  (use-package auto-yasnippet
+    :ensure t
+    :bind
+    ("C-c y" . 'aya-create)
+    ("C-c u" . 'aya-expand))
+#+END_SRC
+** polymode 
+#+BEGIN_SRC emacs-lisp
+  (use-package polymode
+    :ensure t
+    :config
+    (require 'poly-R)
+    (require 'poly-markdown)
+    (require 'poly-org)
+    :mode
+    ("\\.org\\'" . poly-org-mode)
+    ("\\.Rmd\\'" . poly-markdown+r-mode))
+#+END_SRC 
+** pdf-tools
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :ensure t
+  :init
+  (pdf-tools-install))
+#+END_SRC
+** Which key
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :init
+  (which-key-mode))
+#+END_SRC
