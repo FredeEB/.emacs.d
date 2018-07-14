@@ -1,18 +1,18 @@
 * Fixes
 ** evil-mode
-#+BEGIN_SRC emacs-lisp
-(use-package evil 
-  :ensure t
-  :init
-  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>")
-  (evil-mode 1)
-  :config
-  (evil-leader/set-key
-    "h" 'evil-window-left
-    "j" 'evil-window-down
-    "k" 'evil-window-up
-    "l" 'evil-window-right))
+;;#+BEGIN_SRC emacs-lisp
+;;(use-package evil 
+ ;; :ensure t
+ ;; :init
+ ;; (global-evil-leader-mode)
+ ;; (evil-leader/set-leader "<SPC>")
+ ;; (evil-mode 1)
+ ;; :config
+ ;; (evil-leader/set-key
+ ;;   "h" 'evil-window-left
+ ;;   "j" 'evil-window-down
+ ;;   "k" 'evil-window-up
+ ;;   "l" 'evil-window-right))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
@@ -28,7 +28,7 @@
   (setq indent-tabs-mode 1)
   (global-subword-mode 1)
   (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
-  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+;;  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (setq default-directory "~/")
   (setq tramp-default-method "plink")

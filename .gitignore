@@ -1,4 +1,13 @@
-.~
 *.*~
 */*
 *.last
+*.dat
+bookmarks
+abbrev_defs
+*-items
+tramp
+config.^((?!org).)*$
+.org*
+\#*.*\#
+\%*\%*
+config.[^org]\+
