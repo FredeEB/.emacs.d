@@ -1,19 +1,21 @@
 * Fixes
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
-(use-package evil 
- :ensure t
- :init
- (global-evil-leader-mode)
- (evil-leader/set-leader "<SPC>")
- (evil-mode 1)
- :config
- (evil-leader/set-key
-   "h" 'evil-window-left
-   "j" 'evil-window-down
-   "k" 'evil-window-up
-   "l" 'evil-window-right))
- (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+  (use-package evil 
+   :ensure t
+   :init
+   (global-evil-leader-mode)
+   (evil-leader/set-leader "<SPC>")
+   (evil-mode 1)
+   :config
+   (evil-leader/set-key
+     "h" 'evil-window-left
+     "j" 'evil-window-down
+     "k" 'evil-window-up
+     "l" 'evil-window-right))
+   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+  (use-package evil-goggles
+    :ensure t)
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
@@ -24,7 +26,7 @@
   (scroll-bar-mode -1)
   (setq inhibit-startup-message t)
   (setq initial-scratch-message "")
-  (setq initial-buffer-choice "~/OneDrive - Aarhus universitet/Personal/org/agenda.org")
+  (setq initial-buffer-choice "~/org/agenda.org")
   (setq ring-bell-function 'ignore)
   (setq tab-width 3)
   (setq indent-tabs-mode 1)
@@ -153,6 +155,16 @@
   :bind
   ("M-SPC" . 'dmenu))
 #+END_SRC
+** exwm
+   #+BEGIN_SRC emacs-lisp
+     (use-package exwm
+       :ensure t
+       :config
+       (require 'exwm-config)
+       (exwm-config-default))
+     (require 'exwm-systemtray)
+     (exwm-systemtray-enable)
+#+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
@@ -256,18 +268,6 @@
     ("C-c y" . 'aya-create)
     ("C-c u" . 'aya-expand))
 #+END_SRC
-** polymode 
-#+BEGIN_SRC emacs-lisp
-  (use-package polymode
-    :ensure t
-    :config
-    (require 'poly-R)
-    (require 'poly-markdown)
-    (require 'poly-org)
-    :mode
-    ("\\.org\\'" . poly-org-mode)
-    ("\\.Rmd\\'" . poly-markdown+r-mode))
-#+END_SRC 
 ** pdf-tools
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
