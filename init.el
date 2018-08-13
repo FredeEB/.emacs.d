@@ -42,6 +42,14 @@
  '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(lsp-ui-peek-always-show t)
  '(org-agenda-files nil)
+ '(org-babel-load-languages
+   (quote
+    ((python . t)
+     (C . T)
+     (sh . t)
+     (makefile . t)
+     (matlab . t)
+     (emacs-lisp . t))))
  '(org-capture-templates
    (quote
     (("j" "Journal" entry
@@ -53,6 +61,7 @@ Entered on %U
  '(package-selected-packages
    (quote
     (org-bullets solarized-theme lua-mode ecb ecb-autoloads minted lsp-ui org-ref org-latex evil-goggles evil-goggles-mode evil-magit jedi company-jedi company-irony-c-headers cmake-project cmake-ide irony-eldoc company-irony company rainbow-delimiters aggressive-indent agressive-indent yasnippet-snippets exwm spaceline hungry-delete dmenu rainbow-mode avy smex beacon markdown-mode polymode which-key use-package)))
+ '(python-shell-completion-native-disabled-interpreters (quote ("python" "pypy" "ipython")))
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587))

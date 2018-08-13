@@ -2,20 +2,27 @@
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil 
-   :ensure t
-   :init
-   (global-evil-leader-mode)
-   (evil-leader/set-leader "<SPC>")
-   (evil-mode 1)
-   :config
-   (evil-leader/set-key
-     "h" 'evil-window-left
-     "j" 'evil-window-down
-     "k" 'evil-window-up
-     "l" 'evil-window-right))
-   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+    :ensure t
+    :init
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>")
+    (evil-mode 1)
+    :config
+    (define-key evil-normal-state-map (kbd "L") (lambda () 
+                                                  (interactive)
+                                                  (split-window-right)
+                                                  (other-window 1)))
+    (define-key evil-normal-state-map (kbd "H") 'delete-other-windows)
+    (evil-leader/set-key
+      "h" 'evil-window-left
+      "j" 'evil-window-down
+      "k" 'evil-window-up
+      "l" 'evil-window-right))
+  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   (use-package evil-goggles
-    :ensure t)
+    :ensure t
+    :config
+    (evil-goggles-mode))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
@@ -57,6 +64,25 @@
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c r") 'config-reload)
 #+END_SRC
+** gnus
+   #+BEGIN_SRC emacs-lisp
+     (setq user-mail-address "frederikbraendstrup@gmail.com"
+           user-full-name "Frederik Braendstrup")
+
+     (setq gnus-select-method
+           '(nnimap "gmail"
+                    (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+                    (nnimap-server-port "imaps")
+                    (nnimap-stream ssl)))
+
+     (setq smtpmail-smtp-server "smtp.gmail.com"
+           smtpmail-smtp-service 587
+           gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+     (setq gnus-select-method '(nnnil))
+
+     (setq gnus-secondary-select-methods '((nntp "news.gwene.org")))
+   #+END_SRC
 ** org mode
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
@@ -86,7 +112,7 @@
  :ensure t
  :init
  (aggressive-indent-global-mode 1))
-#+END_SRC					 		       		   			     		 	      		  	       	    			     	  	      	   	       	    	 	     	         	   		    	       	             	     	                           #+END_SRC
+#+END_SRC
 ** avy
 #+BEGIN_SRC emacs-lisp
 (use-package avy
@@ -108,7 +134,6 @@
     :init
     (cmake-ide-setup))
 #+END_SRC
-
 ** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -118,10 +143,6 @@
     :config
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 3))
-
-  (with-eval-after-load 'company
-    (define-key company-active-map (kbd "C-j") #'company-select-next)
-    (define-key company-active-map (kbd "C-k") #'company-select-previous))
 
   (use-package company-irony
     :ensure t  
@@ -141,25 +162,6 @@
   (with-eval-after-load 'company
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
-     
-(when (boundp 'w32-pipe-read-delay)
-  (setq w32-pipe-read-delay 0))
-;; Set the buffer size to 64K on Windows (from the original 4K)
-(when (boundp 'w32-pipe-buffer-size)
-  (setq irony-server-w32-pipe-buffer-size (* 64 1024))) 
-#+END_SRC
-** Dmenu
-#+BEGIN_SRC emacs-lisp
-(use-package dmenu
-  :ensure
-  :bind
-  ("M-SPC" . 'dmenu))
-#+END_SRC
-** ECB
-#+BEGIN_SRC emacs-lisp
-  (use-package ecb
-    :ensure t)
-
 #+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
@@ -199,15 +201,6 @@
   :config
   (jedi:install-server))
 #+END_SRC
-** linum-relative
-#+BEGIN_SRC emacs-lisp
-(use-package linum-relative
-  :ensure t
-  :config
-  (linum-relative-global-mode 1)
-  (linum-relative-on)
-  (setq linum-relative-current-symbol ""))
-#+END_SRC
 ** lisp ui
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-ui
@@ -219,6 +212,16 @@
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :ensure t)
+#+END_SRC
+** matlab
+#+BEGIN_SRC emacs-lisp
+  (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+  (add-to-list
+   'auto-mode-alist
+   '("\\.m$" . matlab-mode))
+  (setq matlab-indent-function t)
+  (setq matlab-shell-command "matlab")
+
 #+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
@@ -289,7 +292,7 @@
     :init
     (pdf-tools-install))
 
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
+ (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
