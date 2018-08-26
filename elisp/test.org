@@ -1,0 +1,6 @@
+#+TITLE: test
+#+AUTHOR: test
+
+#+LATEX_HEADER: \usepackage{bohr}
+
+* Testing some org-latex-enhancer stuff...

@@ -19,10 +19,16 @@
       "k" 'evil-window-up
       "l" 'evil-window-right))
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+
   (use-package evil-goggles
     :ensure t
     :config
     (evil-goggles-mode))
+
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
@@ -31,38 +37,36 @@
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
-  (setq inhibit-startup-message t)
-  (setq initial-scratch-message "")
-  (setq initial-buffer-choice "~/org/agenda.org")
-  (setq ring-bell-function 'ignore)
-  (setq tab-width 3)
-  (setq indent-tabs-mode 1)
+  (setq inhibit-startup-message t
+        initial-scratch-message ""
+        initial-buffer-choice "~/org/agenda.org"
+        ring-bell-function 'ignore
+        tab-width 3
+        indent-tabs-mode 1)
   (global-subword-mode 1)
   (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
-  (setq default-directory "~/")
-  (setq tramp-default-method "ssh")
+  (setq default-directory "~/"
+        tramp-default-method "ssh")
   (global-set-key (kbd "C-c o") 'ff-find-other-file)
-#+END_SRC
-** SSH-stuff
-   #+BEGIN_SRC emacs-lisp
-(setenv "SSH_ASKPASS" "git-gui--askpass")
-     (use-package ssh-agency
-       :ensure t)
-	     #+END_SRC
-** conf opts
-*** edit
-#+BEGIN_SRC emacs-lisp
+
+  ;; define config shortcut
   (defun config-visit()
     (interactive)
     (find-file "~/.emacs.d/config.org"))
   (global-set-key (kbd "C-c e") 'config-visit)
+  (eval-after-load 'shell
+    '(progn
+       (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+       (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
+       t))
 #+END_SRC
-*** update
+** SSH-stuff
 #+BEGIN_SRC emacs-lisp
-  (defun config-reload ()
-    (interactive)
-    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
+     (use-package ssh-agency
+       :ensure t)
+#+END_SRC
+** conf opts
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 ** gnus
    #+BEGIN_SRC emacs-lisp
@@ -71,7 +75,7 @@
 
      (setq gnus-select-method
            '(nnimap "gmail"
-                    (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+                    (nnimap-address "imap.gmail.com")
                     (nnimap-server-port "imaps")
                     (nnimap-stream ssl)))
 
@@ -163,6 +167,13 @@
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
 #+END_SRC
+** dumb-jump
+#+BEGIN_SRC emacs-lisp
+  (use-package dumb-jump
+    :ensure t
+    :init
+    (dumb-jump-mode))
+#+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
@@ -201,6 +212,10 @@
   :config
   (jedi:install-server))
 #+END_SRC
+** lock in
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/elisp/lock-in.el")
+#+END_SRC
 ** lisp ui
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-ui
@@ -216,12 +231,11 @@
 ** matlab
 #+BEGIN_SRC emacs-lisp
   (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-  (add-to-list
-   'auto-mode-alist
-   '("\\.m$" . matlab-mode))
-  (setq matlab-indent-function t)
-  (setq matlab-shell-command "matlab")
-
+    (add-to-list
+     'auto-mode-alist
+     '("\\.m$" . matlab-mode))
+    (setq matlab-indent-function t)
+    (setq matlab-shell-command "matlab")
 #+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
@@ -241,6 +255,11 @@
     :ensure t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+  (setq org-export-latex-listings 'minted)
+  (setq org-src-fontify-natively t)
+
+  (load "~/.emacs.d/elisp/org-latex-enhancer.el")
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp
@@ -284,6 +303,21 @@
     :bind
     ("C-c y" . 'aya-create)
     ("C-c u" . 'aya-expand))
+#+END_SRC
+** Paredit and friends
+#+BEGIN_SRC emacs-lisp
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+
+  (use-package cedit
+    :ensure t)
+  (use-package evil-paredit
+    :ensure t)
 #+END_SRC
 ** pdf-tools
 #+BEGIN_SRC emacs-lisp
