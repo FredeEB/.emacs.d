@@ -176,6 +176,16 @@
     :init
     (dumb-jump-mode))
 #+END_SRC
+** exwm
+   #+BEGIN_SRC emacs-lisp
+     (use-package exwm
+       :ensure t
+       :config
+       (require 'exwm-config)
+       (exwm-config-default))
+     (require 'exwm-systemtray)
+     (exwm-systemtray-enable)
+   #+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
