@@ -4,7 +4,7 @@
 (defun lock-in ()
   "Locks in."
   (interactive)
-  (start-process-shell-command "Tizonia" "*The Shuttle*" "tizonia --youtube-audio-search \"asthenic synthwave\"")
+  (start-process-shell-command "Tizonia" "*The Shuttle*" "tizonia --youtube-audio-search \"synthwave\"")
   (message "locked in"))
 
 (defun tap-out ()

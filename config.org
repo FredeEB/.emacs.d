@@ -48,6 +48,7 @@
   (setq default-directory "~/"
         tramp-default-method "ssh")
   (global-set-key (kbd "C-c o") 'ff-find-other-file)
+  (ido-vertical-mode)
 
   ;; define config shortcut
   (defun config-visit()
@@ -59,14 +60,15 @@
        (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
        (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
        t))
+  (global-set-key (kbd "M-d") 'dmenu)
+
+  (add-hook 'c-mode-hook 'linum-relative-mode)
+
 #+END_SRC
 ** SSH-stuff
 #+BEGIN_SRC emacs-lisp
      (use-package ssh-agency
        :ensure t)
-#+END_SRC
-** conf opts
-#+BEGIN_SRC emacs-lisp
 #+END_SRC
 ** gnus
    #+BEGIN_SRC emacs-lisp
@@ -99,7 +101,7 @@
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (setq org-capture-templates
-        '(("j" "Journal" entry (file+headline+datetree "~/org/Journal.org" "Entries")
+        '(("j" "Journal" entry (file+headline+datetree "~/org/agenda.org" "Journal")
            "* %?\nEntered on %U\n %i\n %a")
           ("a" "Agenda" entry (file+headline "~/org/agenda.org" "Tasks")
            "* TODO %?\n %i\n %a")))
@@ -181,6 +183,12 @@
    :init
    (global-flycheck-mode t))
 (setq flycheck-global-modes '(not org-mode))
+#+END_SRC
+** go
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t)
+
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
@@ -280,6 +288,13 @@
   :bind
   ("M-x" . smex))
 #+END_SRC
+** sudo-edit
+   #+BEGIN_SRC emacs-lisp
+     (use-package sudo-edit
+       :ensure t
+       )
+        
+   #+END_SRC
 ** spaceline
 #+BEGIN_SRC emacs-lisp
 (use-package spaceline

@@ -7,10 +7,10 @@
 ;;; Code:
 
 
-(defun org-latex-include-header (choice headers)
-  "Add a C/C++ local or global header with CHOICE to HEADERS to the current file."
-  (interactive choice ("\"" "<")
-	       (list (split-string (read-string "sHeader(s): "))))
+(defun C-include-header (headers)
+  "Add a C/C++ local or global HEADERS to the current file."
+  (interactive
+   (list (split-string (read-string "sHeader(s): "))))
   (save-excursion
     (if (not (search-backward "#include " nil t))
 	(goto-char 0))
