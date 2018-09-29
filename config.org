@@ -64,6 +64,10 @@
 
   (add-hook 'c-mode-hook 'linum-relative-mode)
 
+  (setenv "SSH_ASKPASS" "git-gui--askpass")
+  (use-package ssh-agency
+    :ensure t)
+
 #+END_SRC
 ** gnus
    #+BEGIN_SRC emacs-lisp
