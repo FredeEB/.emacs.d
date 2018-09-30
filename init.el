@@ -22,10 +22,6 @@
   (package-refresh-contents)
   (package-install 'evil-leader))
 
-(unless (package-installed-p 'auto-complete-c-headers)
-  (package-refresh-contents)
-  (package-install 'auto-complete-c-headers))
-
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
 (custom-set-variables
@@ -38,10 +34,6 @@
    (quote
     ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(ecb-options-version "2.50")
- '(flycheck-gcc-include-path (quote ("Inc
-
-")))
- '(flycheck-gcc-includes (quote ("./Inc/main.h")))
  '(frame-background-mode (quote dark))
  '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(linum-relative-current-symbol "")
@@ -64,8 +56,6 @@
 Entered on %U
  %i
  %a"))) t)
- '(org-refile-targets (quote ((org-agenda-files :tag . "Entries"))))
- '(org-startup-with-latex-preview t)
  '(package-selected-packages
    (quote
     (plantuml-mode auctex emmet-mode web-mode spotify textile-mode matlab-mode dumb-jump projectile evil-surround org-bullets solarized-theme lua-mode ecb ecb-autoloads minted lsp-ui org-ref org-latex evil-goggles evil-goggles-mode evil-magit jedi company-jedi company-irony-c-headers cmake-project cmake-ide irony-eldoc company-irony company rainbow-delimiters aggressive-indent agressive-indent yasnippet-snippets exwm spaceline hungry-delete dmenu rainbow-mode avy smex beacon markdown-mode polymode which-key use-package)))
@@ -79,5 +69,3 @@ Entered on %U
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Fira Code Retina" :foundry "outline" :slant normal :weight normal :height 141 :width normal)))))
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
