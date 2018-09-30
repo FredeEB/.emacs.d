@@ -6,7 +6,12 @@ abbrev_defs
 *-items
 tramp
 .org*
+<<<<<<< HEAD
 *\#
+=======
+\#*.*\#
+\%*\%*
+>>>>>>> 3f490ae821b68e826472902b15e25b5194b862a6
 session.*
 elpa
 eshell
