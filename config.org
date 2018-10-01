@@ -68,6 +68,9 @@
   (use-package ssh-agency
     :ensure t)
 
+  ;; PATH
+  (setenv "PATH" (concat (getenv "PATH") ":~/bin"))
+  (setq exec-path (append exec-path '("~/bin")))
 #+END_SRC
 ** gnus
    #+BEGIN_SRC emacs-lisp
@@ -191,11 +194,12 @@
    #+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck
-   :ensure t
-   :init
-   (global-flycheck-mode t))
-(setq flycheck-global-modes '(not org-mode))
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode t))
+  (setq flycheck-global-modes '(not org-mode))
+
 #+END_SRC
 ** go
 #+BEGIN_SRC emacs-lisp
@@ -268,6 +272,14 @@
          :config
          (use-package evil-magit
                 :ensure t))
+#+END_SRC
+** mulcursers
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind
+    ("C-æ" . mc/mark-all-like-this))
+
 #+END_SRC
 ** org stuff
 #+BEGIN_SRC emacs-lisp
@@ -362,6 +374,13 @@
         org-latex-pdf-process
         '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+END_SRC
+** projectile
+#+BEGIN_SRC emacs-lisp
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
 #+END_SRC
 ** Web
 #+BEGIN_SRC emacs-lisp
