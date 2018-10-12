@@ -6,9 +6,7 @@ abbrev_defs
 *-items
 tramp
 .org*
-<<<<<<< HEAD
 *\#
-=======
 \#*.*\#
 \%*\%*
 session.*
@@ -27,3 +25,5 @@ url
 sr*
 recentf
 irony
+tags
+.mc-lists.el
