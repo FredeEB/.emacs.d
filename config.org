@@ -1,13 +1,125 @@
 * Fixes
+** init 
+   #+BEGIN_SRC emacs-lisp :tangle yes
+
+     (require 'package)
+     (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                         (not (gnutls-available-p))))
+            (proto (if no-ssl "http" "https")))
+       ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+       (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+       (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+       (when (< emacs-major-version 24)
+         ;; For important compatibility libraries like cl-lib
+         (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+     (package-initialize)
+
+     (custom-set-variables
+      ;; custom-set-variables was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+      '(ansi-color-names-vector
+        ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
+      '(company-idle-delay 0)
+      '(company-minimum-prefix-length 2)
+      '(compilation-message-face (quote default))
+      '(custom-safe-themes
+        (quote
+         ("bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" "73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd" "a94f1a015878c5f00afab321e4fef124b2fc3b823c8ddd89d360d710fc2bddfc" "66aea5b7326cf4117d63c6694822deeca10a03b98135aaaddb40af99430ea237" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b181ea0cc32303da7f9227361bb051bbb6c3105bb4f386ca22a06db319b08882" "af717ca36fe8b44909c984669ee0de8dd8c43df656be67a50a1cf89ee41bde9a" "3eb93cd9a0da0f3e86b5d932ac0e3b5f0f50de7a0b805d4eb1f67782e9eb67a4" "d21135150e22e58f8c656ec04530872831baebf5a1c3688030d119c114233c24" default)))
+      '(ecb-options-version "2.50")
+      '(evil-collection-company-use-tng nil)
+      '(fci-rule-color "#3C3D37")
+      '(flycheck-clang-analyzer-executeable "clang-6.0" t)
+      '(frame-background-mode (quote dark))
+      '(fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin")
+      '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
+      '(highlight-tail-colors
+        (quote
+         (("#3C3D37" . 0)
+          ("#679A01" . 20)
+          ("#4BBEAE" . 30)
+          ("#1DB4D0" . 50)
+          ("#9A8F21" . 60)
+          ("#A75B00" . 70)
+          ("#F309DF" . 85)
+          ("#3C3D37" . 100))))
+      '(initial-frame-alist (quote ((fullscreen . maximized))))
+      '(linum-relative-current-symbol "")
+      '(lsp-ui-peek-always-show t)
+      '(magit-diff-use-overlays nil)
+      '(org-agenda-files nil)
+      '(org-babel-load-languages
+        (quote
+         ((python . t)
+          (C . T)
+          (sh . t)
+          (makefile . t)
+          (matlab . t)
+          (emacs-lisp . t))))
+      '(org-bullets-face-name (quote Fira\ Code\ Retina))
+      '(org-capture-templates
+        (quote
+         (("j" "Journal" entry
+           (file+olp+datetree "~/org/Journal.org" "Entries")
+           "* %?
+     Entered on %U
+      %i
+      %a"))) t)
+      '(package-selected-packages
+        (quote
+         (lsp-clangd evil-mc sesman cider clojure-mode ace-window treemacs fancy-battery ## plantuml-mode auctex emmet-mode web-mode spotify textile-mode matlab-mode dumb-jump projectile evil-surround org-bullets solarized-theme lua-mode ecb ecb-autoloads minted lsp-ui org-ref org-latex evil-goggles evil-goggles-mode evil-magit jedi company-jedi company-irony-c-headers cmake-project cmake-ide irony-eldoc company-irony company rainbow-delimiters aggressive-indent agressive-indent yasnippet-snippets exwm spaceline hungry-delete dmenu rainbow-mode avy smex beacon markdown-mode polymode which-key use-package)))
+      '(plantuml-jar-path "/usr/bin/plantuml")
+      '(pos-tip-background-color "#FFFACE")
+      '(pos-tip-foreground-color "#272822")
+      '(python-shell-completion-native-disabled-interpreters (quote ("python" "pypy" "ipython")))
+      '(send-mail-function (quote smtpmail-send-it))
+      '(smtpmail-smtp-server "smtp.gmail.com" t)
+      '(smtpmail-smtp-service 587 t)
+      '(vc-annotate-background nil)
+      '(vc-annotate-color-map
+        (quote
+         ((20 . "#F92672")
+          (40 . "#CF4F1F")
+          (60 . "#C26C0F")
+          (80 . "#E6DB74")
+          (100 . "#AB8C00")
+          (120 . "#A18F00")
+          (140 . "#989200")
+          (160 . "#8E9500")
+          (180 . "#A6E22E")
+          (200 . "#729A1E")
+          (220 . "#609C3C")
+          (240 . "#4E9D5B")
+          (260 . "#3C9F79")
+          (280 . "#A1EFE4")
+          (300 . "#299BA6")
+          (320 . "#2896B5")
+          (340 . "#2790C3")
+          (360 . "#66D9EF"))))
+      '(vc-annotate-very-old-color nil)
+      '(weechat-color-list
+        (quote
+         (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))))
+     (custom-set-faces
+      ;; custom-set-faces was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+      '(default ((t (:family "Fira Code Retina" :foundry "outline" :slant normal :weight normal :height 141 :width normal))))
+      '(company-scrollbar-bg ((t (:background "#3d3d3d"))))
+      '(company-scrollbar-fg ((t (:background "#303030"))))
+      '(company-tooltip ((t (:inherit default :background "#292929"))))
+      '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
+      '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+      '(helm-buffer-directory ((t (:foreground "DarkRed"))))
+      '(minibuffer-prompt ((t (:background "#e6db74" :foreground "#222" :box nil)))))
+   #+END_SRC
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil 
     :ensure t
-    :init
-    (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>")
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
+    :after evil-leader
     :config
     (evil-mode 1)
     (define-key evil-normal-state-map (kbd "L")
@@ -22,6 +134,13 @@
       "o" 'other-window)
     (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
 
+  (use-package evil-leader
+    :ensure t
+    :init
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>")
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil))
 
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
 
@@ -35,6 +154,7 @@
 
   (use-package evil-goggles
     :ensure t
+    :diminish evil-goggles
     :config
     (evil-goggles-mode))
 
@@ -42,6 +162,15 @@
     :ensure t
     :config
     (global-evil-surround-mode 1))
+
+  (use-package evil-mc
+    :ensure t
+    :diminish evil-mc
+    :config
+    (global-evil-mc-mode 1)
+    (evil-leader/set-key "m" 'evil-mc-make-all-cursors)
+    (evil-leader/set-key "n" 'evil-mc-undo-all-cursors)
+    (evil-leader/set-key "j" 'evil-mc-make-and-go-to-next-match))
 #+END_SRC
 
 ** Basics
@@ -50,7 +179,8 @@
     :ensure t
     :config
     (load-theme 'monokai t))
-    (setq scroll-conservatively 100)
+  (setq scroll-conservatively 100)
+  (setq scroll-margin 5)
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
@@ -93,6 +223,8 @@
   (use-package ssh-agency
     :ensure t)
 
+  ;;tmp stuff
+  (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 #+END_SRC
 ** org mode
 #+BEGIN_SRC emacs-lisp
@@ -124,10 +256,11 @@
 #+END_SRC
 ** agressive indent
 #+BEGIN_SRC emacs-lisp
-(use-package aggressive-indent
- :ensure t
- :init
- (aggressive-indent-global-mode 1))
+  (use-package aggressive-indent
+    :ensure t
+    :diminish aggressive-indent
+    :init
+    (aggressive-indent-global-mode 1))
 #+END_SRC
 ** avy
 #+BEGIN_SRC emacs-lisp
@@ -140,8 +273,16 @@
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :ensure t
+    :diminish beacon
     :init
     (beacon-mode 1))
+#+END_SRC
+** clojure stuff
+#+BEGIN_SRC emacs-lisp
+  (use-package clojure-mode
+    :ensure t)
+  (use-package cider
+    :ensure t)
 #+END_SRC
 ** cmake stuff
 #+BEGIN_SRC emacs-lisp
@@ -154,6 +295,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
+    :diminish company
     :init
     (global-company-mode)
     :custom
@@ -179,10 +321,22 @@
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
 #+END_SRC
+** diff-hl
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-hl
+    :ensure t 
+    :hook
+    (magit-post-refresh-hook . diff-hl-magit-post-refresh)
+    :config
+    (diff-hl-mode)
+    (evil-leader/set-key "g n" 'diff-hl-next-hunk)
+    (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
+#+END_SRC
 ** dumb-jump
 #+BEGIN_SRC emacs-lisp
   (use-package dumb-jump
     :ensure t
+    :diminish dumb-jump
     :init
     (dumb-jump-mode))
 #+END_SRC
@@ -190,6 +344,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package emmet-mode
     :ensure t
+    :diminish emmet-mode
     :config
     (add-hook 'clojure-hook 'emmet-mode)
     :bind
@@ -199,12 +354,13 @@
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
+    :diminish flycheck
     :init
     (global-flycheck-mode t))
   (setq flycheck-global-modes '(not org-mode))
 
   (use-package flycheck-clang-analyzer
-    :ensure t
+    :ensure t 
     :after flycheck
     :custom
     (flycheck-clang-analyzer-executeable "clang-6.0")
@@ -213,20 +369,14 @@
 ** fzf
 #+BEGIN_SRC emacs-lisp
   (use-package fzf
-    :ensure t
+    :ensure t 
     :config
     (evil-leader/set-key "f" 'fzf))
 #+END_SRC
-** diff-hl
-#+BEGIN_SRC emacs-lisp
-  (use-package diff-hl
-    :ensure t
-    :hook
-    ((magit-post-refresh-hook . diff-hl-magit-post-refresh))
-    :config
-    (diff-hl-mode)
-    (evil-leader/set-key "n" 'diff-hl-next-hunk)
-    (evil-leader/set-key "p" 'diff-hl-previous-hunk))
+** git stuff
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package github-clone
+    :ensure t)
 #+END_SRC
 ** go
 #+BEGIN_SRC emacs-lisp
@@ -237,6 +387,7 @@
    #+BEGIN_SRC emacs-lisp
      (use-package golden-ratio
        :ensure t
+       :diminish golden-ratio
        :config
        (golden-ratio-mode 1))
    #+END_SRC
@@ -249,12 +400,18 @@
     :bind
     ("C-x C-f" . 'helm-find-files)
     ("C-x C-b" . 'helm-buffers-list)) 
+
+  (use-package helm-make
+    :ensure t
+    :config
+    (evil-leader/set-key "c" 'helm-make))
 #+END_SRC
 ** Hungry delete
 #+BEGIN_SRC emacs-lisp
-(use-package hungry-delete
-  :ensure t
-  :config (global-hungry-delete-mode))
+  (use-package hungry-delete
+    :ensure t
+    :diminish hungry-delete
+    :config (global-hungry-delete-mode))
 #+END_SRC
 ** jedi
 #+BEGIN_SRC emacs-lisp
@@ -272,8 +429,7 @@
 #+BEGIN_SRC emacs-lisp
   (load "~/.emacs.d/elisp/lock-in.el")
 #+END_SRC
-** lisp ui
-   doesn't work
+** lsp ui
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-ui
     :ensure t
@@ -304,13 +460,6 @@
 
   (use-package evil-magit
     :ensure t)
-#+END_SRC
-** mulcursers
-#+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors
-    :ensure t
-    :config
-    (evil-leader/set-key "m" 'mc/mark-all-like-this))
 #+END_SRC
 ** neotree
 #+BEGIN_SRC emacs-lisp
@@ -356,14 +505,15 @@
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp
-(use-package rainbow-mode
-  :ensure t
-  :init
-  (rainbow-mode 1))
-(use-package rainbow-delimiters
-  :ensure t
-  :init
-  (rainbow-delimiters-mode))
+  (use-package rainbow-mode
+    :ensure t
+    :diminish rainbow-mode
+    :init
+    (rainbow-mode 1))
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (rainbow-delimiters-mode))
 #+END_SRC
 ** smex
 #+BEGIN_SRC emacs-lisp
@@ -387,6 +537,9 @@
 
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
+  (use-package yasnippet-snippets
+    :ensure t)
+
   (use-package yasnippet
     :ensure t
     :init
@@ -404,12 +557,9 @@
 #+BEGIN_SRC emacs-lisp
   (use-package powerline
     :ensure t
-    :config
-    (powerline-center-evil-theme))
-  (use-package airline-themes
-    :ensure t
-    :config
-    (load-theme 'airline-molokai t))
+    :custom
+    (powerline-default-theme))
+
 #+END_SRC
 ** Paredit and friends
 #+BEGIN_SRC emacs-lisp
@@ -420,6 +570,7 @@
   (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
 
   (use-package cedit
     :ensure t)
@@ -449,8 +600,9 @@
 #+END_SRC
 ** Which key
 #+BEGIN_SRC emacs-lisp
-(use-package which-key
-  :ensure t
-  :init
-  (which-key-mode))
+  (use-package which-key
+    :ensure t
+    :diminish which-key
+    :init
+    (which-key-mode))
 #+END_SRC
