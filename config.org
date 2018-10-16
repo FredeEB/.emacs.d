@@ -1,7 +1,6 @@
 * Fixes
 ** init 
    #+BEGIN_SRC emacs-lisp :tangle yes
-
      (require 'package)
      (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                          (not (gnutls-available-p))))
@@ -13,6 +12,10 @@
          ;; For important compatibility libraries like cl-lib
          (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
      (package-initialize)
+
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
 
      (custom-set-variables
       ;; custom-set-variables was added by Custom.
@@ -32,7 +35,6 @@
       '(fci-rule-color "#3C3D37")
       '(flycheck-clang-analyzer-executeable "clang-6.0" t)
       '(frame-background-mode (quote dark))
-      '(fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin")
       '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
       '(highlight-tail-colors
         (quote
@@ -45,9 +47,6 @@
           ("#F309DF" . 85)
           ("#3C3D37" . 100))))
       '(initial-frame-alist (quote ((fullscreen . maximized))))
-      '(linum-relative-current-symbol "")
-      '(lsp-ui-peek-always-show t)
-      '(magit-diff-use-overlays nil)
       '(org-agenda-files nil)
       '(org-babel-load-languages
         (quote
@@ -114,9 +113,19 @@
       '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
       '(helm-buffer-directory ((t (:foreground "DarkRed"))))
       '(minibuffer-prompt ((t (:background "#e6db74" :foreground "#222" :box nil)))))
+
    #+END_SRC
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
+  (use-package evil-leader
+    :ensure t
+    :custom
+    (evil-want-integration t)
+    (evil-want-keybinding nil)
+    :init
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>"))
+
   (use-package evil 
     :ensure t
     :after evil-leader
@@ -131,22 +140,13 @@
     (evil-leader/set-key
       "r" 'revert-buffer 
       "b" 'helm-buffers-list
-      "o" 'other-window)
+      "o" 'other-window
+      "q" 'kill-buffer)
     (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
 
-  (use-package evil-leader
-    :ensure t
-    :init
-    (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>")
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil))
-
-  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
-
   (use-package evil-collection
-    :after evil
     :ensure t
+    :after evil
     :custom
     (evil-collection-company-use-tng nil)
     :init
@@ -172,7 +172,6 @@
     (evil-leader/set-key "n" 'evil-mc-undo-all-cursors)
     (evil-leader/set-key "j" 'evil-mc-make-and-go-to-next-match))
 #+END_SRC
-
 ** Basics
 #+BEGIN_SRC emacs-lisp
   (use-package monokai-theme
@@ -196,13 +195,13 @@
   (setq default-directory "~/"
         tramp-default-method "ssh")
   (global-set-key (kbd "C-c o") 'ff-find-other-file)
-  (ido-vertical-mode)
 
   ;; define config shortcut
   (defun config-visit()
     (interactive)
     (find-file "~/.emacs.d/config.org"))
   (global-set-key (kbd "C-c e") 'config-visit)
+
   (eval-after-load 'shell
     '(progn
        (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
@@ -215,8 +214,6 @@
 
   (global-set-key (kbd "M-d") 'dmenu)
 
-
-  (add-hook 'prog-mode-hook 'linum-relative-mode)
   (add-hook 'textile-mode-hook 'visual-line-mode)
 
   (setenv "SSH_ASKPASS" "git-gui--askpass")
@@ -317,20 +314,15 @@
     (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
+  (use-package company-jedi
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+
   (with-eval-after-load 'company
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
-#+END_SRC
-** diff-hl
-#+BEGIN_SRC emacs-lisp
-  (use-package diff-hl
-    :ensure t 
-    :hook
-    (magit-post-refresh-hook . diff-hl-magit-post-refresh)
-    :config
-    (diff-hl-mode)
-    (evil-leader/set-key "g n" 'diff-hl-next-hunk)
-    (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
+
 #+END_SRC
 ** dumb-jump
 #+BEGIN_SRC emacs-lisp
@@ -340,24 +332,15 @@
     :init
     (dumb-jump-mode))
 #+END_SRC
-** emmet
-#+BEGIN_SRC emacs-lisp
-  (use-package emmet-mode
-    :ensure t
-    :diminish emmet-mode
-    :config
-    (add-hook 'clojure-hook 'emmet-mode)
-    :bind
-    ("M-p" . 'emmet-expand-yas))
-#+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
     :diminish flycheck
     :init
-    (global-flycheck-mode t))
-  (setq flycheck-global-modes '(not org-mode))
+    (global-flycheck-mode t)
+    :custom
+    (flycheck-global-modes '(not org-mode)))
 
   (use-package flycheck-clang-analyzer
     :ensure t 
@@ -371,12 +354,22 @@
   (use-package fzf
     :ensure t 
     :config
-    (evil-leader/set-key "f" 'fzf))
+    (evil-leader/set-key "f" 'fzf)
+    :custom
+    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
 ** git stuff
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package github-clone
     :ensure t)
+  (use-package diff-hl
+    :ensure t 
+    :hook
+    (magit-post-refresh-hook . diff-hl-magit-post-refresh)
+    :config
+    (diff-hl-mode)
+    (evil-leader/set-key "g n" 'diff-hl-next-hunk)
+    (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
 #+END_SRC
 ** go
 #+BEGIN_SRC emacs-lisp
@@ -413,18 +406,27 @@
     :diminish hungry-delete
     :config (global-hungry-delete-mode))
 #+END_SRC
+** ido
+#+BEGIN_SRC emacs-lisp
+    (use-package ido-vertical-mode
+      :ensure t
+      :config 
+    (ido-vertical-mode))
+#+END_SRC
 ** jedi
 #+BEGIN_SRC emacs-lisp
 (use-package jedi
   :ensure t
-  :init
-  (use-package company-jedi
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-jedi))
   :config
   (jedi:install-server))
 #+END_SRC
+** linum
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package linum-relative
+       :ensure t 
+       :config
+       (add-hook 'prog-mode-hook 'linum-on))
+   #+END_SRC
 ** lock in
 #+BEGIN_SRC emacs-lisp
   (load "~/.emacs.d/elisp/lock-in.el")
@@ -443,13 +445,13 @@
 #+END_SRC
 ** matlab
 #+BEGIN_SRC emacs-lisp
-  (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-    (add-to-list
-     'auto-mode-alist
-     '("\\.m$" . matlab-mode))
-    (setq matlab-indent-function t)
-    (setq matlab-shell-command "matlab")
-  (add-hook 'matlab-mode-hook 'matlab-shell)
+  (use-package matlab-mode
+    :ensure t
+    :custom
+    (matlab-indent-function t)
+    (matlab-shell-command "matlab")
+    :hook matlab-shell
+    :mode "\\.m$")
 #+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
@@ -515,6 +517,12 @@
     :init
     (rainbow-delimiters-mode))
 #+END_SRC
+** rtags
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package rtags
+    :ensure t)
+
+#+END_SRC
 ** smex
 #+BEGIN_SRC emacs-lisp
   (use-package smex
@@ -559,7 +567,10 @@
     :ensure t
     :custom
     (powerline-default-theme))
-
+  (use-package airline-themes
+    :ensure t
+    :config
+    (load-theme 'airline-molokai))
 #+END_SRC
 ** Paredit and friends
 #+BEGIN_SRC emacs-lisp
@@ -596,7 +607,17 @@
 ** Web
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
-    :ensure t)
+    :ensure t
+    :hook
+    (html-mode))
+  (use-package emmet-mode
+    :ensure t
+    :diminish emmet-mode
+    :config
+    (add-hook 'clojure-hook 'emmet-mode)
+    :bind
+    ("M-p" . 'emmet-expand-yas))
+
 #+END_SRC
 ** Which key
 #+BEGIN_SRC emacs-lisp
@@ -605,4 +626,5 @@
     :diminish which-key
     :init
     (which-key-mode))
+
 #+END_SRC
