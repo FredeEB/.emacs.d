@@ -8,3 +8,4 @@ Remember to call:
 (rtags-install)
 (irony-install-server)
 (jedi:install-server)
+```
