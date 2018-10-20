@@ -138,7 +138,6 @@
         (other-window 1)))
     (define-key evil-normal-state-map (kbd "H") 'delete-other-windows)
     (evil-leader/set-key
-      "r" 'revert-buffer 
       "b" 'helm-buffers-list
       "o" 'other-window
       "q" 'kill-buffer)
@@ -457,11 +456,10 @@
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :ensure t
-    :bind
-    ("C-x g" . 'magit-status))
-
-  (use-package evil-magit
-    :ensure t)
+    :config
+    (evil-leader/set-key "g" 'magit-status))
+    (use-package evil-magit
+      :ensure t)
 #+END_SRC
 ** neotree
 #+BEGIN_SRC emacs-lisp
@@ -520,7 +518,14 @@
 ** rtags
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package rtags
-    :ensure t)
+    :ensure t
+    :config
+    (evil-leader/set-key
+      "r f" 'rtags-find-file
+      "r c" 'cmake-ide-compile
+      "r C" 'cmake-ide-run-cmake
+      "r g" 'rtags-find-symbol
+      "r j" 'next-error))
 
 #+END_SRC
 ** smex
@@ -543,6 +548,11 @@
                 ("/" . 'swiper-all)))
 #+END_SRC
 
+** textmodes
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package textile-mode
+    :ensure t)
+#+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet-snippets

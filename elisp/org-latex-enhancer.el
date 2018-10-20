@@ -10,7 +10,7 @@
 (defun org-latex-include-header (packages)
   "Add a latex header with PACKAGES to the current document."
   (interactive
-   (list (split-string (read-string "sPackage(s): "))))
+   (list (split-string (read-string "Package(s): "))))
   (save-excursion
     (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
 	(if (not (search-backward "#+AUTHOR:" nil t))
