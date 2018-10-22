@@ -323,6 +323,13 @@
     (add-hook 'c-mode-hook 'company-mode))
 
 #+END_SRC
+** dmenu
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package dmenu
+    :ensure t
+    :bind
+    ("M-d" . dmenu))
+#+END_SRC
 ** dumb-jump
 #+BEGIN_SRC emacs-lisp
   (use-package dumb-jump
