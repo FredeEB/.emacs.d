@@ -348,6 +348,17 @@
     (flycheck-clang-analyzer-executeable "clang-6.0")
     :config (flycheck-clang-analyzer-setup))
 #+END_SRC
+** floobits
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package floobits
+    :ensure t)
+#+END_SRC
+** focus
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package focus
+    :ensure t
+    :mode prog-mode)
+#+END_SRC
 ** fzf
 #+BEGIN_SRC emacs-lisp
   (use-package fzf
@@ -571,6 +582,23 @@
     ("C-c y" . 'aya-create)
     ("C-c u" . 'aya-expand))
 #+END_SRC
+** openwith
+#+BEGIN_SRC emacs-lisp
+  (use-package openwith
+    :ensure t
+    :config
+    (openwith-mode t)
+    :custom
+    (openwith-associations '(("\\.pdf\\'" "zathura" (file)))))
+
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+  (setq large-file-warning-threshold nil)
+#+END_SRC
 ** powerline
 #+BEGIN_SRC emacs-lisp
   (use-package powerline
@@ -597,22 +625,6 @@
     :ensure t)
   (use-package evil-paredit
     :ensure t)
-#+END_SRC
-** pdf-tools
-#+BEGIN_SRC emacs-lisp
-  (use-package pdf-tools
-    :ensure t
-    :init
-    (pdf-tools-install))
-
-  (evil-set-initial-state 'pdf-view-mode 'normal)
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-
-   (setq org-latex-listings 'minted
-         org-latex-packages-alist '(("" "minted"))
-         org-latex-pdf-process
-         '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 #+END_SRC
 ** Web
 #+BEGIN_SRC emacs-lisp
