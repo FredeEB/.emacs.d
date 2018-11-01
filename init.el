@@ -1,9 +1,19 @@
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 (custom-set-variables
@@ -18,7 +28,7 @@
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote
-    ("0cd56f8cd78d12fc6ead32915e1c4963ba2039890700458c13e12038ec40f6f5" "003a9aa9e4acb50001a006cfde61a6c3012d373c4763b48ceb9d523ceba66829" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" "73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd" "a94f1a015878c5f00afab321e4fef124b2fc3b823c8ddd89d360d710fc2bddfc" "66aea5b7326cf4117d63c6694822deeca10a03b98135aaaddb40af99430ea237" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b181ea0cc32303da7f9227361bb051bbb6c3105bb4f386ca22a06db319b08882" "af717ca36fe8b44909c984669ee0de8dd8c43df656be67a50a1cf89ee41bde9a" "3eb93cd9a0da0f3e86b5d932ac0e3b5f0f50de7a0b805d4eb1f67782e9eb67a4" "d21135150e22e58f8c656ec04530872831baebf5a1c3688030d119c114233c24" default)))
+    ("73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd")))
  '(ecb-options-version "2.50")
  '(evil-collection-company-use-tng nil)
  '(evil-want-integration t)
@@ -46,6 +56,7 @@
  '(magit-diff-use-overlays nil)
  '(matlab-indent-function t t)
  '(matlab-shell-command "matlab" t)
+ '(openwith-associations (quote (("\\.pdf\\'" "zathura" (file)))))
  '(org-agenda-files nil)
  '(org-babel-load-languages
    (quote
@@ -54,7 +65,8 @@
      (sh . t)
      (makefile . t)
      (matlab . t)
-     (emacs-lisp . t))))
+     (emacs-lisp . t)
+     (plantuml . t))))
  '(org-bullets-face-name (quote Fira\ Code\ Retina))
  '(org-capture-templates
    (quote

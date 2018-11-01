@@ -1,120 +1,4 @@
 * Fixes
-** init 
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'package)
-     (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                         (not (gnutls-available-p))))
-            (proto (if no-ssl "http" "https")))
-       ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-       (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-       (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-       (when (< emacs-major-version 24)
-         ;; For important compatibility libraries like cl-lib
-         (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-     (package-initialize)
-
-     (unless (package-installed-p 'use-package)
-       (package-refresh-contents)
-       (package-install 'use-package))
-
-     (custom-set-variables
-      ;; custom-set-variables was added by Custom.
-      ;; If you edit it by hand, you could mess it up, so be careful.
-      ;; Your init file should contain only one such instance.
-      ;; If there is more than one, they won't work right.
-      '(ansi-color-names-vector
-        ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
-      '(company-idle-delay 0)
-      '(company-minimum-prefix-length 2)
-      '(compilation-message-face (quote default))
-      '(custom-safe-themes
-        (quote
-         ("bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" "73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd" "a94f1a015878c5f00afab321e4fef124b2fc3b823c8ddd89d360d710fc2bddfc" "66aea5b7326cf4117d63c6694822deeca10a03b98135aaaddb40af99430ea237" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b181ea0cc32303da7f9227361bb051bbb6c3105bb4f386ca22a06db319b08882" "af717ca36fe8b44909c984669ee0de8dd8c43df656be67a50a1cf89ee41bde9a" "3eb93cd9a0da0f3e86b5d932ac0e3b5f0f50de7a0b805d4eb1f67782e9eb67a4" "d21135150e22e58f8c656ec04530872831baebf5a1c3688030d119c114233c24" default)))
-      '(ecb-options-version "2.50")
-      '(evil-collection-company-use-tng nil)
-      '(fci-rule-color "#3C3D37")
-      '(flycheck-clang-analyzer-executeable "clang-6.0" t)
-      '(frame-background-mode (quote dark))
-      '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
-      '(highlight-tail-colors
-        (quote
-         (("#3C3D37" . 0)
-          ("#679A01" . 20)
-          ("#4BBEAE" . 30)
-          ("#1DB4D0" . 50)
-          ("#9A8F21" . 60)
-          ("#A75B00" . 70)
-          ("#F309DF" . 85)
-          ("#3C3D37" . 100))))
-      '(initial-frame-alist (quote ((fullscreen . maximized))))
-      '(org-agenda-files nil)
-      '(org-babel-load-languages
-        (quote
-         ((python . t)
-          (C . T)
-          (sh . t)
-          (makefile . t)
-          (matlab . t)
-          (emacs-lisp . t))))
-      '(org-bullets-face-name (quote Fira\ Code\ Retina))
-      '(org-capture-templates
-        (quote
-         (("j" "Journal" entry
-           (file+olp+datetree "~/org/Journal.org" "Entries")
-           "* %?
-     Entered on %U
-      %i
-      %a"))) t)
-      '(package-selected-packages
-        (quote
-         (lsp-clangd evil-mc sesman cider clojure-mode ace-window treemacs fancy-battery ## plantuml-mode auctex emmet-mode web-mode spotify textile-mode matlab-mode dumb-jump projectile evil-surround org-bullets solarized-theme lua-mode ecb ecb-autoloads minted lsp-ui org-ref org-latex evil-goggles evil-goggles-mode evil-magit jedi company-jedi company-irony-c-headers cmake-project cmake-ide irony-eldoc company-irony company rainbow-delimiters aggressive-indent agressive-indent yasnippet-snippets exwm spaceline hungry-delete dmenu rainbow-mode avy smex beacon markdown-mode polymode which-key use-package)))
-      '(plantuml-jar-path "/usr/bin/plantuml")
-      '(pos-tip-background-color "#FFFACE")
-      '(pos-tip-foreground-color "#272822")
-      '(python-shell-completion-native-disabled-interpreters (quote ("python" "pypy" "ipython")))
-      '(send-mail-function (quote smtpmail-send-it))
-      '(smtpmail-smtp-server "smtp.gmail.com" t)
-      '(smtpmail-smtp-service 587 t)
-      '(vc-annotate-background nil)
-      '(vc-annotate-color-map
-        (quote
-         ((20 . "#F92672")
-          (40 . "#CF4F1F")
-          (60 . "#C26C0F")
-          (80 . "#E6DB74")
-          (100 . "#AB8C00")
-          (120 . "#A18F00")
-          (140 . "#989200")
-          (160 . "#8E9500")
-          (180 . "#A6E22E")
-          (200 . "#729A1E")
-          (220 . "#609C3C")
-          (240 . "#4E9D5B")
-          (260 . "#3C9F79")
-          (280 . "#A1EFE4")
-          (300 . "#299BA6")
-          (320 . "#2896B5")
-          (340 . "#2790C3")
-          (360 . "#66D9EF"))))
-      '(vc-annotate-very-old-color nil)
-      '(weechat-color-list
-        (quote
-         (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))))
-     (custom-set-faces
-      ;; custom-set-faces was added by Custom.
-      ;; If you edit it by hand, you could mess it up, so be careful.
-      ;; Your init file should contain only one such instance.
-      ;; If there is more than one, they won't work right.
-      '(default ((t (:family "Fira Code Retina" :foundry "outline" :slant normal :weight normal :height 141 :width normal))))
-      '(company-scrollbar-bg ((t (:background "#3d3d3d"))))
-      '(company-scrollbar-fg ((t (:background "#303030"))))
-      '(company-tooltip ((t (:inherit default :background "#292929"))))
-      '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
-      '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-      '(helm-buffer-directory ((t (:foreground "DarkRed"))))
-      '(minibuffer-prompt ((t (:background "#e6db74" :foreground "#222" :box nil)))))
-
-   #+END_SRC
 ** evil-mode
 #+BEGIN_SRC emacs-lisp
   (use-package evil-leader
@@ -166,7 +50,7 @@
     :ensure t
     :diminish evil-mc
     :config
-    (global-evil-mc-mode 1)
+    (global-evil-mc-mode 1) 
     (evil-leader/set-key "m" 'evil-mc-make-all-cursors)
     (evil-leader/set-key "n" 'evil-mc-undo-all-cursors)
     (evil-leader/set-key "j" 'evil-mc-make-and-go-to-next-match))
@@ -331,6 +215,11 @@
     :init
     (dumb-jump-mode))
 #+END_SRC
+** dts
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package dts-mode
+    :ensure t)
+#+END_SRC
 ** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -356,8 +245,7 @@
 ** focus
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package focus
-    :ensure t
-    :mode prog-mode)
+    :ensure t)
 #+END_SRC
 ** fzf
 #+BEGIN_SRC emacs-lisp
@@ -377,10 +265,14 @@
     :hook
     (magit-post-refresh-hook . diff-hl-magit-post-refresh)
     :config
-    (diff-hl-mode)
+    (diff-hl-mode 1)
     (evil-leader/set-key "g n" 'diff-hl-next-hunk)
     (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
 #+END_SRC
+
+#+RESULTS:
+| diff-hl-magit-post-refresh |
+
 ** go
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
@@ -402,7 +294,8 @@
     (require 'helm-config)
     :bind
     ("C-x C-f" . 'helm-find-files)
-    ("C-x C-b" . 'helm-buffers-list)) 
+    ("C-x C-b" . 'helm-buffers-list)
+    ("M-x" . 'helm-M-x)) 
 
   (use-package helm-make
     :ensure t
@@ -538,13 +431,8 @@
       "r g" 'rtags-find-symbol
       "r j" 'next-error))
 
-#+END_SRC
-** smex
-#+BEGIN_SRC emacs-lisp
-  (use-package smex
-    :ensure t
-    :bind
-    ("M-x" . 'smex))
+  (use-package helm-rtags
+    :ensure t)
 #+END_SRC
 ** sudo-edit
    #+BEGIN_SRC emacs-lisp
@@ -557,6 +445,7 @@
     :ensure t
     :bind (:map evil-normal-state-map
                 ("/" . 'swiper-all)))
+
 #+END_SRC
 
 ** textmodes
@@ -599,16 +488,10 @@
 
   (setq large-file-warning-threshold nil)
 #+END_SRC
-** powerline
-#+BEGIN_SRC emacs-lisp
-  (use-package powerline
-    :ensure t
-    :custom
-    (powerline-default-theme))
-  (use-package airline-themes
-    :ensure t
-    :config
-    (load-theme 'airline-molokai))
+** plant
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq org-plantuml-jar-path
+        (expand-file-name "/usr/share/plantuml/plantuml.jar"))
 #+END_SRC
 ** Paredit and friends
 #+BEGIN_SRC emacs-lisp
@@ -625,6 +508,17 @@
     :ensure t)
   (use-package evil-paredit
     :ensure t)
+#+END_SRC
+** powerline
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :ensure t
+    :custom
+    (powerline-default-theme))
+  (use-package airline-themes
+    :ensure t
+    :config
+    (load-theme 'airline-molokai t))
 #+END_SRC
 ** Web
 #+BEGIN_SRC emacs-lisp
