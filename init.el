@@ -84,6 +84,8 @@ Entered on %U
  '(pos-tip-foreground-color "#272822")
  '(powerline-default-theme nil t)
  '(python-shell-completion-native-disabled-interpreters (quote ("python" "pypy" "ipython")))
+ '(rtags-autostart-diagnostics t)
+ '(rtags-completions-enabled t)
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "smtp.gmail.com" t)
  '(smtpmail-smtp-service 587 t)

@@ -52,8 +52,7 @@
     :config
     (global-evil-mc-mode 1) 
     (evil-leader/set-key "m" 'evil-mc-make-all-cursors)
-    (evil-leader/set-key "n" 'evil-mc-undo-all-cursors)
-    (evil-leader/set-key "j" 'evil-mc-make-and-go-to-next-match))
+    (evil-leader/set-key "n" 'evil-mc-undo-all-cursors))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
@@ -106,35 +105,9 @@
   ;;tmp stuff
   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 #+END_SRC
-** org mode
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (C . T)))
-  ;; agenda and stuff
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture)
-
-  (setq org-capture-templates
-        '(("j" "Journal" entry (file+headline+datetree "~/org/agenda.org" "Journal")
-           "* %?\nEntered on %U\n %i\n %a")
-          ("a" "Agenda" entry (file+headline "~/org/agenda.org" "Tasks")
-           "* TODO %?\n %i\n %a")))
-
-  (setq org-agenda-diary-file '("~/org/Journal.org"))
-  (setq org-agenda-files '("~/org/agenda.org")) 
-
-  (add-hook 'org-mode-hook 'visual-line-mode)
-#+END_SRC
 * Packages
-** all the icons
-#+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-    :ensure t)
-#+END_SRC
-** agressive indent
+** QOF
+*** agressive indent
 #+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
     :ensure t
@@ -142,14 +115,14 @@
     :init
     (aggressive-indent-global-mode 1))
 #+END_SRC
-** avy
+*** avy
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :ensure t
   :bind
   ("M-s" . avy-goto-char))
 #+END_SRC
-** beacon
+*** beacon
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :ensure t
@@ -157,22 +130,154 @@
     :init
     (beacon-mode 1))
 #+END_SRC
-** clojure stuff
+*** bettershell
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package better-shell
+    :ensure t)
+#+END_SRC
+*** focus
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package focus
+    :ensure t)
+#+END_SRC
+*** fzf
+#+BEGIN_SRC emacs-lisp
+  (use-package fzf
+    :ensure t 
+    :config
+    (evil-leader/set-key "f" 'fzf)
+    :custom
+    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
+#+END_SRC
+*** golden ratio
+    #+BEGIN_SRC emacs-lisp
+      (use-package golden-ratio
+       	:ensure t
+       	:diminish golden-ratio
+       	:config
+       	(golden-ratio-mode 1))
+    #+END_SRC
+*** Hungry delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :diminish hungry-delete
+    :config (global-hungry-delete-mode))
+#+END_SRC
+*** ido
+#+BEGIN_SRC emacs-lisp
+    (use-package ido-vertical-mode
+      :ensure t
+      :config 
+    (ido-vertical-mode))
+#+END_SRC
+*** lock in
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.d/elisp/lock-in.el")
+#+END_SRC
+*** openwith
+#+BEGIN_SRC emacs-lisp
+  (use-package openwith
+    :ensure t
+    :config
+    (openwith-mode t)
+    :custom
+    (openwith-associations '(("\\.pdf\\'" "zathura" (file)))))
+
+  (setq org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+  (setq large-file-warning-threshold nil)
+#+END_SRC
+*** rainbow
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (rainbow-delimiters-mode))
+#+END_SRC
+*** sudo-edit
+    #+BEGIN_SRC emacs-lisp
+      (use-package sudo-edit
+       	:ensure t)
+    #+END_SRC
+*** swiper / ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind (:map evil-normal-state-map
+                ("/" . 'swiper-all)))
+
+  (ivy-mode 1)
+#+END_SRC
+** language packs
+*** clojure
 #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
     :ensure t)
   (use-package cider
     :ensure t)
 #+END_SRC
-** cmake stuff
-#+BEGIN_SRC emacs-lisp
-  (use-package cmake-ide
-    :ensure t
-    :init
-    (cmake-ide-setup))
+*** dts
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package dts-mode
+    :ensure t)
 #+END_SRC
-** company
+*** lua
 #+BEGIN_SRC emacs-lisp
+  (use-package lua-mode
+    :ensure t)
+#+END_SRC
+*** go
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t)
+#+END_SRC
+*** matlab
+#+BEGIN_SRC emacs-lisp
+  (use-package matlab-mode
+    :ensure t
+    :custom
+    (matlab-indent-function t)
+    (matlab-shell-command "matlab")
+    :hook matlab-shell
+    :mode "\\.m$")
+#+END_SRC
+*** plant
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq org-plantuml-jar-path
+        (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+#+END_SRC
+*** textmodes
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package textile-mode
+    :ensure t)
+#+END_SRC
+** programming
+*** company / rtags
+#+BEGIN_SRC emacs-lisp
+  (use-package rtags
+    :ensure t
+    :custom
+    (rtags-autostart-diagnostics t)
+    (rtags-completions-enabled t)
+    :config
+    (evil-leader/set-key
+      "r f" 'rtags-find-file
+      "r c" 'cmake-ide-compile
+      "r C" 'cmake-ide-run-cmake
+      "r g" 'rtags-find-symbol
+      "r j" 'next-error))
+
+  (use-package flycheck-rtags
+    :ensure t)
+
+  (use-package helm-rtags
+    :ensure t)
+
   (use-package company
     :ensure t
     :diminish company
@@ -206,21 +311,14 @@
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
 
-#+END_SRC
-** dumb-jump
-#+BEGIN_SRC emacs-lisp
-  (use-package dumb-jump
+  (push 'company-rtags company-backends)
+
+  (use-package cmake-ide
     :ensure t
-    :diminish dumb-jump
     :init
-    (dumb-jump-mode))
+    (cmake-ide-setup))
 #+END_SRC
-** dts
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package dts-mode
-    :ensure t)
-#+END_SRC
-** flycheck
+*** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
@@ -233,31 +331,82 @@
   (use-package flycheck-clang-analyzer
     :ensure t 
     :after flycheck
-    :custom
-    (flycheck-clang-analyzer-executeable "clang-6.0")
     :config (flycheck-clang-analyzer-setup))
 #+END_SRC
-** floobits
+*** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet-snippets
+    :ensure t)
+
+  (use-package yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1)
+    :config
+    (require 'yasnippet-snippets))
+
+  (use-package auto-yasnippet
+    :ensure t
+    :bind
+    ("C-c y" . 'aya-create)
+    ("C-c u" . 'aya-expand))
+#+END_SRC
+*** Paredit and friends
+#+BEGIN_SRC emacs-lisp
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
+
+  (use-package cedit
+    :ensure t)
+  (use-package evil-paredit
+    :ensure t)
+#+END_SRC
+*** jedi
+#+BEGIN_SRC emacs-lisp
+(use-package jedi
+  :ensure t
+  :config
+  (jedi:install-server))
+#+END_SRC
+*** floobits
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package floobits
     :ensure t)
 #+END_SRC
-** focus
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package focus
-    :ensure t)
-#+END_SRC
-** fzf
+*** Web
 #+BEGIN_SRC emacs-lisp
-  (use-package fzf
-    :ensure t 
+  (use-package web-mode
+    :ensure t
+    :hook
+    (html-mode))
+  (use-package emmet-mode
+    :ensure t
+    :diminish emmet-mode
     :config
-    (evil-leader/set-key "f" 'fzf)
-    :custom
-    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
+    (add-hook 'clojure-hook 'emmet-mode)
+    :bind
+    ("M-p" . 'emmet-expand-yas))
+  (use-package rainbow-mode
+    :ensure t
+    :diminish rainbow-mode
+    :init
+    (rainbow-mode 1)
+    :hook web-mode)
 #+END_SRC
 ** git stuff
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package magit
+    :ensure t
+    :config
+    (evil-leader/set-key "g s" 'magit-status))
+    (use-package evil-magit
+      :ensure t)
   (use-package github-clone
     :ensure t)
   (use-package diff-hl
@@ -269,103 +418,33 @@
     (evil-leader/set-key "g n" 'diff-hl-next-hunk)
     (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
 #+END_SRC
-
-#+RESULTS:
-| diff-hl-magit-post-refresh |
-
-** go
-#+BEGIN_SRC emacs-lisp
-  (use-package go-mode
-    :ensure t)
-#+END_SRC
-** golden ratio
-   #+BEGIN_SRC emacs-lisp
-     (use-package golden-ratio
-       :ensure t
-       :diminish golden-ratio
-       :config
-       (golden-ratio-mode 1))
-   #+END_SRC
-** helm
+** ui
+*** helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :ensure t
     :config
     (require 'helm-config)
+    (evil-leader/set-key
+      "u" 'helm-imenu)
     :bind
     ("C-x C-f" . 'helm-find-files)
     ("C-x C-b" . 'helm-buffers-list)
-    ("M-x" . 'helm-M-x)) 
+    ("M-x" . 'helm-M-x))
 
   (use-package helm-make
     :ensure t
     :config
     (evil-leader/set-key "c" 'helm-make))
 #+END_SRC
-** Hungry delete
-#+BEGIN_SRC emacs-lisp
-  (use-package hungry-delete
-    :ensure t
-    :diminish hungry-delete
-    :config (global-hungry-delete-mode))
-#+END_SRC
-** ido
-#+BEGIN_SRC emacs-lisp
-    (use-package ido-vertical-mode
-      :ensure t
-      :config 
-    (ido-vertical-mode))
-#+END_SRC
-** jedi
-#+BEGIN_SRC emacs-lisp
-(use-package jedi
-  :ensure t
-  :config
-  (jedi:install-server))
-#+END_SRC
-** linum
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package linum-relative
-       :ensure t 
-       :config
-       (add-hook 'prog-mode-hook 'linum-on))
-   #+END_SRC
-** lock in
-#+BEGIN_SRC emacs-lisp
-  (load "~/.emacs.d/elisp/lock-in.el")
-#+END_SRC
-** lsp ui
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
-    :ensure t
-    :custom
-    (lsp-ui-peek-always-show t))
-#+END_SRC
-** lua
-#+BEGIN_SRC emacs-lisp
-  (use-package lua-mode
-    :ensure t)
-#+END_SRC
-** matlab
-#+BEGIN_SRC emacs-lisp
-  (use-package matlab-mode
-    :ensure t
-    :custom
-    (matlab-indent-function t)
-    (matlab-shell-command "matlab")
-    :hook matlab-shell
-    :mode "\\.m$")
-#+END_SRC
-** magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :config
-    (evil-leader/set-key "g" 'magit-status))
-    (use-package evil-magit
-      :ensure t)
-#+END_SRC
-** neotree
+*** linum
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package linum-relative
+       	:ensure t 
+       	:config
+       	(add-hook 'prog-mode-hook 'linum-on))
+    #+END_SRC
+*** neotree
 #+BEGIN_SRC emacs-lisp
   (use-package neotree
     :ensure t
@@ -394,122 +473,7 @@
           (if file-name
               (neotree-find file-name))))))
 #+END_SRC
-** org stuff
-#+BEGIN_SRC emacs-lisp
-  (use-package org-ref
-    :ensure t)
-  (use-package org-bullets
-    :ensure t
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-  (setq org-export-latex-listings 'minted)
-  (setq org-src-fontify-natively t)
-
-  (load "~/.emacs.d/elisp/org-latex-enhancer.el")
-#+END_SRC
-** rainbow
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-mode
-    :ensure t
-    :diminish rainbow-mode
-    :init
-    (rainbow-mode 1))
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (rainbow-delimiters-mode))
-#+END_SRC
-** rtags
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package rtags
-    :ensure t
-    :config
-    (evil-leader/set-key
-      "r f" 'rtags-find-file
-      "r c" 'cmake-ide-compile
-      "r C" 'cmake-ide-run-cmake
-      "r g" 'rtags-find-symbol
-      "r j" 'next-error))
-
-  (use-package helm-rtags
-    :ensure t)
-#+END_SRC
-** sudo-edit
-   #+BEGIN_SRC emacs-lisp
-     (use-package sudo-edit
-       :ensure t)
-   #+END_SRC
-** swiper
-#+BEGIN_SRC emacs-lisp
-  (use-package swiper
-    :ensure t
-    :bind (:map evil-normal-state-map
-                ("/" . 'swiper-all)))
-
-#+END_SRC
-
-** textmodes
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package textile-mode
-    :ensure t)
-#+END_SRC
-** yasnippet
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet-snippets
-    :ensure t)
-
-  (use-package yasnippet
-    :ensure t
-    :init
-    (yas-global-mode 1)
-    :config
-    (require 'yasnippet-snippets))
-
-  (use-package auto-yasnippet
-    :ensure t
-    :bind
-    ("C-c y" . 'aya-create)
-    ("C-c u" . 'aya-expand))
-#+END_SRC
-** openwith
-#+BEGIN_SRC emacs-lisp
-  (use-package openwith
-    :ensure t
-    :config
-    (openwith-mode t)
-    :custom
-    (openwith-associations '(("\\.pdf\\'" "zathura" (file)))))
-
-  (setq org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted"))
-        org-latex-pdf-process
-        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-  (setq large-file-warning-threshold nil)
-#+END_SRC
-** plant
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq org-plantuml-jar-path
-        (expand-file-name "/usr/share/plantuml/plantuml.jar"))
-#+END_SRC
-** Paredit and friends
-#+BEGIN_SRC emacs-lisp
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook          #'enable-paredit-mode)
-
-  (use-package cedit
-    :ensure t)
-  (use-package evil-paredit
-    :ensure t)
-#+END_SRC
-** powerline
+*** powerline
 #+BEGIN_SRC emacs-lisp
   (use-package powerline
     :ensure t
@@ -520,27 +484,50 @@
     :config
     (load-theme 'airline-molokai t))
 #+END_SRC
-** Web
+*** lsp ui
 #+BEGIN_SRC emacs-lisp
-  (use-package web-mode
+  (use-package lsp-ui
     :ensure t
-    :hook
-    (html-mode))
-  (use-package emmet-mode
-    :ensure t
-    :diminish emmet-mode
-    :config
-    (add-hook 'clojure-hook 'emmet-mode)
-    :bind
-    ("M-p" . 'emmet-expand-yas))
-
+    :custom
+    (lsp-ui-peek-always-show t))
 #+END_SRC
-** Which key
+*** Which key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :ensure t
     :diminish which-key
     :init
     (which-key-mode))
+#+END_SRC
+** org stuff
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (C . T)))
+  ;; agenda and stuff
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
 
+  (setq org-capture-templates
+        '(("j" "Journal" entry (file+headline+datetree "~/org/agenda.org" "Journal")
+           "* %?\nEntered on %U\n %i\n %a")
+          ("a" "Agenda" entry (file+headline "~/org/agenda.org" "Tasks")
+           "* TODO %?\n %i\n %a")))
+
+  (setq org-agenda-diary-file '("~/org/Journal.org"))
+  (setq org-agenda-files '("~/org/agenda.org")) 
+
+  (add-hook 'org-mode-hook 'visual-line-mode)
+  (use-package org-ref
+    :ensure t)
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (setq org-export-latex-listings 'minted)
+  (setq org-src-fontify-natively t)
+
+  (load "~/.emacs.d/elisp/org-latex-enhancer.el")
 #+END_SRC
