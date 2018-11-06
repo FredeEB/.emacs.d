@@ -147,7 +147,7 @@
     :config
     (evil-leader/set-key "f" 'fzf)
     :custom
-    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
+    (fzf/executable "~/.zplug/repos/junegunn/fzf/bin/fzf"))
 #+END_SRC
 *** golden ratio
     #+BEGIN_SRC emacs-lisp
@@ -311,7 +311,10 @@
     (add-hook 'c++-mode-hook 'company-mode)
     (add-hook 'c-mode-hook 'company-mode))
 
-  (push 'company-rtags company-backends)
+  (use-package company-rtags
+    :ensure t
+    :config
+    (push 'company-rtags company-backends))
 
   (use-package cmake-ide
     :ensure t

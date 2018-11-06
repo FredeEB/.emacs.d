@@ -87,8 +87,8 @@ Entered on %U
  '(rtags-autostart-diagnostics t)
  '(rtags-completions-enabled t)
  '(send-mail-function (quote smtpmail-send-it))
- '(smtpmail-smtp-server "smtp.gmail.com" t)
- '(smtpmail-smtp-service 587 t)
+ '(smtpmail-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-service 587)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
