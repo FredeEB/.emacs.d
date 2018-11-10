@@ -1,5 +1,6 @@
 * Fixes
 ** evil-mode
+   <C-z> to use normal emacs keybindings
 #+BEGIN_SRC emacs-lisp
   (use-package evil-leader
     :ensure t
@@ -60,6 +61,8 @@
     :ensure t
     :config
     (load-theme 'monokai t))
+
+  (setq tab-width 3)
   (setq scroll-conservatively 100)
   (setq scroll-margin 5)
   (defalias 'yes-or-no-p 'y-or-n-p)
@@ -107,7 +110,9 @@
 #+END_SRC
 * Packages
 ** QOF
+   Quality of life packages. many require external software. Look at each package for dependecies
 *** agressive indent
+    global mode might be turned off in a later revision. It's kinda obnoxious
 #+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
     :ensure t
@@ -131,6 +136,7 @@
     (beacon-mode 1))
 #+END_SRC
 *** bettershell
+    experimental
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package better-shell
     :ensure t)
@@ -141,6 +147,7 @@
     :ensure t)
 #+END_SRC
 *** fzf
+    this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
 #+BEGIN_SRC emacs-lisp
   (use-package fzf
     :ensure t 
@@ -172,10 +179,12 @@
     (ido-vertical-mode))
 #+END_SRC
 *** lock in
+    requires [[https://tizonia.org][tizonia]]
 #+BEGIN_SRC emacs-lisp
   (load "~/.emacs.d/elisp/lock-in.el")
 #+END_SRC
 *** openwith
+    requires zathura
 #+BEGIN_SRC emacs-lisp
   (use-package openwith
     :ensure t
@@ -205,20 +214,23 @@
        	:ensure t)
     #+END_SRC
 *** swiper / ivy
+    mostly a fallback for things that helm doesn't support
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :ensure t
     :bind (:map evil-normal-state-map
                 ("/" . 'swiper-all)))
-
   (ivy-mode 1)
 #+END_SRC
 ** language packs
+   mostly syntax higlighters
 *** clojure
 #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
     :ensure t)
   (use-package cider
+    :ensure t)
+  (use-package flycheck-clojure
     :ensure t)
 #+END_SRC
 *** dts
@@ -227,29 +239,39 @@
     :ensure t)
 #+END_SRC
 *** lua
+    requires [[https://www.lua.org/][lua]]
 #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :ensure t)
 #+END_SRC
 *** go
+    requires [[https://golang.org/][golang]]
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :ensure t)
 #+END_SRC
 *** matlab
+    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
 #+BEGIN_SRC emacs-lisp
   (use-package matlab-mode
     :ensure t
     :custom
     (matlab-indent-function t)
     (matlab-shell-command "matlab")
-    :hook matlab-shell
-    :mode "\\.m$")
+    :hook 
+    :mode "\\.m\\")
 #+END_SRC
 *** plant
+    requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq org-plantuml-jar-path
-        (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+  (use-package plantuml-mode
+    :ensure t
+    :custom
+    (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+    :magic ("@startuml" . plantuml-mode))
+
+  (use-package flycheck-plantuml
+    :ensure t)
 #+END_SRC
 *** textmodes
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -259,6 +281,34 @@
 ** programming
 *** company / rtags
 #+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :diminish company
+    :init
+    (global-company-mode)
+    :custom
+    (company-idle-delay 0)
+    (company-minimum-prefix-length 2))
+
+  (use-package irony
+    :ensure t
+    :hook (c++-mode c-mode)
+    :config
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (use-package company-irony
+    :ensure t)
+
+  (use-package company-irony-c-headers
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-irony))
+
+  (use-package company-jedi
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+
   (use-package rtags
     :ensure t
     :custom
@@ -267,10 +317,13 @@
     :config
     (evil-leader/set-key
       "r f" 'rtags-find-file
-      "r c" 'cmake-ide-compile
-      "r C" 'cmake-ide-run-cmake
       "r g" 'rtags-find-symbol
       "r j" 'next-error))
+
+  (use-package company-rtags
+    :ensure t
+    :config
+    (push 'company-rtags company-backends))
 
   (use-package flycheck-rtags
     :ensure t)
@@ -278,48 +331,22 @@
   (use-package helm-rtags
     :ensure t)
 
-  (use-package company
-    :ensure t
-    :diminish company
-    :init
-    (global-company-mode)
-    :custom
-    (company-idle-delay 0)
-    (company-minimum-prefix-length 3))
-
-  (use-package company-irony
-    :ensure t
-    :config
-    (require 'company)
-    (use-package company-irony-c-headers
-      :ensure t)
-    (add-to-list 'company-backends 'company-irony))
-
-  (use-package irony
-    :ensure t
-    :config
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-
-  (use-package company-jedi
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-jedi))
-
-  (with-eval-after-load 'company
-    (add-hook 'c++-mode-hook 'company-mode)
-    (add-hook 'c-mode-hook 'company-mode))
-
-  (use-package company-rtags
-    :ensure t
-    :config
-    (push 'company-rtags company-backends))
-
   (use-package cmake-ide
     :ensure t
     :init
-    (cmake-ide-setup))
+    (cmake-ide-setup)
+    :config
+    (evil-leader/set-key
+      "r c" 'cmake-ide-compile
+      "r C" 'cmake-ide-run-cmake))
+
+ ;; (defun better-flycheck-rtags-setup ()
+ ;;   "Configure flycheck-rtags for better experience."
+ ;;   (flycheck-select-checker 'rtags)
+ ;;   (setq-local flycheck-check-syntax-automatically nil)
+ ;;   (setq-local flycheck-highlighting-mode nil))
+ ;; (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
+ ;; (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
@@ -331,10 +358,9 @@
     :custom
     (flycheck-global-modes '(not org-mode)))
 
-  (use-package flycheck-clang-analyzer
+  (use-package flycheck-clangcheck
     :ensure t 
-    :after flycheck
-    :config (flycheck-clang-analyzer-setup))
+    :custom (flycheck-clangcheck-analyze t))
 #+END_SRC
 *** yasnippet
 #+BEGIN_SRC emacs-lisp
@@ -344,9 +370,7 @@
   (use-package yasnippet
     :ensure t
     :init
-    (yas-global-mode 1)
-    :config
-    (require 'yasnippet-snippets))
+    (yas-global-mode 1))
 
   (use-package auto-yasnippet
     :ensure t
@@ -378,6 +402,7 @@
   (jedi:install-server))
 #+END_SRC
 *** floobits
+    See [[https://floobits.com/][floobits.com]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package floobits
     :ensure t)
@@ -388,13 +413,13 @@
     :ensure t
     :hook
     (html-mode))
+
   (use-package emmet-mode
     :ensure t
-    :diminish emmet-mode
-    :config
-    (add-hook 'clojure-hook 'emmet-mode)
+    :diminish emmet-mode  
     :bind
     ("M-p" . 'emmet-expand-yas))
+
   (use-package rainbow-mode
     :ensure t
     :diminish rainbow-mode
@@ -408,8 +433,8 @@
     :ensure t
     :config
     (evil-leader/set-key "g s" 'magit-status))
-    (use-package evil-magit
-      :ensure t)
+  (use-package evil-magit
+    :ensure t)
   (use-package github-clone
     :ensure t)
   (use-package diff-hl
@@ -418,8 +443,9 @@
     (magit-post-refresh-hook . diff-hl-magit-post-refresh)
     :config
     (diff-hl-mode 1)
-    (evil-leader/set-key "g n" 'diff-hl-next-hunk)
-    (evil-leader/set-key "g p" 'diff-hl-previous-hunk))
+    (evil-leader/set-key
+      "g n" 'diff-hl-next-hunk
+      "g p" 'diff-hl-previous-hunk))
 #+END_SRC
 ** ui
 *** helm
@@ -492,7 +518,8 @@
   (use-package lsp-ui
     :ensure t
     :custom
-    (lsp-ui-peek-always-show t))
+    (lsp-ui-peek-always-show t)
+    :hook (lsp-mode . lsp-ui-mode))
 #+END_SRC
 *** Which key
 #+BEGIN_SRC emacs-lisp
@@ -533,4 +560,7 @@
   (setq org-src-fontify-natively t)
 
   (load "~/.emacs.d/elisp/org-latex-enhancer.el")
+
+  (use-package auctex
+    :ensure t)
 #+END_SRC

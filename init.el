@@ -30,11 +30,12 @@
    (quote
     ("73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd")))
  '(ecb-options-version "2.50")
- '(evil-collection-company-use-tng nil)
+ '(evil-collection-company-use-tng nil t)
  '(evil-want-integration t)
  '(evil-want-keybinding nil)
  '(fci-rule-color "#3C3D37")
  '(flycheck-clang-analyzer-executeable "clang-6.0" t)
+ '(flycheck-clangcheck-analyze t)
  '(flycheck-global-modes (quote (not org-mode)))
  '(frame-background-mode (quote dark))
  '(fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin")
@@ -52,7 +53,7 @@
  '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(linum-relative-backend (quote display-line-numbers-mode))
  '(linum-relative-current-symbol "")
- '(lsp-ui-peek-always-show t)
+ '(lsp-ui-peek-always-show t t)
  '(magit-diff-use-overlays nil)
  '(matlab-indent-function t t)
  '(matlab-shell-command "matlab" t)
@@ -76,6 +77,7 @@
 Entered on %U
  %i
  %a"))) t)
+ '(org-plantuml-jar-path "/usr/share/plantuml/plantuml.jar")
  '(package-selected-packages
    (quote
     (lsp-clangd evil-mc sesman cider clojure-mode ace-window treemacs fancy-battery ## plantuml-mode auctex emmet-mode web-mode spotify textile-mode matlab-mode dumb-jump projectile evil-surround org-bullets solarized-theme lua-mode ecb ecb-autoloads minted lsp-ui org-ref org-latex evil-goggles evil-goggles-mode evil-magit jedi company-jedi company-irony-c-headers cmake-project cmake-ide irony-eldoc company-irony company rainbow-delimiters aggressive-indent agressive-indent yasnippet-snippets exwm spaceline hungry-delete dmenu rainbow-mode avy smex beacon markdown-mode polymode which-key use-package)))
