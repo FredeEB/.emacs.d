@@ -1,7 +1,5 @@
 # This is my personal config
-It's nothing special, but it works really well for me.
-Inspired by Uncle Dave and Mike Zamasky and a few others
-It's an absolute mess, but it does what it's supposed to.
+It's getting pretty big, so I did some organizing on it, and made it a bit neater to look at.
 
 Remember to call:
 ```elisp
@@ -9,3 +7,7 @@ Remember to call:
 (irony-install-server)
 (jedi:install-server)
 ```
+
+## TODO:
+1. Fix flycheck-clang-analyzer
+2. Tinker with helm menus to support EVIL better (probably some evil-collection stuff)
