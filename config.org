@@ -1,6 +1,6 @@
 * Fixes
 ** evil-mode
-   <C-z> to use normal emacs keybindings
+   <C-z> to use emacs keybindings
 #+BEGIN_SRC emacs-lisp
   (use-package evil-leader
     :ensure t
@@ -10,6 +10,13 @@
     :init
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>"))
+
+  (use-package evil-collection
+    :ensure t
+    :custom
+    (evil-collection-company-use-tng nil)
+    :init
+    (evil-collection-init))
 
   (use-package evil 
     :ensure t
@@ -27,14 +34,6 @@
       "o" 'other-window
       "q" 'kill-buffer)
     (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
-
-  (use-package evil-collection
-    :ensure t
-    :after evil
-    :custom
-    (evil-collection-company-use-tng nil)
-    :init
-    (evil-collection-init))
 
   (use-package evil-goggles
     :ensure t
@@ -61,7 +60,6 @@
     :ensure t
     :config
     (load-theme 'monokai t))
-
   (setq tab-width 3)
   (setq scroll-conservatively 100)
   (setq scroll-margin 5)
@@ -253,13 +251,12 @@
 *** matlab
     requires [[https://se.mathworks.com/products/matlab.html][matlab]]
 #+BEGIN_SRC emacs-lisp
-  (use-package matlab-mode
-    :ensure t
-    :custom
-    (matlab-indent-function t)
-    (matlab-shell-command "matlab")
-    :hook 
-    :mode "\\.m\\")
+  (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+  (add-to-list
+   'auto-mode-alist
+   '("\\.m\\'" . matlab-mode))
+  (setq matlab-indent-function t)
+  (setq matlab-shell-command "matlab")
 #+END_SRC
 *** plant
     requires [[https://plantuml.com][plantuml]]
@@ -292,8 +289,9 @@
 
   (use-package irony
     :ensure t
-    :hook (c++-mode c-mode)
     :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
   (use-package company-irony
@@ -340,23 +338,21 @@
       "r c" 'cmake-ide-compile
       "r C" 'cmake-ide-run-cmake))
 
- ;; (defun better-flycheck-rtags-setup ()
- ;;   "Configure flycheck-rtags for better experience."
- ;;   (flycheck-select-checker 'rtags)
- ;;   (setq-local flycheck-check-syntax-automatically nil)
- ;;   (setq-local flycheck-highlighting-mode nil))
- ;; (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
- ;; (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
+  ;; (defun better-flycheck-rtags-setup ()
+  ;;   "Configure flycheck-rtags for better experience."
+  ;;   (flycheck-select-checker 'rtags)
+  ;;   (setq-local flycheck-check-syntax-automatically nil)
+  ;;   (setq-local flycheck-highlighting-mode nil))
+  ;; (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
+  ;; (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
     :diminish flycheck
-    :init
-    (global-flycheck-mode t)
     :custom
-    (flycheck-global-modes '(not org-mode)))
+    (flycheck-global-modes '(not (org-mode c-mode c++-mode))))
 
   (use-package flycheck-clangcheck
     :ensure t 
@@ -469,9 +465,10 @@
 *** linum
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package linum-relative
-       	:ensure t 
-       	:config
-       	(add-hook 'prog-mode-hook 'linum-on))
+        :ensure t 
+        :hook (prog-mode . linum-relative-mode)
+        :custom
+        (linum-relative-current-symbol ""))
     #+END_SRC
 *** neotree
 #+BEGIN_SRC emacs-lisp
