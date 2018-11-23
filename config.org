@@ -32,7 +32,8 @@
     (evil-leader/set-key
       "b" 'helm-buffers-list
       "o" 'other-window
-      "q" 'kill-buffer)
+      "q" 'kill-buffer
+      "a" 'comment-dwim)
     (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
 
   (use-package evil-goggles
@@ -51,15 +52,14 @@
     :diminish evil-mc
     :config
     (global-evil-mc-mode 1) 
-    (evil-leader/set-key "m" 'evil-mc-make-all-cursors)
-    (evil-leader/set-key "n" 'evil-mc-undo-all-cursors))
+    (evil-leader/set-key
+      "m m" 'evil-mc-make-all-cursors
+      "m n" 'evil-mc-undo-all-cursors
+      "m j" 'evil-mc-make-and-goto-next-match
+      "m k" 'evil-mc-make-and-goto-prev-match))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp
-  (use-package monokai-theme
-    :ensure t
-    :config
-    (load-theme 'monokai t))
   (setq tab-width 3)
   (setq scroll-conservatively 100)
   (setq scroll-margin 5)
