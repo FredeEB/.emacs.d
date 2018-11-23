@@ -511,10 +511,6 @@
     :ensure t
     :custom
     (powerline-default-theme))
-  (use-package airline-themes
-    :ensure t
-    :config
-    (load-theme 'airline-molokai t))
 #+END_SRC
 *** lsp ui
 #+BEGIN_SRC emacs-lisp
@@ -523,6 +519,17 @@
     :custom
     (lsp-ui-peek-always-show t)
     :hook (lsp-mode . lsp-ui-mode))
+#+END_SRC
+*** theme
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package ample-zen-theme
+    :ensure t
+    :config
+    (load-theme 'ample-zen t))
+  (use-package airline-themes
+    :ensure t
+    :config
+    (load-theme 'airline-behelit t))
 #+END_SRC
 *** Which key
 #+BEGIN_SRC emacs-lisp
