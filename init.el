@@ -23,12 +23,17 @@
  ;; If there is more than one, they won't work right.
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 2)
+ '(custom-safe-themes
+   (quote
+    ("de0b7245463d92cba3362ec9fe0142f54d2bf929f971a8cdf33c0bf995250bcf" "0cd56f8cd78d12fc6ead32915e1c4963ba2039890700458c13e12038ec40f6f5" default)))
  '(evil-collection-company-use-tng nil)
  '(evil-want-integration t)
  '(evil-want-keybinding nil)
  '(flycheck-clangcheck-analyze t)
  '(flycheck-global-modes (quote (not org-mode)))
  '(fzf/executable "~/.zplug/repos/junegunn/fzf/bin/fzf")
+ '(linum-relative-current-symbol "" t)
+ '(lsp-ui-peek-always-show t t)
  '(openwith-associations (quote (("\\.pdf\\'" "zathura" (file)))))
  '(org-plantuml-jar-path "/usr/share/plantuml/plantuml.jar" t)
  '(package-selected-packages
