@@ -25,4 +25,14 @@
   (save-excursion
     (goto-char (point-min))
     (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n\n")))
+
+(defun org-macros-src-block-add-name (name)
+  "Add a NAME to the current sourceblock."
+  (interactive "sName: ")
+  (save-excursion
+    (if (not (search-backward "#+BEGIN_SRC" nil t))
+	(message "Src block not found"))
+    (newline)
+    (forward-line -1)
+    (insert (concat "#+NAME: " name))))
 ;;; org-latex-enhancer.el ends here
