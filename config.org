@@ -199,6 +199,11 @@
 
   (setq large-file-warning-threshold nil)
 #+END_SRC
+*** pandoc
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package pandoc
+    :ensure t)
+#+END_SRC
 *** rainbow
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
