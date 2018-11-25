@@ -577,6 +577,14 @@
     :init
     (which-key-mode))
 #+END_SRC
+*** frames only
+    for better compatibility with i3
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package frames-only-mode
+        :ensure t
+        :config
+        (frames-only-mode))
+    #+END_SRC
 ** org stuff
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
