@@ -560,14 +560,14 @@
 #+END_SRC
 *** theme
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package ample-zen-theme
+  (use-package doom-themes
     :ensure t
     :config
-    (load-theme 'ample-zen t))
+    (load-theme 'doom-molokai t))
   (use-package airline-themes
     :ensure t
     :config
-    (load-theme 'airline-behelit t))
+    (load-theme 'airline-doom-molokai t))
 #+END_SRC
 *** Which key
 #+BEGIN_SRC emacs-lisp
