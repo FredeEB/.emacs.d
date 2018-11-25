@@ -283,12 +283,14 @@
 ** programming
 *** company / rtags
 #+BEGIN_SRC emacs-lisp
+  ;; C/C++
   (use-package company
     :ensure t
     :diminish company
     :init
     (global-company-mode)
     :custom
+    (company-show-numbers t)
     (company-idle-delay 0)
     (company-minimum-prefix-length 2))
 
@@ -307,10 +309,6 @@
     :config
     (add-to-list 'company-backends 'company-irony))
 
-  (use-package company-jedi
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-jedi))
 
   (use-package rtags
     :ensure t
@@ -356,6 +354,40 @@
     (setq-local flycheck-highlighting-mode nil))
   (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
   (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
+
+  ;; Other languages
+  (use-package company-jedi
+    :ensure t
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+
+  ;; Misc config
+  ;;; number completion
+
+  (let ((map company-active-map))
+    (mapc
+     (lambda (x)
+       (define-key map (format "%d" x) 'ora-company-number))
+     (number-sequence 0 9))
+    (define-key map " " (lambda ()
+                          (interactive)
+                          (company-abort)
+                          (self-insert-command 1)))
+    (define-key map (kbd "<return>") nil))
+
+  (defun ora-company-number ()
+    "Forward to `company-complete-number'.
+
+  Unless the number is potentially par of the canidiate.
+  In that case, insert the number"
+    (interactive)
+    (let* ((k (this-command-keys))
+           (re (concat "^" company-prefix k)))
+      (if (cl-find-if (lambda (s) (string-match re s))
+                      company-candidates)
+          (self-insert-command 1)
+        (company-complete-number (string-to-number k)))))
+
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
