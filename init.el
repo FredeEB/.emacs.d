@@ -25,7 +25,7 @@
  '(company-minimum-prefix-length 2)
  '(custom-safe-themes
    (quote
-    ("de0b7245463d92cba3362ec9fe0142f54d2bf929f971a8cdf33c0bf995250bcf" "0cd56f8cd78d12fc6ead32915e1c4963ba2039890700458c13e12038ec40f6f5" default)))
+    ("100e7c5956d7bb3fd0eebff57fde6de8f3b9fafa056a2519f169f85199cc1c96" default)))
  '(evil-collection-company-use-tng nil)
  '(evil-want-integration t)
  '(evil-want-keybinding nil)
@@ -39,7 +39,7 @@
  '(org-plantuml-jar-path "/usr/share/plantuml/plantuml.jar" t)
  '(package-selected-packages
    (quote
-    (pandoc-mode pandoc helm-company neotree evil-collection yasnippet-snippets which-key web-mode use-package textile-mode swiper sudo-edit ssh-agency rainbow-mode rainbow-delimiters org-ref org-bullets openwith monokai-theme matlab-mode lua-mode lsp-ui linum-relative jedi ido-vertical-mode hungry-delete helm-rtags helm-make golden-ratio go-mode github-clone fzf focus flycheck-rtags flycheck-plantuml flycheck-clojure flycheck-clangcheck floobits evil-surround evil-paredit evil-mc evil-magit evil-leader evil-goggles emmet-mode dts-mode diff-hl company-rtags company-jedi company-irony-c-headers company-irony cmake-ide cedit better-shell beacon avy auto-yasnippet auctex airline-themes aggressive-indent)))
+    (frames-only-mode doom-themes org-tree-slide pandoc-mode pandoc helm-company neotree evil-collection yasnippet-snippets which-key web-mode use-package textile-mode swiper sudo-edit ssh-agency rainbow-mode rainbow-delimiters org-ref org-bullets openwith monokai-theme matlab-mode lua-mode lsp-ui linum-relative jedi ido-vertical-mode hungry-delete helm-rtags helm-make golden-ratio go-mode github-clone fzf focus flycheck-rtags flycheck-plantuml flycheck-clojure flycheck-clangcheck floobits evil-surround evil-paredit evil-mc evil-magit evil-leader evil-goggles emmet-mode dts-mode diff-hl company-rtags company-jedi company-irony-c-headers company-irony cmake-ide cedit better-shell beacon avy auto-yasnippet auctex airline-themes aggressive-indent)))
  '(powerline-default-theme nil t)
  '(rtags-autostart-diagnostics t)
  '(rtags-completions-enabled t))

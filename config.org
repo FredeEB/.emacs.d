@@ -610,4 +610,7 @@
 
   (use-package auctex
     :ensure t)
+
+  (use-package org-tree-slide
+    :ensure t)
 #+END_SRC
