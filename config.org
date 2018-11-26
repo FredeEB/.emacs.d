@@ -23,11 +23,6 @@
     :after evil-leader
     :config
     (evil-mode 1)
-    (define-key evil-normal-state-map (kbd "L")
-      (lambda () 
-        (interactive)
-        (split-window-right)
-        (other-window 1)))
     (define-key evil-normal-state-map (kbd "H") 'delete-other-windows)
     (evil-leader/set-key
       "b" 'helm-buffers-list
@@ -550,15 +545,14 @@
           (if file-name
               (neotree-find file-name))))))
 #+END_SRC
-*** powerline
+*** modeline
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package powerline
-  ;;   :ensure t)
-
   (use-package doom-modeline
     :ensure t
     :defer t
-    :hook (after-init . doom-modeline-init))
+    :hook (after-init . doom-modeline-init)
+    :custom
+    (doom-modeline-buffer-file-name-style 'truncate-with-project))
 #+END_SRC
 *** lsp ui
 #+BEGIN_SRC emacs-lisp
@@ -574,10 +568,6 @@
     :ensure t
     :config
     (load-theme 'doom-molokai t))
-  (use-package airline-themes
-    :ensure t
-    :config
-    (load-theme 'airline-doom-molokai t))
 #+END_SRC
 *** Which key
 #+BEGIN_SRC emacs-lisp
@@ -601,6 +591,7 @@
    'org-babel-load-languages
    '((python . t)
      (C . T)))
+
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -615,6 +606,8 @@
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (setq org-export-latex-listings 'minted)
   (setq org-src-fontify-natively t)
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAITING(@/!)" "|" "DONE(d!)")))
 
   (load "~/.emacs.d/elisp/org-macros.el")
 
