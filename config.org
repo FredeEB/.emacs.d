@@ -1,7 +1,7 @@
 * Fixes
 ** evil-mode
    <C-z> to use emacs keybindings
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (use-package evil-leader
     :ensure t
     :custom
@@ -26,7 +26,7 @@
     (define-key evil-normal-state-map (kbd "H") 'delete-other-windows)
     (evil-leader/set-key
       "b" 'helm-buffers-list
-      "o" 'other-window
+      "o" 'mode-line-other-buffer
       "q" 'kill-buffer
       "a" 'comment-dwim)
     (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
@@ -52,9 +52,9 @@
       "m n" 'evil-mc-undo-all-cursors
       "m j" 'evil-mc-make-and-goto-next-match
       "m k" 'evil-mc-make-and-goto-prev-match))
-#+END_SRC
+   #+END_SRC
 ** Basics
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq tab-width 3)
   (setq scroll-conservatively 100)
   (setq scroll-margin 5)
@@ -86,13 +86,14 @@
        (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
        t))
 
+  (setq mail-user-agent 'message-user-agent)
+  (setq user-mail-address "frederikbraendstrup@gmail.com"
+        user-full-name "Frede Brændstrup")
+
   ;; Load zshrc
   (setq shell-file-name "zsh")
   (setq shell-command-switch "-ic")
 
-  (global-set-key (kbd "M-d") 'dmenu)
-
-  (add-hook 'textile-mode-hook 'visual-line-mode)
 
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   (use-package ssh-agency
@@ -100,55 +101,55 @@
 
   ;;tmp stuff
   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
-#+END_SRC
+   #+END_SRC
 * Packages
 ** QOF
    Quality of life packages. many require external software. Look at each package for dependecies
 *** agressive indent
     global mode might be turned off in a later revision. It's kinda obnoxious
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
     :ensure t
     :diminish aggressive-indent
     :init
     (aggressive-indent-global-mode 1))
-#+END_SRC
+    #+END_SRC
 *** avy
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (use-package avy
   :ensure t
   :bind
   ("M-s" . avy-goto-char))
-#+END_SRC
+    #+END_SRC
 *** beacon
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :ensure t
     :diminish beacon
     :init
     (beacon-mode 1))
-#+END_SRC
+    #+END_SRC
 *** bettershell
     experimental
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package better-shell
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** focus
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package focus
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package fzf
     :ensure t 
     :config
     (evil-leader/set-key "f" 'fzf)
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf/bin/fzf"))
-#+END_SRC
+    #+END_SRC
 *** golden ratio
     #+BEGIN_SRC emacs-lisp
       (use-package golden-ratio
@@ -158,33 +159,38 @@
        	(golden-ratio-mode 1))
     #+END_SRC
 *** Hungry delete
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package hungry-delete
     :ensure t
     :diminish hungry-delete
     :config (global-hungry-delete-mode))
-#+END_SRC
+    #+END_SRC
 *** ido
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
     (use-package ido-vertical-mode
       :ensure t
       :config 
     (ido-vertical-mode))
-#+END_SRC
+    #+END_SRC
 *** lock in
     requires [[https://tizonia.org][tizonia]]
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (load "~/.emacs.d/elisp/lock-in.el")
-#+END_SRC
+    #+END_SRC
 *** openwith
-    requires zathura
-#+BEGIN_SRC emacs-lisp
+    requires zathura for pdf reading. feh for image viewing (not all formats are tested).
+    #+BEGIN_SRC emacs-lisp
   (use-package openwith
     :ensure t
     :config
     (openwith-mode t)
     :custom
-    (openwith-associations '(("\\.pdf\\'" "zathura" (file)))))
+    (openwith-associations '(("\\.pdf\\'" "zathura" (file))
+                             ("\\.png\\'" "feh" (file))
+                             ("\\.jpg\\'" "feh" (file))
+                             ("\\.svg\\'" "feh" (file))
+                             ("\\.jpeg\\'" "feh" (file))
+                             ("\\.bmp\\'" "feh" (file)))))
 
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
@@ -193,91 +199,96 @@
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
   (setq large-file-warning-threshold nil)
-#+END_SRC
+    #+END_SRC
 *** pandoc
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package pandoc
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** rainbow
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
     :ensure t
     :init
     (rainbow-delimiters-mode))
-#+END_SRC
+    #+END_SRC
 *** sudo-edit
     #+BEGIN_SRC emacs-lisp
-      (use-package sudo-edit
-       	:ensure t)
+  (use-package sudo-edit
+   	:ensure t)
     #+END_SRC
 *** swiper / ivy
     mostly a fallback for things that helm doesn't support
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :ensure t
     :bind (:map evil-normal-state-map
                 ("/" . 'swiper-all)))
   (ivy-mode 1)
-#+END_SRC
+    #+END_SRC
 ** language packs
    mostly syntax higlighters
 *** clojure
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
     :ensure t)
   (use-package cider
     :ensure t)
   (use-package flycheck-clojure
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** dts
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package dts-mode
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** lua
     requires [[https://www.lua.org/][lua]]
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package lua-mode
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** go
     requires [[https://golang.org/][golang]]
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** matlab
     requires [[https://se.mathworks.com/products/matlab.html][matlab]]
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
   (add-to-list
    'auto-mode-alist
    '("\\.m\\'" . matlab-mode))
   (setq matlab-indent-function t)
   (setq matlab-shell-command "matlab")
-#+END_SRC
+
+  (add-hook 'matlab-mode-hook 'matlab-shell)
+
+    #+END_SRC
 *** plant
     requires [[https://plantuml.com][plantuml]]
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
     :ensure t
     :custom
-    (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+    (plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** textmodes
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package textile-mode
-    :ensure t)
-#+END_SRC
+    :ensure t
+    :hook (textile-mode . visual-line-mode)
+    :mode ("\\.textile\\'"))
+    #+END_SRC
 ** programming
 *** company / rtags
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   ;; C/C++
   (use-package company
     :ensure t
@@ -351,6 +362,9 @@
   (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
 
   ;; Other languages
+  (use-package company-lsp
+    :ensure t)
+
   (use-package company-jedi
     :ensure t
     :config
@@ -383,9 +397,9 @@
           (self-insert-command 1)
         (company-complete-number (string-to-number k)))))
 
-#+END_SRC
+    #+END_SRC
 *** flycheck
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package flycheck
     :ensure t
     :diminish flycheck
@@ -395,9 +409,9 @@
   (use-package flycheck-clangcheck
     :ensure t 
     :custom (flycheck-clangcheck-analyze t))
-#+END_SRC
+    #+END_SRC
 *** yasnippet
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package yasnippet-snippets
     :ensure t)
 
@@ -411,9 +425,9 @@
     :bind
     ("C-c y" . 'aya-create)
     ("C-c u" . 'aya-expand))
-#+END_SRC
+    #+END_SRC
 *** Paredit and friends
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
@@ -427,22 +441,22 @@
     :ensure t)
   (use-package evil-paredit
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** jedi
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (use-package jedi
   :ensure t
   :config
   (jedi:install-server))
-#+END_SRC
+    #+END_SRC
 *** floobits
     See [[https://floobits.com/][floobits.com]]
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package floobits
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** Web
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :ensure t
     :hook
@@ -460,17 +474,20 @@
     :init
     (rainbow-mode 1)
     :hook web-mode)
-#+END_SRC
+    #+END_SRC
 ** git stuff
-#+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package magit
     :ensure t
     :config
     (evil-leader/set-key "g s" 'magit-status))
+
   (use-package evil-magit
     :ensure t)
+
   (use-package github-clone
     :ensure t)
+
   (use-package diff-hl
     :ensure t 
     :hook
@@ -480,21 +497,27 @@
     (evil-leader/set-key
       "g n" 'diff-hl-next-hunk
       "g p" 'diff-hl-previous-hunk))
-#+END_SRC
+   #+END_SRC
 ** ui
+*** ag
+    #+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package helm-ag
+    :ensure t)
+    #+END_SRC
 *** bifocal
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package bifocal
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** helm
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package helm
     :ensure t
     :config
     (require 'helm-config)
     (evil-leader/set-key
       "u" 'helm-imenu)
+    (helm-mode)
     :bind
     ("C-x C-f" . 'helm-find-files)
     ("C-x C-b" . 'helm-buffers-list)
@@ -507,7 +530,7 @@
 
   (use-package helm-company
     :ensure t)
-#+END_SRC
+    #+END_SRC
 *** linum
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package linum-relative
@@ -517,7 +540,7 @@
         (linum-relative-current-symbol ""))
     #+END_SRC
 *** neotree
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package neotree
     :ensure t
     :config
@@ -544,39 +567,64 @@
               (neotree-dir project-dir))
           (if file-name
               (neotree-find file-name))))))
-#+END_SRC
+    #+END_SRC
 *** modeline
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
     :ensure t
     :defer t
     :hook (after-init . doom-modeline-init)
     :custom
     (doom-modeline-buffer-file-name-style 'truncate-with-project))
-#+END_SRC
+    #+END_SRC
 *** lsp ui
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-ui
+    #+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
     :ensure t
-    :custom
-    (lsp-ui-peek-always-show t)
-    :hook (lsp-mode . lsp-ui-mode))
-#+END_SRC
+    :config
+
+    ;; make sure we have lsp-imenu everywhere we have LSP
+    (require 'lsp-imenu)
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)  
+    ;; get lsp-python-enable defined
+    ;; NB: use either projectile-project-root or ffip-get-project-root-directory
+    ;;     or any other function that can be used to find the root directory of a project
+    (lsp-define-stdio-client lsp-python "python"
+                             #'projectile-project-root
+                             '("pyls"))
+
+    ;; make sure this is activated when python-mode is activated
+    ;; lsp-python-enable is created by macro above 
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (lsp-python-enable)))
+
+    ;; lsp extras
+    (use-package lsp-ui
+      :ensure t
+      :config
+      (setq lsp-ui-sideline-ignore-duplicate t)
+      (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+    (use-package company-lsp
+      :config
+      (push 'company-lsp company-backends)))
+    #+END_SRC
 *** theme
-#+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-themes
     :ensure t
     :config
     (load-theme 'doom-molokai t))
-#+END_SRC
+    #+END_SRC
 *** Which key
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :ensure t
     :diminish which-key
     :init
     (which-key-mode))
-#+END_SRC
+    #+END_SRC
 *** frames only
     for better compatibility with i3
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -586,11 +634,12 @@
         (frames-only-mode))
     #+END_SRC
 ** org stuff
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
-     (C . T)))
+     (C . T)
+     (plantuml . t)))
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -602,14 +651,14 @@
   (add-hook 'org-mode-hook 'visual-line-mode)
   (use-package org-ref
     :ensure t)
+
   (use-package org-bullets
     :ensure t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
   (setq org-export-latex-listings 'minted)
   (setq org-src-fontify-natively t)
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(@/!)" "|" "DONE(d!)")))
 
   (load "~/.emacs.d/elisp/org-macros.el")
 
@@ -622,4 +671,4 @@
   (defmath uconvert (v u)
     "Convert value V into compatible unit U"
     (math-convert-units v u))
-#+END_SRC
+   #+END_SRC
