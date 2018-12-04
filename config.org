@@ -36,7 +36,7 @@
     :init
     (evil-collection-init))
 
-  (use-package evil 
+  (use-package evil
     :ensure t
     :after evil-leader
     :config
@@ -67,7 +67,7 @@
     :ensure t
     :diminish evil-mc
     :config
-    (global-evil-mc-mode 1) 
+    (global-evil-mc-mode 1)
     (evil-leader/set-key
       "m m" 'evil-mc-make-all-cursors
       "m n" 'evil-mc-undo-all-cursors
@@ -118,9 +118,9 @@
   (setq shell-command-switch "-ic")
 
 
-  ;; (setenv "SSH_ASKPASS" "git-gui--askpass")
-  ;; (use-package ssh-agency
-  ;;   :ensure t)
+  (setenv "SSH_ASKPASS" "git-gui--askpass")
+  (use-package ssh-agency
+    :ensure t)
 
   (setq delete-trailing-lines t)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -171,7 +171,7 @@
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package fzf
-    :ensure t 
+    :ensure t
     :config
     (evil-leader/set-key "f" 'fzf)
     :custom
@@ -196,7 +196,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ido-vertical-mode
       :ensure t
-      :config 
+      :config
     (ido-vertical-mode))
 #+END_SRC
 *** lock in
@@ -415,7 +415,7 @@
   (defun ora-company-number ()
     "Forward to `company-complete-number'.
 
-  Unless the number is potentially par of the canidiate.
+  Unless the number is potentially part of the canidiate.
   In that case, insert the number"
     (interactive)
     (let* ((k (this-command-keys))
@@ -423,7 +423,7 @@
       (if (cl-find-if (lambda (s) (string-match re s))
                       company-candidates)
           (self-insert-command 1)
-        (company-complete-number (string-to-number k)))))
+        (concat (company-complete-number (string-to-number k))))))
 
 #+END_SRC
 *** flycheck
@@ -435,7 +435,7 @@
     (flycheck-global-modes '(not (org-mode c-mode c++-mode))))
 
   (use-package flycheck-clangcheck
-    :ensure t 
+    :ensure t
     :custom (flycheck-clangcheck-analyze t))
 #+END_SRC
 *** yasnippet
@@ -493,7 +493,7 @@
 
   (use-package emmet-mode
     :ensure t
-    :diminish emmet-mode  
+    :diminish emmet-mode
     :bind
     ("M-p" . 'emmet-expand-yas))
 
@@ -518,7 +518,7 @@
     :ensure t)
 
   (use-package diff-hl
-    :ensure t 
+    :ensure t
     :hook
     (magit-post-refresh-hook . diff-hl-magit-post-refresh)
     :config
@@ -566,7 +566,7 @@
 *** linum
 #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package linum-relative
-        :ensure t 
+        :ensure t
         :hook (prog-mode . linum-relative-mode)
         :custom
         (linum-relative-current-symbol ""))
@@ -617,7 +617,7 @@
 
     ;; make sure we have lsp-imenu everywhere we have LSP
     (require 'lsp-imenu)
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)  
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
     ;; get lsp-python-enable defined
     ;; NB: use either projectile-project-root or ffip-get-project-root-directory
     ;;     or any other function that can be used to find the root directory of a project
@@ -626,7 +626,7 @@
                              '("pyls"))
 
     ;; make sure this is activated when python-mode is activated
-    ;; lsp-python-enable is created by macro above 
+    ;; lsp-python-enable is created by macro above
     (add-hook 'python-mode-hook
               (lambda ()
                 (lsp-python-enable)))
