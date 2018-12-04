@@ -47,7 +47,10 @@
       "o" 'mode-line-other-buffer
       "q" 'kill-buffer
       "a" 'comment-dwim)
-    (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special))
+    (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special)
+    :bind (
+           :map evil-normal-state-map
+                ("´" . 'evil-goto-mark)))
 
   (use-package evil-goggles
     :ensure t
@@ -115,9 +118,12 @@
   (setq shell-command-switch "-ic")
 
 
-  (setenv "SSH_ASKPASS" "git-gui--askpass")
-  (use-package ssh-agency
-    :ensure t)
+  ;; (setenv "SSH_ASKPASS" "git-gui--askpass")
+  ;; (use-package ssh-agency
+  ;;   :ensure t)
+
+  (setq delete-trailing-lines t)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
   ;;tmp stuff
   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
@@ -211,7 +217,9 @@
                              ("\\.jpg\\'" "feh" (file))
                              ("\\.svg\\'" "feh" (file))
                              ("\\.jpeg\\'" "feh" (file))
-                             ("\\.bmp\\'" "feh" (file)))))
+                             ("\\.bmp\\'" "feh" (file))
+                             ("\\.flac\\'" "mpv" (file))
+                             ("\\.mp3\\'" "mpv" (file)))))
 
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
@@ -336,7 +344,6 @@
     :config
     (add-to-list 'company-backends 'company-irony))
 
-
   (use-package rtags
     :ensure t
     :custom
@@ -449,25 +456,20 @@
 #+END_SRC
 *** Paredit and friends
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  ;; (add-hook 'emacs-lisp-mode-hook   #'enable-paredit-mode)
-  ;; (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  ;; (add-hook 'ielm-mode-hook         #'enable-paredit-mode)
-  ;; (add-hook 'lisp-mode-hook         #'enable-paredit-mode)
-  ;; (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  ;; (add-hook 'scheme-mode-hook       #'enable-paredit-mode)
-  ;; (add-hook 'clojure-mode-hook      #'enable-paredit-mode)
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook   #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook         #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook         #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook       #'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook      #'enable-paredit-mode)
 
-  ;; (use-package cedit
-  ;;   :ensure t)
-  ;; (use-package evil-paredit
-  ;;   :ensure t)
-
-  (use-package smartparens
+  (use-package cedit
+    :ensure t)
+  (use-package evil-paredit
     :ensure t)
 
-  (use-package evil-smartparens
-    :ensure t)
 #+END_SRC
 *** jedi
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -710,5 +712,3 @@
     "Convert value V into compatible unit U"
     (math-convert-units v u))
 #+END_SRC
-
-   
