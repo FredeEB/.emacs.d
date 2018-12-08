@@ -125,8 +125,11 @@
   (setq delete-trailing-lines t)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+  (load-file "~/.emacs.d/elisp/utilties.el")
   ;;tmp stuff
   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
+
+
 #+END_SRC
 * Packages
 ** QOF
