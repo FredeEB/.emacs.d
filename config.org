@@ -529,6 +529,13 @@
 
   (use-package git-timemachine
     :ensure t)
+
+  (use-package magithub
+    :ensure t
+    :after magit
+    :config
+    (magithub-feature-autoinject t)
+    (setq magithub-clone-default-directory "~/"))
 #+END_SRC
 ** ui
 *** ag
@@ -612,35 +619,9 @@
 *** lsp ui
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package lsp-mode
-    :ensure t
-    :config
+    :ensure t)
 
-    ;; make sure we have lsp-imenu everywhere we have LSP
-    (require 'lsp-imenu)
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-    ;; get lsp-python-enable defined
-    ;; NB: use either projectile-project-root or ffip-get-project-root-directory
-    ;;     or any other function that can be used to find the root directory of a project
-    (lsp-define-stdio-client lsp-python "python"
-                         #'projectile-project-root
-                             '("pyls"))
 
-    ;; make sure this is activated when python-mode is activated
-    ;; lsp-python-enable is created by macro above
-    (add-hook 'python-mode-hook
-              (lambda ()
-                (lsp-python-enable)))
-
-    ;; lsp extras
-    (use-package lsp-ui
-      :ensure t
-      :config
-      (setq lsp-ui-sideline-ignore-duplicate t)
-      (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-    (use-package company-lsp
-      :config
-      (push 'company-lsp company-backends)))
 #+END_SRC
 *** theme
 #+BEGIN_SRC emacs-lisp :tangle yes
