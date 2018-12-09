@@ -545,6 +545,18 @@
     :ensure t
     :bind (("C-c C-p" . webpaste-paste-buffer)
            ("C-c C-r" . webpaste-paste-region)))
+
+  (use-package kubernetes
+    :ensure t
+    :commands
+    (kubernetes-overview)
+    :config
+    (evil-leader/set-key
+      "g k" 'kubernetes-overview))
+
+  (use-package kubernetes-evil
+    :ensure t
+    :after kubernetes)
 #+END_SRC
 ** ui
 *** ag
@@ -628,7 +640,20 @@
 *** lsp ui
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package lsp-mode
-    :ensure t)
+    :ensure t
+    :config
+    (require 'lsp-imenu)
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
+
+  (use-package lsp-clangd
+    :ensure t
+    :config
+    (with-eval-after-load 'lsp-mode
+      (require 'lsp-clangd)
+      (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
+      (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)))
+
+
 
 
 #+END_SRC
