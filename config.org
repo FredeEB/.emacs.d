@@ -321,7 +321,6 @@
 ** programming
 *** company / rtags
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; C/C++
   (use-package company
     :ensure t
     :diminish company
@@ -472,7 +471,6 @@
     :ensure t)
   (use-package evil-paredit
     :ensure t)
-
 #+END_SRC
 *** jedi
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -514,6 +512,9 @@
     :config
     (evil-leader/set-key "g s" 'magit-status))
 
+  (use-package ssh-agency
+    :ensure t)
+
   (use-package evil-magit
     :ensure t)
 
@@ -539,6 +540,11 @@
     :config
     (magithub-feature-autoinject t)
     (setq magithub-clone-default-directory "~/"))
+
+  (use-package webpaste
+    :ensure t
+    :bind (("C-c C-p" . webpaste-paste-buffer)
+           ("C-c C-r" . webpaste-paste-region)))
 #+END_SRC
 ** ui
 *** ag
