@@ -16,6 +16,8 @@
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+
+  (server-start)
 #+END_SRC
 ** evil-mode
    <C-z> to use emacs keybindings
@@ -715,9 +717,6 @@
   (setq org-src-fontify-natively t)
 
   (load "~/.emacs.d/elisp/org-macros.el")
-
-  (use-package auctex
-    :ensure t)
 
   (use-package org-tree-slide
     :ensure t)
