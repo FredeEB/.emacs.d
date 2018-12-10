@@ -17,7 +17,7 @@
     (package-refresh-contents)
     (package-install 'use-package))
 
-  (server-start)
+  (load-file "~/.emacs.d/elisp/utilties.el")
 #+END_SRC
 ** evil-mode
    <C-z> to use emacs keybindings
@@ -43,16 +43,18 @@
     :after evil-leader
     :config
     (evil-mode 1)
-    (define-key evil-normal-state-map (kbd "H") 'delete-other-windows)
     (evil-leader/set-key
       "b" 'helm-buffers-list
-      "o" 'mode-line-other-buffer
+      "o" 'other-window
       "q" 'kill-buffer
       "a" 'comment-dwim)
-    (evil-leader/set-key-for-mode 'org-mode "e" 'org-edit-special)
+    (evil-leader/set-key-for-mode
+      'org-mode "e" 'org-edit-special)
     :bind (
            :map evil-normal-state-map
-                ("´" . 'evil-goto-mark)))
+                ("´" . 'evil-goto-mark)
+                ("H" . 'delete-other-windows)
+                ("C-e" . 'merge-buffer)))
 
   (use-package evil-goggles
     :ensure t
@@ -127,7 +129,7 @@
   (setq delete-trailing-lines t)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-  (load-file "~/.emacs.d/elisp/utilties.el")
+
   ;;tmp stuff
   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 
@@ -291,15 +293,13 @@
 *** matlab
     requires [[https://se.mathworks.com/products/matlab.html][matlab]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-  (add-to-list
-   'auto-mode-alist
-   '("\\.m\\'" . matlab-mode))
-  (setq matlab-indent-function t)
-  (setq matlab-shell-command "matlab")
-
-  (add-hook 'matlab-mode-hook 'matlab-shell)
-
+  (use-package matlab-mode
+    :config
+    (add-hook 'matlab-mode-hook 'matlab-shell)
+    :mode ("\\.m\\'" . matlab-mode)
+    :custom
+    (matlab-indent-function t)
+    (matlab-shell-command "matlab"))
 #+END_SRC
 *** plant
     requires [[https://plantuml.com][plantuml]]
@@ -402,6 +402,10 @@
     :config
     (add-to-list 'company-backends 'company-jedi))
 
+  (use-package slime-company
+    :ensure t
+    :config
+    (slime-setup '(slime-company)))
   ;; Misc config
   ;;; number completion
 
@@ -641,19 +645,19 @@
 #+END_SRC
 *** lsp ui
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package lsp-mode
-    :ensure t
-    :config
-    (require 'lsp-imenu)
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
+  ;; (use-package lsp-mode
+  ;;   :ensure t
+  ;;   :config
+  ;;   (require 'lsp-imenu)
+  ;;   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
 
-  (use-package lsp-clangd
-    :ensure t
-    :config
-    (with-eval-after-load 'lsp-mode
-      (require 'lsp-clangd)
-      (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
-      (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)))
+  ;; (use-package lsp-clangd
+  ;;   :ensure t
+  ;;   :config
+  ;;   (with-eval-after-load 'lsp-mode
+  ;;     (require 'lsp-clangd)
+  ;;     (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
+  ;;     (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)))
 
 
 
