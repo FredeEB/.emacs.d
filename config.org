@@ -113,23 +113,27 @@
      t))
 
 (setq mail-user-agent 'message-user-agent)
-  (setq user-mail-address "frederikbraendstrup@gmail.com"
-	user-full-name "Frede Brændstrup")
+(setq user-mail-address "frederikbraendstrup@gmail.com"
+      user-full-name "Frede Brændstrup")
 
 ;; Load zshrc
-  (setq shell-file-name "zsh")
-  (setq shell-command-switch "-ic")
+(setq shell-file-name "zsh")
+(setq shell-command-switch "-ic")
 
-  (setenv "SSH_ASKPASS" "git-gui--askpass")
-  (use-package ssh-agency
-    :ensure t)
+(setenv "SSH_ASKPASS" "git-gui--askpass")
+(use-package ssh-agency
+  :ensure t)
 
 ;; File beautification
-  (setq delete-trailing-lines t)
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq delete-trailing-lines t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;tmp stuff
-  (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
+(defalias 'sesman-linked-sessions 'sesman--linked-sessions)
+
+(global-display-line-numbers-mode)
+(setq display-line-numbers-current-absolute t)
+
 #+END_SRC
 * Packages
 ** QOF
@@ -390,7 +394,7 @@
   (use-package slime
     :ensure t
     :config
-    (slime-setup slime-company))
+    (slime-setup))
 
   (use-package slime-company
     :ensure t
@@ -446,7 +450,7 @@
     (rtags-autostart-diagnostics t)
     (rtags-completions-enabled t)
     :config
-    (evil-leader/set-key-for-mode '(c-mode c++-mode)
+    (evil-leader/set-key-for-mode (list (c-mode c++-mode))
       "r f" 'rtags-find-file
       "r g" 'rtags-find-symbol
       "r j" 'next-error
@@ -646,14 +650,6 @@
 
 (use-package helm-company
   :ensure t)
-#+END_SRC
-*** linum
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package linum-relative
-      :ensure t
-      :hook (prog-mode . linum-relative-mode)
-      :custom
-      (linum-relative-current-symbol ""))
 #+END_SRC
 *** neotree
 #+BEGIN_SRC emacs-lisp :tangle yes
