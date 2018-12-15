@@ -261,17 +261,6 @@
 #+END_SRC
 ** language packs
    mostly syntax higlighters
-*** clojure
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package clojure-mode
-    :ensure t)
-  (use-package cider
-    :ensure t)
-  (use-package flycheck-clojure
-    :ensure t)
-  (use-package helm-clojuredocs
-    :ensure t)
-#+END_SRC
 *** dts
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package dts-mode
@@ -450,7 +439,8 @@
     (rtags-autostart-diagnostics t)
     (rtags-completions-enabled t)
     :config
-    (evil-leader/set-key-for-mode (list (c-mode c++-mode))
+    (evil-leader/set-key-for-mode '((c-mode)
+				    (c++-mode))
       "r f" 'rtags-find-file
       "r g" 'rtags-find-symbol
       "r j" 'next-error
@@ -473,7 +463,8 @@
     :init
     (cmake-ide-setup)
     :config
-    (evil-leader/set-key-for-mode '(c-mode c++-mode)
+    (evil-leader/set-key-for-mode '((c-mode)
+				    (c++-mode))
       "r c" 'cmake-ide-compile
       "r C" 'cmake-ide-run-cmake))
 
@@ -490,6 +481,22 @@
   (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
   (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
 
+#+END_SRC
+*** clojure
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package clojure-mode
+    :ensure t)
+  (use-package cider
+    :ensure t)
+  (use-package flycheck-clojure
+    :ensure t)
+  (use-package helm-clojuredocs
+    :ensure t)
+  (use-package cljr-helm
+    :ensure t
+    :config
+    (evil-leader/set-key-for-mode 'clojure-mode
+	  "r h" 'cljr-helm))
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp :tangle yes
