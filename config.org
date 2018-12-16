@@ -11,12 +11,14 @@
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
+   (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(load-file "~/.emacs.d/elisp/utilties.el")
+   (add-to-list 'default-frame-alist '(font . "Fira Code-13"))
+   (set-face-attribute 'default t :font "Fira Code-13")
+    (load-file "~/.emacs.d/elisp/utilties.el")
 
 (server-start)
 #+END_SRC
@@ -46,7 +48,7 @@
   (evil-mode 1)
   (evil-leader/set-key
     "b" 'helm-buffers-list
-    "o" 'other-buffer
+    "o" 'other-window
     "q" 'kill-buffer
     "a" 'comment-dwim)
   (evil-leader/set-key-for-mode
@@ -375,6 +377,10 @@
     (company-idle-delay 0)
     (company-minimum-prefix-length 3))
 
+  (use-package company-flx
+    :ensure t
+    :config (company-flx-mode +1))
+
   (use-package company-jedi
     :ensure t
     :config
@@ -485,7 +491,11 @@
 *** clojure
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package clojure-mode
-    :ensure t)
+    :ensure t
+    :config
+    (evil-leader/set-key-for-mode 'clojure-mode
+      "e" 'cider-eval-last-sexp
+      "k" 'cider-eval-buffer))
   (use-package cider
     :ensure t)
   (use-package flycheck-clojure
@@ -496,7 +506,7 @@
     :ensure t
     :config
     (evil-leader/set-key-for-mode 'clojure-mode
-	  "r h" 'cljr-helm))
+      "r h" 'cljr-helm))
 #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp :tangle yes
