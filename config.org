@@ -18,7 +18,7 @@
 
    (add-to-list 'default-frame-alist '(font . "Fira Code-13"))
    (set-face-attribute 'default t :font "Fira Code-13")
-    (load-file "~/.emacs.d/elisp/utilties.el")
+    (load-file "/home/bun/.emacs.d/elisp/utilties.el")
 
 (server-start)
 #+END_SRC
@@ -47,10 +47,25 @@
   :config
   (evil-mode 1)
   (evil-leader/set-key
-    "b" 'helm-buffers-list
+    ;; buffers & windows
+    "b b" 'helm-buffers-list
+    "b o" 'other-buffer
+    "b i" 'ibuffer
     "o" 'other-window
     "q" 'kill-buffer
-    "a" 'comment-dwim)
+    ;; misc
+    "a" 'comment-dwim
+
+    ;; files
+    "f e" 'config-visit
+    "f f" 'fzf
+    "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
+    "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+
+    ;; Projectile stuff
+    "p p" 'projectile-find-file-dwim
+    "p a" 'projectile-ag
+    "p g" 'projectile-vc)
   (evil-leader/set-key-for-mode
     'org-mode "e" 'org-edit-special)
   :bind (
@@ -92,21 +107,20 @@
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t
       initial-scratch-message ""
-      initial-buffer-choice "~/startup.org"
+      initial-buffer-choice "/home/bun/startup.org"
       ring-bell-function 'ignore
       tab-width 3
       indent-tabs-mode 1)
 (global-subword-mode 1)
 (add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
-(setq default-directory "~/"
+(setq default-directory "/home/bun/"
       tramp-default-method "ssh")
 (global-set-key (kbd "C-c o") 'ff-find-other-file)
 
 ;; define config shortcut
 (defun config-visit()
   (interactive)
-  (find-file "~/.emacs.d/config.org"))
-(global-set-key (kbd "C-c e") 'config-visit)
+  (find-file "/home/bun/.emacs.d/config.org"))
 
 (eval-after-load 'shell
   '(progn
@@ -178,8 +192,6 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package fzf
     :ensure t
-    :config
-    (evil-leader/set-key "f" 'fzf)
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf/bin/fzf"))
 #+END_SRC
@@ -639,6 +651,8 @@
 ** ui
 *** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
+(use-package ag
+  :ensure t)
 (use-package helm-ag
   :ensure t)
 #+END_SRC
