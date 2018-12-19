@@ -85,16 +85,16 @@
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-mc
-  :ensure t
-  :diminish evil-mc
-  :config
-  (global-evil-mc-mode 1)
-  (evil-leader/set-key
-    "m m" 'evil-mc-make-all-cursors
-    "m n" 'evil-mc-undo-all-cursors
-    "m j" 'evil-mc-make-and-goto-next-match
-    "m k" 'evil-mc-make-and-goto-prev-match))
+;; (use-package evil-mc
+;;   :ensure t
+;;   :diminish evil-mc
+;;   :config
+;;   (global-evil-mc-mode 1)
+;;   (evil-leader/set-key
+;;     "m m" 'evil-mc-make-all-cursors
+;;     "m n" 'evil-mc-undo-all-cursors
+;;     "m j" 'evil-mc-make-and-goto-next-match
+;;     "m k" 'evil-mc-make-and-goto-prev-match))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -216,6 +216,17 @@
       :ensure t
       :config
     (ido-vertical-mode))
+#+END_SRC
+*** iedit
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package iedit
+  :ensure t
+  :config
+  (evil-leader/set-key
+    "m m" 'iedit-mode
+    "m j" 'iedit-next-occurrence
+    "m k" 'iedit-prev-occurrence
+    "m q" 'iedit-quit))
 #+END_SRC
 *** lock in
     requires [[https://tizonia.org][tizonia]]
