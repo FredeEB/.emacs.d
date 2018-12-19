@@ -457,10 +457,9 @@
     (rtags-autostart-diagnostics t)
     (rtags-completions-enabled t)
     :config
-    (evil-leader/set-key-for-mode '((c-mode)
-				    (c++-mode))
+    (evil-leader/set-key-for-mode 'c-mode
       "r f" 'rtags-find-file
-      "r g" 'rtags-find-symbol
+      "r s" 'rtags-find-symbol
       "r j" 'next-error
       "r r" 'rtags-find-references-at-point
       "r t" 'rtags-symbol-type))
@@ -481,8 +480,7 @@
     :init
     (cmake-ide-setup)
     :config
-    (evil-leader/set-key-for-mode '((c-mode)
-				    (c++-mode))
+    (evil-leader/set-key-for-mode 'c-mode
       "r c" 'cmake-ide-compile
       "r C" 'cmake-ide-run-cmake))
 
