@@ -222,11 +222,19 @@
 (use-package iedit
   :ensure t
   :config
+  (defhydra hydra-iedit-menu ()
+    ("j" iedit-next-occurrence)
+    ("k" iedit-prev-occurrence)
+    ("q" iedit-quit)
+    ("t" iedit-toggle-selection)
+    ("f" iedit-restrict-function))
   (evil-leader/set-key
-    "m m" 'iedit-mode
-    "m j" 'iedit-next-occurrence
-    "m k" 'iedit-prev-occurrence
-    "m q" 'iedit-quit))
+    "m" 'iedit-then-hydra))
+
+(defun iedit-then-hydra ()
+  (interactive)
+  (iedit-mode)
+  (hydra-iedit-menu/body))
 #+END_SRC
 *** lock in
     requires [[https://tizonia.org][tizonia]]
