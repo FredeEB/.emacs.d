@@ -537,6 +537,12 @@
     (evil-leader/set-key-for-mode 'clojure-mode
       "r h" 'cljr-helm))
 #+END_SRC
+*** floobits
+    See [[https://floobits.com/][floobits.com]]
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package floobits
+      :ensure t)
+    #+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package flycheck
@@ -549,21 +555,10 @@
     :ensure t
     :custom (flycheck-clangcheck-analyze t))
 #+END_SRC
-*** yasnippet
+*** jedi
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package yasnippet-snippets
-    :ensure t)
-
-  (use-package yasnippet
-    :ensure t
-    :init
-    (yas-global-mode 1))
-
-  (use-package auto-yasnippet
-    :ensure t
-    :bind
-    ("C-c y" . 'aya-create)
-    ("C-c u" . 'aya-expand))
+(use-package jedi
+  :ensure t)
 #+END_SRC
 *** Paredit and friends
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -581,17 +576,11 @@
   (use-package evil-paredit
     :ensure t)
 #+END_SRC
-*** jedi
+*** racket
 #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package jedi
+(use-package racket-mode
   :ensure t)
 #+END_SRC
-*** floobits
-    See [[https://floobits.com/][floobits.com]]
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package floobits
-      :ensure t)
-    #+END_SRC
 *** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package web-mode
@@ -611,6 +600,22 @@
   :init
   (rainbow-mode 1)
   :hook web-mode)
+#+END_SRC
+*** yasnippet
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package yasnippet-snippets
+    :ensure t)
+
+  (use-package yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1))
+
+  (use-package auto-yasnippet
+    :ensure t
+    :bind
+    ("C-c y" . 'aya-create)
+    ("C-c u" . 'aya-expand))
 #+END_SRC
 ** git stuff
    #+BEGIN_SRC emacs-lisp :tangle yes
