@@ -193,7 +193,7 @@
   (use-package fzf
     :ensure t
     :custom
-    (fzf/executable "~/.zplug/repos/junegunn/fzf/bin/fzf"))
+    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
 *** golden ratio
 #+BEGIN_SRC emacs-lisp :tangle yes
