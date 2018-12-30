@@ -283,15 +283,6 @@
   (use-package sudo-edit
    	:ensure t)
 #+END_SRC
-*** swiper / ivy
-    mostly a fallback for things that helm doesn't support
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package swiper
-    :ensure t
-    :bind (:map evil-normal-state-map
-                ("/" . 'swiper-all)))
-  (ivy-mode 1)
-#+END_SRC
 ** language packs
    mostly syntax higlighters
 *** dts
@@ -710,8 +701,6 @@
 *** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package ag
-  :ensure t)
-(use-package helm-ag
   :ensure t)
 #+END_SRC
 *** bifocal
