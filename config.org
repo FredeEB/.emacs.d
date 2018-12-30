@@ -483,6 +483,24 @@
       "r r" 'rtags-find-references-at-point
       "r t" 'rtags-symbol-type))
 
+  (use-package lsp-mode
+    :ensure t
+    :commands lsp)
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
+
+  (use-package company-lsp
+    :ensure t
+    :commands company-lsp)
+
+  (use-package cquery
+    :ensure t
+    :custom
+    (cquery-executable "/usr/bin/cquery")
+    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
+
   (use-package company-rtags
     :ensure t
     :config
@@ -503,8 +521,8 @@
       "r c" 'cmake-ide-compile
       "r C" 'cmake-ide-run-cmake))
 
-  (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-  (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+  ;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+  ;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
 
 
   (defun better-flycheck-rtags-setup ()
@@ -527,7 +545,9 @@
       "k" 'cider-eval-buffer))
 
   (use-package cider
-    :ensure t)
+    :ensure t
+    :custom
+    (cider-lein-parameters "repl :headless :host localhost"))
 
   (use-package flycheck-clojure
     :ensure t)
@@ -564,11 +584,6 @@
 (use-package jedi
   :ensure t)
 #+END_SRC
-*** lsp
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package lsp-mode
-  :ensure t)
-#+END_SRC
 *** Paredit and friends
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -579,11 +594,13 @@
   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook       #'enable-paredit-mode)
   (add-hook 'clojure-mode-hook      #'enable-paredit-mode)
+  (add-hook 'racket-mode-hook #'enable-paredit-mode)
 
   (use-package cedit
     :ensure t)
   (use-package evil-paredit
-    :ensure t)
+    :ensure t
+    :mode)
 #+END_SRC
 *** racket
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -595,20 +612,30 @@
     (use-package web-mode
       :ensure t
       :hook
-      (html-mode))
+      (html-mode)
+      ("//.jsx//'"))
 
-(use-package emmet-mode
-  :ensure t
-  :diminish emmet-mode
-  :bind
-  ("M-p" . 'emmet-expand-yas))
+    (use-package emmet-mode
+      :ensure t
+      :diminish emmet-mode
+      :bind
+      ("M-p" . 'emmet-expand-yas))
 
-(use-package rainbow-mode
-  :ensure t
-  :diminish rainbow-mode
-  :init
-  (rainbow-mode 1)
-  :hook web-mode)
+    (use-package rainbow-mode
+      :ensure t
+      :diminish rainbow-mode
+      :init
+      (rainbow-mode 1)
+      :hook web-mode)
+
+    (use-package js2-mode
+      :ensure t)
+
+    (use-package json-mode
+      :ensure t)
+
+    (use-package exec-path-from-shell
+      :ensure t)
 #+END_SRC
 *** yasnippet
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -705,6 +732,7 @@
       ("C-x C-f" . 'helm-find-files)
       ("C-x C-b" . 'helm-buffers-list)
       ("M-x" . 'helm-M-x))
+
 (use-package helm-make
   :ensure t
   :config
@@ -712,6 +740,25 @@
 
 (use-package helm-company
   :ensure t)
+
+(use-package helm-swoop
+  :ensure t
+  :bind
+  (:map evil-normal-state-map
+    ("/" . 'helm-swoop)))
+
+    (use-package helm-xref
+      :ensure t)
+
+    (use-package helm-projectile
+      :ensure t
+      :config
+      (evil-leader/set-key
+	"p p" 'helm-projectile
+	"p f" 'helm-projectile-find-file-dwim
+	"p a" 'helm-projectile-ag
+	"p s" 'helm-vc
+	"p c" 'projectile-compile-project))
 #+END_SRC
 *** neotree
 #+BEGIN_SRC emacs-lisp :tangle yes
