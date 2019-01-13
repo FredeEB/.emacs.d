@@ -166,10 +166,7 @@
 *** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
-      :ensure t
-      :bind(
-            :map evil-normal-state-map
-		 ("+" . 'avy-goto-char)))
+      :ensure t)
 #+END_SRC
 *** beacon
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -180,7 +177,6 @@
     (beacon-mode 1))
 #+END_SRC
 *** bettershell
-    experimental
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package better-shell
     :ensure t)
@@ -197,14 +193,6 @@
     :ensure t
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
-#+END_SRC
-*** golden ratio
-#+BEGIN_SRC emacs-lisp :tangle yes
-      (use-package golden-ratio
-       	:ensure t
-       	:diminish golden-ratio
-       	:config
-       	(golden-ratio-mode 1))
 #+END_SRC
 *** Hungry delete
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -466,19 +454,6 @@
     :config
     (add-to-list 'company-backends 'company-irony))
 
-  (use-package rtags
-    :ensure t
-    :custom
-    (rtags-autostart-diagnostics t)
-    (rtags-completions-enabled t)
-    :config
-    (evil-leader/set-key-for-mode 'c-mode
-      "r f" 'rtags-find-file
-      "r s" 'rtags-find-symbol
-      "r j" 'next-error
-      "r r" 'rtags-find-references-at-point
-      "r t" 'rtags-symbol-type))
-
   (use-package lsp-mode
     :ensure t
     :commands lsp)
@@ -496,40 +471,6 @@
     :custom
     (cquery-executable "/usr/bin/cquery")
     (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
-
-  (use-package company-rtags
-    :ensure t
-    :config
-    (push 'company-rtags company-backends))
-
-  (use-package flycheck-rtags
-    :ensure t)
-
-  (use-package helm-rtags
-    :ensure t)
-
-  (use-package cmake-ide
-    :ensure t
-    :init
-    (cmake-ide-setup)
-    :config
-    (evil-leader/set-key-for-mode 'c-mode
-      "r c" 'cmake-ide-compile
-      "r C" 'cmake-ide-run-cmake))
-
-  ;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-  ;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-
-
-  (defun better-flycheck-rtags-setup ()
-    "Configure flycheck-rtags for better experience."
-    (flycheck-select-checker 'rtags)
-    (setq-local flycheck-check-syntax-automatically nil)
-    (setq-local flycheck-highlighting-mode nil))
-
-  (add-hook 'c-mode-hook #'better-flycheck-rtags-setup)
-  (add-hook 'c++-mode-hook #'better-flycheck-rtags-setup)
-
 #+END_SRC
 *** clojure
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -608,8 +549,7 @@
     (use-package web-mode
       :ensure t
       :hook
-      (html-mode)
-      ("//.jsx//'"))
+      (html-mode))
 
     (use-package emmet-mode
       :ensure t
