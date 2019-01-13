@@ -16,8 +16,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-   (add-to-list 'default-frame-alist '(font . "Fira Code-13"))
-   (set-face-attribute 'default t :font "Fira Code-13")
+   (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+   (set-face-attribute 'default t :font "Fira Code-12")
     (load-file "/home/bun/.emacs.d/elisp/utilties.el")
 
 (server-start)
@@ -55,6 +55,9 @@
     "q" 'kill-buffer
     ;; misc
     "a" 'comment-dwim
+
+    ;;buffer navigation
+    "j" 'evil-avy-goto-char-timer
 
     ;; files
     "f e" 'config-visit
@@ -256,7 +259,8 @@
                              ("\\.jpeg\\'" "feh" (file))
                              ("\\.bmp\\'" "feh" (file))
                              ("\\.flac\\'" "mpv" (file))
-                             ("\\.mp3\\'" "mpv" (file)))))
+                             ("\\.mp3\\'" "mpv" (file))
+			     ("\\.mp4\\'" "mpv" (file)))))
 
   (setq org-latex-listings 'minted
         org-latex-packages-alist '(("" "minted"))
@@ -322,6 +326,7 @@
     :ensure t
     :custom
     (plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+    (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
