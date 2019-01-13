@@ -6,16 +6,7 @@
 It's getting pretty big, so I did some organizing on it, and made it a
 bit neater to look at.
 
-Remember to call:
-
-#+BEGIN_EXAMPLE
-    (rtags-install)
-    (irony-install-server)
-    (jedi:install-server)
-#+END_EXAMPLE
-
 ** TODO:
    :PROPERTIES:
    :CUSTOM_ID: todo
    :END:
-
