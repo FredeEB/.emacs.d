@@ -60,10 +60,14 @@
     "j" 'evil-avy-goto-char-timer
 
     ;; files
-    "f e" 'config-visit
     "f f" 'fzf
+    "f d" 'dired-jump
+    "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+    "f n" '(lambda () (interactive)
+	     (find-file "/etc/nixos/configuration.nix")
+	     (sudo-edit-current-file))
 
     ;; Projectile stuff
     "p p" 'projectile-find-file-dwim
@@ -87,17 +91,6 @@
   :ensure t
   :config
   (global-evil-surround-mode 1))
-
-;; (use-package evil-mc
-;;   :ensure t
-;;   :diminish evil-mc
-;;   :config
-;;   (global-evil-mc-mode 1)
-;;   (evil-leader/set-key
-;;     "m m" 'evil-mc-make-all-cursors
-;;     "m n" 'evil-mc-undo-all-cursors
-;;     "m j" 'evil-mc-make-and-goto-next-match
-;;     "m k" 'evil-mc-make-and-goto-prev-match))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -119,11 +112,6 @@
 (setq default-directory "/home/bun/"
       tramp-default-method "ssh")
 (global-set-key (kbd "C-c o") 'ff-find-other-file)
-
-;; define config shortcut
-(defun config-visit()
-  (interactive)
-  (find-file "/home/bun/.emacs.d/config.org"))
 
 (eval-after-load 'shell
   '(progn
@@ -469,7 +457,7 @@
   (use-package cquery
     :ensure t
     :custom
-    (cquery-executable "/usr/bin/cquery")
+    (cquery-executable "/run/current-system/sw/bin/cquery")
     (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
 #+END_SRC
 *** clojure
@@ -533,11 +521,8 @@
   (add-hook 'clojure-mode-hook      #'enable-paredit-mode)
   (add-hook 'racket-mode-hook #'enable-paredit-mode)
 
-  (use-package cedit
-    :ensure t)
   (use-package evil-paredit
-    :ensure t
-    :mode)
+    :ensure t)
 #+END_SRC
 *** racket
 #+BEGIN_SRC emacs-lisp :tangle yes
