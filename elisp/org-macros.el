@@ -35,4 +35,8 @@
     (newline)
     (forward-line -1)
     (insert (concat "#+NAME: " name))))
+
+(defmath uconvert (v u)
+  "Convert value V into compatible unit U"
+  (math-convert-units v u))
 ;;; org-latex-enhancer.el ends here
