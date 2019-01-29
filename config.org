@@ -16,14 +16,12 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-   (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
-   (set-face-attribute 'default t :font "Fira Code-12")
-    (load-file "/home/bun/.emacs.d/elisp/utilties.el")
-
-(server-start)
+(add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+(set-face-attribute 'default t :font "Fira Code-12")
+(load-file "/home/bun/.emacs.d/elisp/utilties.el")
 #+END_SRC
 ** evil-mode
-   <C-z> to use emacs keybindings, if you're that kind of person :)
+   <C-z> to use emacs keybindings, if you're that kind of person
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package evil-leader
      :ensure t
@@ -60,8 +58,8 @@
     "j" 'evil-avy-goto-char-timer
 
     ;; files
-    "f e" 'config-visit
     "f f" 'fzf
+    "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
 
@@ -110,7 +108,6 @@
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t
       initial-scratch-message ""
-      initial-buffer-choice "/home/bun/startup.org"
       ring-bell-function 'ignore
       tab-width 3
       indent-tabs-mode 1)
@@ -139,10 +136,6 @@
 (setq shell-file-name "zsh")
 (setq shell-command-switch "-ic")
 
-(setenv "SSH_ASKPASS" "git-gui--askpass")
-(use-package ssh-agency
-  :ensure t)
-
 ;; File beautification
 (setq delete-trailing-lines t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -152,41 +145,21 @@
 
 (global-display-line-numbers-mode)
 (setq display-line-numbers-current-absolute t)
-
 #+END_SRC
-* Packages
-** QOF
-   Quality of life packages. many require external software. Look at each package for dependecies
-*** agressive indent
-    global mode might be turned off in a later revision. It's kinda obnoxious
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package aggressive-indent
-      :ensure t)
-    #+END_SRC
-*** avy
+* QOL
+  Quality of life packages. many require external software. Look at each package for dependecies
+** agressive indent
+   global mode might be turned off in a later revision. It's kinda obnoxious
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package aggressive-indent
+     :ensure t)
+   #+END_SRC
+** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
       :ensure t)
 #+END_SRC
-*** beacon
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package beacon
-    :ensure t
-    :diminish beacon
-    :init
-    (beacon-mode 1))
-#+END_SRC
-*** bettershell
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package better-shell
-    :ensure t)
-#+END_SRC
-*** focus
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package focus
-    :ensure t)
-#+END_SRC
-*** fzf
+** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package fzf
@@ -194,21 +167,14 @@
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
-*** Hungry delete
+** Hungry delete
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package hungry-delete
     :ensure t
     :diminish hungry-delete
     :config (global-hungry-delete-mode))
 #+END_SRC
-*** ido
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package ido-vertical-mode
-      :ensure t
-      :config
-    (ido-vertical-mode))
-#+END_SRC
-*** iedit
+** iedit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package iedit
   :ensure t
@@ -227,12 +193,7 @@
   (iedit-mode)
   (hydra-iedit-menu/body))
 #+END_SRC
-*** lock in
-    requires [[https://tizonia.org][tizonia]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (load "~/.emacs.d/elisp/lock-in.el")
-#+END_SRC
-*** openwith
+** openwith
     requires zathura for pdf reading. feh for image viewing (not all formats are tested).
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package openwith
@@ -258,56 +219,32 @@
 
   (setq large-file-warning-threshold nil)
 #+END_SRC
-*** pandoc
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package pandoc
-    :ensure t)
-#+END_SRC
-*** rainbow
+** rainbow
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package rainbow-delimiters
     :ensure t
     :init
     (rainbow-delimiters-mode))
 #+END_SRC
-*** sudo-edit
+** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package sudo-edit
    	:ensure t)
 #+END_SRC
-** language packs
-   mostly syntax higlighters
-*** dts
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package dts-mode
-    :ensure t)
-#+END_SRC
-*** lua
-    requires [[https://www.lua.org/][lua]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package lua-mode
-    :ensure t)
-#+END_SRC
-*** go
-    requires [[https://golang.org/][golang]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package go-mode
-    :ensure t)
-#+END_SRC
-*** matlab
+* language packs
+  mostly syntax higlighters
+** matlab
     requires [[https://se.mathworks.com/products/matlab.html][matlab]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package matlab-mode
-    :config
-    (evil-leader/set-key-for-mode
-      'matlab-mode "o" 'other-window)
+    :ensure t
     :hook '(matlab-mode . 'matlab-shell)
     :mode ("\\.m\\'" . matlab-mode)
     :custom
     (matlab-indent-function t)
     (matlab-shell-command "matlab"))
 #+END_SRC
-*** plant
+** plant
     requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
@@ -320,67 +257,71 @@
   (use-package flycheck-plantuml
     :ensure t)
 #+END_SRC
-*** textmodes
-**** textile
+** racket
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package racket-mode
+  :ensure t)
+#+END_SRC
+** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package textile-mode
     :ensure t
     :hook '(textile-mode . visual-line-mode)
     :mode ("\\.textile\\'"))
 #+END_SRC
-**** org stuff
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)
-       (C . T)
-       (plantuml . t)
-       (shell . t)
-       (python .t)
-       (makefile . t)
-       (calc . t)
-       (matlab . t)
-       (emacs-lisp . t)
-       (js . t)))
+** org stuff
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (C . T)
+     (plantuml . t)
+     (shell . t)
+     (python .t)
+     (makefile . t)
+     (calc . t)
+     (matlab . t)
+     (emacs-lisp . t)
+     (js . t)))
 
-    ;; agenda and stuff
-    (global-set-key (kbd "C-c l") 'org-store-link)
-    (global-set-key (kbd "C-c a") 'org-agenda)
-    (global-set-key (kbd "C-c c") 'org-capture)
-    (setq org-todo-keywords
-	  '((sequence "TODO(t)" "WAITING(@/!)" "|" "DONE(d!)")))
+  ;; agenda and stuff
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "WAITING(@/!)" "|" "DONE(d!)")))
 
-    (add-hook 'org-mode-hook 'visual-line-mode)
-    (use-package org-ref
-      :ensure t)
+  (add-hook 'org-mode-hook 'visual-line-mode)
+  (use-package org-ref
+    :ensure t)
 
-    (use-package org-bullets
-      :ensure t
-      :config
-      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-    (setq org-export-latex-listings 'minted)
-    (setq org-src-fontify-natively t)
+  (setq org-export-latex-listings 'minted)
+  (setq org-src-fontify-natively t)
 
-    (load "~/.emacs.d/elisp/org-macros.el")
+  (load "~/.emacs.d/elisp/org-macros.el")
 
-    (use-package org-tree-slide
-      :ensure t)
+  (use-package org-tree-slide
+    :ensure t)
 
-    (defmath uconvert (v u)
-      "Convert value V into compatible unit U"
-      (math-convert-units v u))
+  (defmath uconvert (v u)
+    "Convert value V into compatible unit U"
+    (math-convert-units v u))
 
-    (use-package polymode
-      :ensure t)
+  (use-package polymode
+    :ensure t)
 
-    (use-package poly-org
-      :ensure t
-      :after polymode
-      :mode ("//.org//'"))
-  #+END_SRC
-** programming
-*** company for other languages
+  (use-package poly-org
+    :ensure t
+    :after polymode
+    :mode ("//.org//'"))
+#+END_SRC
+* programming
+** company for other languages
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company
     :ensure t
@@ -437,22 +378,13 @@
 	  (self-insert-command 1)
 	(concat (company-complete-number (string-to-number k))))))
 #+END_SRC
-*** C/C++ mode
+** lsp
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package irony
+  (use-package cquery
     :ensure t
-    :config
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-
-  (use-package company-irony
-    :ensure t)
-
-  (use-package company-irony-c-headers
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-irony))
+    :custom
+    (cquery-executable "/usr/bin/cquery")
+    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
 
   (use-package lsp-mode
     :ensure t
@@ -464,15 +396,12 @@
 
   (use-package company-lsp
     :ensure t
-    :commands company-lsp)
+    :commands company-lsp
+    :config
+    (push 'company-lsp company-backends))
 
-  (use-package cquery
-    :ensure t
-    :custom
-    (cquery-executable "/usr/bin/cquery")
-    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
 #+END_SRC
-*** clojure
+** clojure
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package clojure-mode
     :ensure t
@@ -498,30 +427,7 @@
     (evil-leader/set-key-for-mode 'clojure-mode
       "r h" 'cljr-helm))
 #+END_SRC
-*** floobits
-    See [[https://floobits.com/][floobits.com]]
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package floobits
-      :ensure t)
-    #+END_SRC
-*** flycheck
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package flycheck
-    :ensure t
-    :diminish flycheck
-    :custom
-    (flycheck-global-modes '(not (org-mode c-mode c++-mode))))
-
-  (use-package flycheck-clangcheck
-    :ensure t
-    :custom (flycheck-clangcheck-analyze t))
-#+END_SRC
-*** jedi
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package jedi
-  :ensure t)
-#+END_SRC
-*** Paredit and friends
+** paredit and friends
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook   #'enable-paredit-mode)
@@ -536,15 +442,9 @@
   (use-package cedit
     :ensure t)
   (use-package evil-paredit
-    :ensure t
-    :mode)
+    :ensure t)
 #+END_SRC
-*** racket
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package racket-mode
-  :ensure t)
-#+END_SRC
-*** Web
+** web
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package web-mode
       :ensure t
@@ -570,10 +470,8 @@
     (use-package json-mode
       :ensure t)
 
-    (use-package exec-path-from-shell
-      :ensure t)
 #+END_SRC
-*** yasnippet
+** yasnippet
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package yasnippet-snippets
     :ensure t)
@@ -589,71 +487,32 @@
     ("C-c y" . 'aya-create)
     ("C-c u" . 'aya-expand))
 #+END_SRC
-** git stuff
+* git stuff
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package magit
-     :ensure t
-     :config
-     (evil-leader/set-key "g s" 'magit-status))
-
+(setenv "SSH_ASKPASS" "git-gui--askpass")
 (use-package ssh-agency
   :ensure t)
 
 (use-package evil-magit
-  :ensure t)
-
-(use-package github-clone
-  :ensure t)
-
-(use-package diff-hl
   :ensure t
-  :hook
-  (magit-post-refresh-hook . diff-hl-magit-post-refresh)
   :config
-  (diff-hl-mode 1)
-  (evil-leader/set-key
-    "g n" 'diff-hl-next-hunk
-    "g p" 'diff-hl-previous-hunk))
+  (evil-leader/set-key "g s" 'magit-status))
 
 (use-package git-timemachine
   :ensure t)
-
-(use-package magithub
-  :ensure t
-  :after magit
-  :config
-  (magithub-feature-autoinject t)
-  (setq magithub-clone-default-directory "~/"))
-
-(use-package webpaste
-  :ensure t
-  :bind (("C-c C-p" . webpaste-paste-buffer)
-         ("C-c C-r" . webpaste-paste-region)))
-
-(use-package kubernetes
-  :ensure t
-  :commands
-  (kubernetes-overview)
-  :config
-  (evil-leader/set-key
-    "g k" 'kubernetes-overview))
-
-(use-package kubernetes-evil
-  :ensure t
-  :after kubernetes)
 #+END_SRC
-** ui
-*** ag
+* ui
+** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package ag
   :ensure t)
 #+END_SRC
-*** bifocal
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package bifocal
-      :ensure t)
-    #+END_SRC
-*** helm
+** bifocal
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package bifocal
+     :ensure t)
+   #+END_SRC
+** helm
 #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package helm
       :ensure t
@@ -691,10 +550,10 @@
 	"p p" 'helm-projectile
 	"p f" 'helm-projectile-find-file-dwim
 	"p a" 'helm-projectile-ag
-	"p s" 'helm-vc
+	"p s" 'projectile-add-known-project
 	"p c" 'projectile-compile-project))
 #+END_SRC
-*** neotree
+** neotree
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package neotree
     :ensure t
@@ -723,7 +582,7 @@
           (if file-name
               (neotree-find file-name))))))
 #+END_SRC
-*** modeline
+** modeline
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-modeline
     :ensure t
@@ -732,14 +591,14 @@
     :custom
     (doom-modeline-buffer-file-name-style 'truncate-with-project))
 #+END_SRC
-*** theme
+** theme
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-themes
     :ensure t
     :config
     (load-theme 'doom-molokai t))
 #+END_SRC
-*** Which key
+** Which key
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package which-key
     :ensure t
@@ -747,11 +606,22 @@
     :init
     (which-key-mode))
 #+END_SRC
-*** frames only
+** frames only
     for better compatibility with i3
 #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package frames-only-mode
         :ensure t
         :config
         (frames-only-mode))
+#+END_SRC
+* nix
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package nix-mode
+  :ensure t)
+
+(use-package nix-buffer
+  :ensure t)
+
+(use-package nix-sandbox
+  :ensure t)
 #+END_SRC
