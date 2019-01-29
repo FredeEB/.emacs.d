@@ -2,35 +2,32 @@
 ** init
    #+BEGIN_SRC emacs-lisp :tangle yes
    (require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-		    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-   (package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		       (not (gnutls-available-p))))
+	  (proto (if no-ssl "http" "https")))
+     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+     (package-initialize))
 
-(add-to-list 'default-frame-alist '(font . "Fira Code-12"))
-(set-face-attribute 'default t :font "Fira Code-12")
-(load-file "/home/bun/.emacs.d/elisp/utilties.el")
-#+END_SRC
+   (unless (package-installed-p 'use-package)
+     (package-refresh-contents)
+     (package-install 'use-package))
+
+
+   (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+   (set-face-attribute 'default t :font "Fira Code-12")
+   (load-file "/home/bun/.emacs.d/elisp/utilties.el")
+   #+END_SRC
 ** evil-mode
-   <C-z> to use emacs keybindings, if you're that kind of person
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package evil-leader
-     :ensure t
-     :custom
-     (evil-want-integration t)
-     (evil-want-keybinding nil)
-     :init
-     (global-evil-leader-mode)
-     (evil-leader/set-leader "<SPC>"))
+(use-package evil-leader
+  :ensure t
+  :custom
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
+  :init
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>"))
 
 (use-package evil-collection
   :ensure t
@@ -59,9 +56,13 @@
 
     ;; files
     "f f" 'fzf
+    "f d" 'dired-jump
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+    "f n" '(lambda () (interactive)
+	     (find-file "/etc/nixos/configuration.nix")
+	     (sudo-edit-current-file))
 
     ;; Projectile stuff
     "p p" 'projectile-find-file-dwim
@@ -75,62 +76,29 @@
 	 ("H" . 'delete-other-windows)
 	 ("C-e" . 'merge-buffer)))
 
-(use-package evil-goggles
-  :ensure t
-  :diminish evil-goggles
-  :config
-  (evil-goggles-mode))
-
 (use-package evil-surround
   :ensure t
   :config
   (global-evil-surround-mode 1))
-
-;; (use-package evil-mc
-;;   :ensure t
-;;   :diminish evil-mc
-;;   :config
-;;   (global-evil-mc-mode 1)
-;;   (evil-leader/set-key
-;;     "m m" 'evil-mc-make-all-cursors
-;;     "m n" 'evil-mc-undo-all-cursors
-;;     "m j" 'evil-mc-make-and-goto-next-match
-;;     "m k" 'evil-mc-make-and-goto-prev-match))
 #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
-(setq tab-width 3)
-(setq scroll-conservatively 100)
-(setq scroll-margin 5)
+(setq scroll-conservatively 100
+      scroll-margin 5
+      inhibit-startup-message t
+      initial-scratch-message ""
+      ring-bell-function 'ignore
+      tab-width 2
+      display-line-numbers-current-absolute t
+      default-directory "/home/bun/"
+      tramp-default-method "ssh"
+      large-file-warning-threshold nil)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(setq inhibit-startup-message t
-      initial-scratch-message ""
-      ring-bell-function 'ignore
-      tab-width 3
-      indent-tabs-mode 1)
-(global-subword-mode 1)
-(add-hook 'vhdl-mode-hook 'vhdl-electric-mode)
-(setq default-directory "/home/bun/"
-      tramp-default-method "ssh")
-(global-set-key (kbd "C-c o") 'ff-find-other-file)
-
-;; define config shortcut
-(defun config-visit()
-  (interactive)
-  (find-file "/home/bun/.emacs.d/config.org"))
-
-(eval-after-load 'shell
-  '(progn
-     (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
-     t))
-
-(setq mail-user-agent 'message-user-agent)
-(setq user-mail-address "frederikbraendstrup@gmail.com"
-      user-full-name "Frede Brændstrup")
+(global-display-line-numbers-mode)
 
 ;; Load zshrc
 (setq shell-file-name "zsh")
@@ -143,13 +111,18 @@
 ;;tmp stuff
 (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 
-(global-display-line-numbers-mode)
-(setq display-line-numbers-current-absolute t)
+;;latex stuff
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+      org-export-latex-listings 'minted
+      org-src-fontify-natively t)
 #+END_SRC
 * QOL
   Quality of life packages. many require external software. Look at each package for dependecies
 ** agressive indent
-   global mode might be turned off in a later revision. It's kinda obnoxious
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package aggressive-indent
      :ensure t)
@@ -171,7 +144,6 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package hungry-delete
     :ensure t
-    :diminish hungry-delete
     :config (global-hungry-delete-mode))
 #+END_SRC
 ** iedit
@@ -211,13 +183,6 @@
                              ("\\.mp3\\'" "mpv" (file))
 			     ("\\.mp4\\'" "mpv" (file)))))
 
-  (setq org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted"))
-        org-latex-pdf-process
-        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-  (setq large-file-warning-threshold nil)
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -244,6 +209,11 @@
     (matlab-indent-function t)
     (matlab-shell-command "matlab"))
 #+END_SRC
+** racket
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package racket-mode
+  :ensure t)
+#+END_SRC
 ** plant
     requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -256,11 +226,6 @@
 
   (use-package flycheck-plantuml
     :ensure t)
-#+END_SRC
-** racket
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package racket-mode
-  :ensure t)
 #+END_SRC
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -321,74 +286,34 @@
     :mode ("//.org//'"))
 #+END_SRC
 * programming
-** company for other languages
+** company
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company
     :ensure t
-    :diminish company
     :init
     (global-company-mode)
     :custom
     (company-show-numbers t)
     (company-idle-delay 0)
-    (company-minimum-prefix-length 3))
+    (company-minimum-prefix-length 1))
 
   (use-package company-flx
     :ensure t
     :config (company-flx-mode +1))
-
-  (use-package company-jedi
-    :ensure t
-    :config
-    (add-to-list 'company-backends 'company-jedi))
-
-  (use-package slime
-    :ensure t
-    :config
-    (slime-setup))
-
-  (use-package slime-company
-    :ensure t
-    :after slime
-    :custom
-    (inferior-lisp-program "/usr/bin/clisp")
-    :hook '(lisp-mode . 'slime))
-
-  (let ((map company-active-map))
-    (mapc
-     (lambda (x)
-       (define-key map (format "%d" x) 'ora-company-number))
-     (number-sequence 0 9))
-    (define-key map " " (lambda ()
-			  (interactive)
-			  (company-abort)
-			  (self-insert-command 1)))
-    (define-key map (kbd "<return>") nil))
-
-  (defun ora-company-number ()
-    "Forward to `company-complete-number'.
-
-  Unless the number is potentially part of the canidiate.
-  In that case, insert the number"
-    (interactive)
-    (let* ((k (this-command-keys))
-	   (re (concat "^" company-prefix k)))
-      (if (cl-find-if (lambda (s) (string-match re s))
-		      company-candidates)
-	  (self-insert-command 1)
-	(concat (company-complete-number (string-to-number k))))))
 #+END_SRC
-** lsp
+** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package cquery
     :ensure t
-    :custom
-    (cquery-executable "/usr/bin/cquery")
-    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
+    :after lsp
+    :init
+    (setq cquery-executable "/run/current-system/sw/bin/cquery")
+    (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
 
   (use-package lsp-mode
     :ensure t
-    :commands lsp)
+    :commands lsp
+    :config (require 'lsp-clients))
 
   (use-package lsp-ui
     :ensure t
@@ -400,51 +325,54 @@
     :config
     (push 'company-lsp company-backends))
 
+  (use-package dap-mode
+    :ensure t
+    :config (require 'dap-lldb))
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package clojure-mode
-    :ensure t
-    :config
-    (evil-leader/set-key-for-mode 'clojure-mode
-      "e" 'cider-eval-last-sexp
-      "k" 'cider-eval-buffer))
+(use-package clojure-mode
+  :ensure t
+  :config
+  (evil-leader/set-key-for-mode 'clojure-mode
+    "e" 'cider-eval-last-sexp
+    "k" 'cider-eval-buffer))
 
-  (use-package cider
-    :ensure t
-    :custom
-    (cider-lein-parameters "repl :headless :host localhost"))
+(use-package cider
+  :ensure t
+  :custom
+  (cider-lein-parameters "repl :headless :host localhost"))
 
-  (use-package flycheck-clojure
-    :ensure t)
+(use-package flycheck-clojure
+  :ensure t)
 
-  (use-package helm-clojuredocs
-    :ensure t)
+(use-package helm-clojuredocs
+  :ensure t)
 
-  (use-package cljr-helm
-    :ensure t
-    :config
-    (evil-leader/set-key-for-mode 'clojure-mode
-      "r h" 'cljr-helm))
+(use-package cljr-helm
+  :ensure t
+  :config
+  (evil-leader/set-key-for-mode 'cider-mode
+    "r h" 'cljr-helm
+    "r r" 'cider-eval-last-sexp
+    "r k" 'cider-eval-buffer
+    "r d" 'helm-clojuredocs))
 #+END_SRC
-** paredit and friends
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook   #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook         #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook         #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook       #'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook      #'enable-paredit-mode)
-  (add-hook 'racket-mode-hook #'enable-paredit-mode)
-
-  (use-package cedit
-    :ensure t)
+** Paredit and friends
+#+BEGIN_SRC emacs-lisp :tangle yes q
   (use-package evil-paredit
-    :ensure t)
+    :ensure t
+    :hook ((emacs-lisp-mode lisp-mode clojure-mode cljourescript-mode racket-mode) . (paredit-mode evil-paredit-mode))
 #+END_SRC
-** web
+** rust
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package cargo
+  :ensure t)
+
+(use-package toml-mode
+  :ensure t)
+#+END_SRC
+** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package web-mode
       :ensure t
@@ -453,13 +381,11 @@
 
     (use-package emmet-mode
       :ensure t
-      :diminish emmet-mode
       :bind
       ("M-p" . 'emmet-expand-yas))
 
     (use-package rainbow-mode
       :ensure t
-      :diminish rainbow-mode
       :init
       (rainbow-mode 1)
       :hook web-mode)
@@ -480,18 +406,9 @@
     :ensure t
     :init
     (yas-global-mode 1))
-
-  (use-package auto-yasnippet
-    :ensure t
-    :bind
-    ("C-c y" . 'aya-create)
-    ("C-c u" . 'aya-expand))
 #+END_SRC
 * git stuff
    #+BEGIN_SRC emacs-lisp :tangle yes
-(setenv "SSH_ASKPASS" "git-gui--askpass")
-(use-package ssh-agency
-  :ensure t)
 
 (use-package evil-magit
   :ensure t
@@ -500,6 +417,11 @@
 
 (use-package git-timemachine
   :ensure t)
+
+(setenv "SSH_ASKPASS" "git-gui--askpass")
+
+(use-package ssh-agency
+  :ensure t)
 #+END_SRC
 * ui
 ** ag
@@ -507,24 +429,19 @@
 (use-package ag
   :ensure t)
 #+END_SRC
-** bifocal
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package bifocal
-     :ensure t)
-   #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package helm
-      :ensure t
-      :config
-      (require 'helm-config)
-      (evil-leader/set-key
-	"u" 'helm-imenu)
-      (helm-mode)
-      :bind
-      ("C-x C-f" . 'helm-find-files)
-      ("C-x C-b" . 'helm-buffers-list)
-      ("M-x" . 'helm-M-x))
+(use-package helm
+  :ensure t
+  :config
+  (require 'helm-config)
+  (evil-leader/set-key
+    "u" 'helm-imenu)
+  (helm-mode)
+  :bind
+  ("C-x C-f" . 'helm-find-files)
+  ("C-x C-b" . 'helm-buffers-list)
+  ("M-x" . 'helm-M-x))
 
 (use-package helm-make
   :ensure t
@@ -553,35 +470,6 @@
 	"p s" 'projectile-add-known-project
 	"p c" 'projectile-compile-project))
 #+END_SRC
-** neotree
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package neotree
-    :ensure t
-    :config
-    (evil-leader/set-key "i" 'neotree-project-dir-toggle))
-
-  (defun neotree-project-dir-toggle ()
-    "Open NeoTree using the project root, using find-file-in-project,
-  or the current buffer directory."
-    (interactive)
-    (let ((project-dir
-           (ignore-errors
-             ;;; Pick one: projectile or find-file-in-project
-                                          ; (projectile-project-root)
-             (ffip-project-root)
-             ))
-          (file-name (buffer-file-name))
-          (neo-smart-open t))
-      (if (and (fboundp 'neo-global--window-exists-p)
-               (neo-global--window-exists-p))
-          (neotree-hide)
-        (progn
-          (neotree-show)
-          (if project-dir
-              (neotree-dir project-dir))
-          (if file-name
-              (neotree-find file-name))))))
-#+END_SRC
 ** modeline
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-modeline
@@ -602,7 +490,6 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package which-key
     :ensure t
-    :diminish which-key
     :init
     (which-key-mode))
 #+END_SRC
@@ -619,9 +506,11 @@
 (use-package nix-mode
   :ensure t)
 
-(use-package nix-buffer
+(use-package helm-nixos-options
+  :ensure t)
+
+(use-package company-nixos-options
   :ensure t)
 
 (use-package nix-sandbox
   :ensure t)
-#+END_SRC
