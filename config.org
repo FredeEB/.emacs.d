@@ -39,6 +39,11 @@
 (use-package evil
   :ensure t
   :after evil-leader
+  :bind
+  (:map evil-normal-state-map
+	("´" . 'evil-goto-mark)
+	("H" . 'delete-other-windows)
+	("C-e" . 'merge-buffer)))
   :config
   (evil-mode 1)
   (evil-leader/set-key
@@ -62,19 +67,15 @@
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
     "f n" '(lambda () (interactive)
 	     (find-file "/etc/nixos/configuration.nix")
-	     (sudo-edit-current-file))
+	     (sudo-edit))
 
     ;; Projectile stuff
     "p p" 'projectile-find-file-dwim
     "p a" 'projectile-ag
-    "p g" 'projectile-vc)
-  (evil-leader/set-key-for-mode
-    'org-mode "e" 'org-edit-special)
-  :bind (
-	 :map evil-normal-state-map
-	 ("´" . 'evil-goto-mark)
-	 ("H" . 'delete-other-windows)
-	 ("C-e" . 'merge-buffer)))
+    "p g" 'projectile-vc
+
+    ;;utilities
+    "+" 'calc)
 
 (use-package evil-surround
   :ensure t
@@ -285,6 +286,11 @@
     :after polymode
     :mode ("//.org//'"))
 #+END_SRC
+** yaml
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(use-package yaml-mode
+  :ensure t)
+   #+END_SRC
 * programming
 ** company
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -427,6 +433,11 @@
 ** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package ag
+  :ensure t)
+#+END_SRC
+** carbon
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package carbon-now-sh
   :ensure t)
 #+END_SRC
 ** helm
