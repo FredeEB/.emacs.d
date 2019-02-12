@@ -14,8 +14,7 @@
      (package-install 'use-package))
 
 
-   (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
-   (set-face-attribute 'default t :font "Fira Code-12")
+   (set-frame-font "Fira Code-12" nil t)
    (load-file "/home/bun/.emacs.d/elisp/utilties.el")
    #+END_SRC
 ** evil-mode
@@ -42,7 +41,6 @@
   :bind
   (:map evil-normal-state-map
 	("´" . 'evil-goto-mark)
-	("H" . 'delete-other-windows)
 	("C-e" . 'merge-buffer)))
   :config
   (evil-mode 1)
@@ -133,6 +131,11 @@
     (use-package avy
       :ensure t)
 #+END_SRC
+** engine
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(use-package engine-mode
+  :ensure t)
+   #+END_SRC
 ** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -299,22 +302,26 @@
     :init
     (global-company-mode)
     :custom
-    (company-show-numbers t)
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 
   (use-package company-flx
     :ensure t
     :config (company-flx-mode +1))
+
+  (use-package company-box
+    :ensure t
+    :hook (company-mode . company-box-mode))
 #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package cquery
     :ensure t
-    :after lsp
-    :init
-    (setq cquery-executable "/run/current-system/sw/bin/cquery")
-    (setq cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack")))
+    :custom
+    (cquery-executable "/run/current-system/sw/bin/cquery")
+    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
+    (company-transformers nil)
+    (cquery-sem-highlight-method 'font-lock))
 
   (use-package lsp-mode
     :ensure t
@@ -329,6 +336,8 @@
     :ensure t
     :commands company-lsp
     :config
+    (company-lsp-async t)
+    (company-lsp-cache-candidates nil)
     (push 'company-lsp company-backends))
 
   (use-package dap-mode
@@ -365,10 +374,10 @@
     "r d" 'helm-clojuredocs))
 #+END_SRC
 ** Paredit and friends
-#+BEGIN_SRC emacs-lisp :tangle yes q
+#+BEGIN_SRC emacs-lisp :tangle
   (use-package evil-paredit
     :ensure t
-    :hook ((emacs-lisp-mode lisp-mode clojure-mode cljourescript-mode racket-mode) . (paredit-mode evil-paredit-mode))
+    :hook ((emacs-lisp-mode lisp-mode clojure-mode cljourescript-mode racket-mode) . 'evil-paredit-mode))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -415,7 +424,6 @@
 #+END_SRC
 * git stuff
    #+BEGIN_SRC emacs-lisp :tangle yes
-
 (use-package evil-magit
   :ensure t
   :config
