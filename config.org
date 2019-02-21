@@ -170,7 +170,7 @@
   (hydra-iedit-menu/body))
 #+END_SRC
 ** openwith
-    requires zathura for pdf reading. feh for image viewing (not all formats are tested).
+    requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package openwith
     :ensure t
@@ -178,11 +178,11 @@
     (openwith-mode t)
     :custom
     (openwith-associations '(("\\.pdf\\'" "zathura" (file))
-                             ("\\.png\\'" "feh" (file))
-                             ("\\.jpg\\'" "feh" (file))
-                             ("\\.svg\\'" "feh" (file))
-                             ("\\.jpeg\\'" "feh" (file))
-                             ("\\.bmp\\'" "feh" (file))
+                             ("\\.png\\'" "sxiv" (file))
+                             ("\\.jpg\\'" "sxiv" (file))
+                             ("\\.svg\\'" "sxiv" (file))
+                             ("\\.jpeg\\'" "sxiv" (file))
+                             ("\\.bmp\\'" "sxiv" (file))
                              ("\\.flac\\'" "mpv" (file))
                              ("\\.mp3\\'" "mpv" (file))
 			     ("\\.mp4\\'" "mpv" (file)))))
