@@ -55,7 +55,7 @@
     "a" 'comment-dwim
 
     ;;buffer navigation
-    "j" 'evil-avy-goto-char-timer
+    "j" 'evil-avy-goto-char
 
     ;; files
     "f f" 'fzf
@@ -132,9 +132,22 @@
       :ensure t)
 #+END_SRC
 ** engine
+   used to search web resources.
    #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package engine-mode
-  :ensure t)
+  :ensure t
+  :config
+  (defengine cppreference
+    "https://en.cppreference.com/mwiki/index.php?search=%s")
+  (defengine google
+    "https://google.com/search?q=%s")
+  (defengine youtube
+    "https://www.youtube.com/results?search_query=%s")
+  ;; evil keybindings for search eninges
+  (evil-leader/set-key
+    "s c" 'engine/search-cppreference
+    "s g" 'engine/search-google
+    "s y" 'engine/search-youtube))
    #+END_SRC
 ** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
@@ -197,8 +210,8 @@
 #+END_SRC
 ** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package sudo-edit
-   	:ensure t)
+(use-package sudo-edit
+  :ensure t)
 #+END_SRC
 * language packs
   mostly syntax higlighters
@@ -321,7 +334,14 @@
     (cquery-executable "/run/current-system/sw/bin/cquery")
     (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
     (company-transformers nil)
-    (cquery-sem-highlight-method 'font-lock))
+    (cquery-sem-highlight-method 'font-lock)
+    :config
+    (evil-leader/set-key
+      "r d" 'lsp-ui-peek-find-definitions
+      "r i" 'lsp-ui-peek-find-implementation
+      "r r" 'lsp-ui-peek-find-references
+      "r j" 'lsp-ui-find-next-reference
+      "r k" 'lsp-ui-find-prev-reference))
 
   (use-package lsp-mode
     :ensure t
