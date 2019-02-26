@@ -41,7 +41,8 @@
   :bind
   (:map evil-normal-state-map
 	("´" . 'evil-goto-mark)
-	("C-e" . 'merge-buffer)))
+	("C-e" . 'merge-buffer)
+	("," . 'evil-goto-mark))
   :config
   (evil-mode 1)
   (evil-leader/set-key
@@ -73,7 +74,7 @@
     "p g" 'projectile-vc
 
     ;;utilities
-    "+" 'calc)
+    "+" 'calc))
 
 (use-package evil-surround
   :ensure t
