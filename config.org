@@ -228,7 +228,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package matlab-mode
     :ensure t
-    :hook '(matlab-mode . 'matlab-shell)
+    :hook 'matlab-shell
     :mode ("\\.m\\'" . matlab-mode)
     :custom
     (matlab-indent-function t)
@@ -313,6 +313,9 @@
     :ensure t
     :after polymode
     :mode ("//.org//'"))
+
+  (use-package org-re-reveal :ensure t)
+  (use-package ox-textile :ensure t)
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -327,7 +330,7 @@
     :init
     (global-company-mode)
     :custom
-    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode org-mode))
+    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 
@@ -551,6 +554,14 @@
         :config
         (frames-only-mode))
 #+END_SRC
+** treemacs
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package treemacs-evil
+     :ensure t
+     :config
+     (evil-leader/set-key
+       "i" 'treemacs))
+   #+END_SRC
 * nix
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package nix-mode
