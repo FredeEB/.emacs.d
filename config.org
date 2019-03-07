@@ -52,9 +52,15 @@
     "b i" 'ibuffer
     "o" 'other-window
     "q" 'kill-buffer
-    "i" 'indent-region
+
     ;; misc
     "a" 'comment-dwim
+    "i" 'indent-region
+    "w" '(lambda () (interactive)
+	   (paredit-mode)
+	   (evil-paredit-mode))
+
+
 
     ;;buffer navigation
     "j" 'evil-avy-goto-char
@@ -321,6 +327,7 @@
     :init
     (global-company-mode)
     :custom
+    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode org-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 
@@ -396,8 +403,7 @@
 ** Paredit and friends
 #+BEGIN_SRC emacs-lisp :tangle
   (use-package evil-paredit
-    :ensure t
-    :hook ((emacs-lisp-mode lisp-mode clojure-mode cljourescript-mode racket-mode) . 'evil-paredit-mode))
+    :ensure t)
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp :tangle yes
