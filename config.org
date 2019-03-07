@@ -52,6 +52,7 @@
     "b i" 'ibuffer
     "o" 'other-window
     "q" 'kill-buffer
+    "i" 'indent-region
     ;; misc
     "a" 'comment-dwim
 
@@ -238,8 +239,8 @@
   (use-package plantuml-mode
     :ensure t
     :custom
-    (plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
-    (org-plantuml-jar-path (expand-file-name "/usr/share/plantuml/plantuml.jar"))
+    (plantuml-jar-path (expand-file-name "/home/bun/.nix-profile/bin/plantuml"))
+    (org-plantuml-jar-path (expand-file-name "/home/bun/.nix-profile/bin/plantuml"))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
@@ -266,6 +267,10 @@
      (matlab . t)
      (emacs-lisp . t)
      (js . t)))
+
+  ;;oxes
+  (use-package ox-jira :ensure t)
+  (use-package ox-html5slide :ensure t)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -353,8 +358,6 @@
     :ensure t
     :commands company-lsp
     :config
-    (company-lsp-async t)
-    (company-lsp-cache-candidates nil)
     (push 'company-lsp company-backends))
 
   (use-package dap-mode
@@ -452,6 +455,9 @@
 (setenv "SSH_ASKPASS" "git-gui--askpass")
 
 (use-package ssh-agency
+  :ensure t)
+
+(use-package magithub
   :ensure t)
 #+END_SRC
 * ui
@@ -552,3 +558,4 @@
 
 (use-package nix-sandbox
   :ensure t)
+#+END_SRC
