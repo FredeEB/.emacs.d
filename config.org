@@ -277,6 +277,8 @@
   ;;oxes
   (use-package ox-jira :ensure t)
   (use-package ox-html5slide :ensure t)
+  (use-package org-re-reveal :ensure t)
+  (use-package ox-textile :ensure t)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -314,8 +316,6 @@
     :after polymode
     :mode ("//.org//'"))
 
-  (use-package org-re-reveal :ensure t)
-  (use-package ox-textile :ensure t)
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -560,7 +560,9 @@
      :ensure t
      :config
      (evil-leader/set-key
-       "i" 'treemacs))
+       "i" 'treemacs
+       "t p" 'treemacs-add-project-to-workspace
+       "t r" 'treemacs-remove-project-from-workspace))
    #+END_SRC
 * nix
 #+BEGIN_SRC emacs-lisp :tangle yes
