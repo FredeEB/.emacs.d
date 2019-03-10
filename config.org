@@ -139,6 +139,10 @@
     (use-package avy
       :ensure t)
 #+END_SRC
+** electricity
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (add-hook 'prog-mode-hook 'electric-pair-mode)
+   #+END_SRC
 ** engine
    used to search web resources.
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -234,6 +238,18 @@
     (matlab-indent-function t)
     (matlab-shell-command "matlab"))
 #+END_SRC
+** csharp
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package csharp-mode
+     :ensure t)
+
+   (use-package omnisharp
+     :ensure t
+     :after company
+     :config
+     (add-hook 'csharp-mode-hook 'omnisharp)
+     (add-to-list 'company-backends 'company-omnisharp))
+   #+END_SRC
 ** racket
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package racket-mode
@@ -245,12 +261,22 @@
   (use-package plantuml-mode
     :ensure t
     :custom
-    (plantuml-jar-path (expand-file-name "/home/bun/.nix-profile/bin/plantuml"))
-    (org-plantuml-jar-path (expand-file-name "/home/bun/.nix-profile/bin/plantuml"))
+    (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
+    (org-plantuml-jar-path (expand-file-name (executable-find "plantuml")))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
     :ensure t)
+
+  ;; requires entr
+  ;; TODO: remove entr as dependency
+  (defun plantuml-preview-extern ()
+    "Starts entr to recompile current diagram, and opens the png to show the image. tested working with sxiv"
+    (interactive)
+    (start-process-shell-command "entr" "*PlantExtern*"
+     (format "ls %s | entr -r plantuml %s"
+	     (buffer-name) (buffer-name)))
+    (find-file (format "%s.png" (file-name-sans-extension (buffer-name)))))
 #+END_SRC
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -330,20 +356,16 @@
     :init
     (global-company-mode)
     :custom
-    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode))
+    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode csharp-mode plantuml-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
-
-  (use-package company-flx
-    :ensure t
-    :config (company-flx-mode +1))
 #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package cquery
     :ensure t
     :custom
-    (cquery-executable "/run/current-system/sw/bin/cquery")
+    (cquery-executable (executable-find "cquery"))
     (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
     (company-transformers nil)
     (cquery-sem-highlight-method 'font-lock)
@@ -488,8 +510,6 @@
   :ensure t
   :config
   (require 'helm-config)
-  (evil-leader/set-key
-    "u" 'helm-imenu)
   (helm-mode)
   :bind
   ("C-x C-f" . 'helm-find-files)
@@ -560,7 +580,7 @@
      :ensure t
      :config
      (evil-leader/set-key
-       "i" 'treemacs
+       "u" 'treemacs
        "t p" 'treemacs-add-project-to-workspace
        "t r" 'treemacs-remove-project-from-workspace))
    #+END_SRC
