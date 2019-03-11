@@ -247,7 +247,7 @@
      :ensure t
      :after company
      :config
-     (add-hook 'csharp-mode-hook 'omnisharp)
+     (add-hook 'csharp-mode-hook 'omnisharp-mode)
      (add-to-list 'company-backends 'company-omnisharp))
    #+END_SRC
 ** racket
