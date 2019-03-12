@@ -19,75 +19,76 @@
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package evil-leader
-  :ensure t
-  :custom
-  (evil-want-integration t)
-  (evil-want-keybinding nil)
-  :init
-  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>"))
+   (use-package evil-leader
+     :ensure t
+     :custom
+     (evil-want-integration t)
+     (evil-want-keybinding nil)
+     :init
+     (global-evil-leader-mode)
+     (evil-leader/set-leader "<SPC>"))
 
-(use-package evil-collection
-  :ensure t
-  :custom
-  (evil-collection-company-use-tng nil)
-  :init
-  (evil-collection-init))
+   (use-package evil-collection
+     :ensure t
+     :custom
+     (evil-collection-company-use-tng nil)
+     :init
+     (evil-collection-init))
 
-(use-package evil
-  :ensure t
-  :after evil-leader
-  :bind
-  (:map evil-normal-state-map
-	("´" . 'evil-goto-mark)
-	("C-e" . 'merge-buffer)
-	("," . 'evil-goto-mark))
-  :config
-  (evil-mode 1)
-  (evil-leader/set-key
-    ;; buffers & windows
-    "b b" 'helm-buffers-list
-    "b o" 'other-buffer
-    "b i" 'ibuffer
-    "o" 'other-window
-    "q" 'kill-buffer
+   (use-package evil
+     :ensure t
+     :after evil-leader
+     :bind
+     (:map evil-normal-state-map
+	   ("´" . 'evil-goto-mark)
+	   ("C-e" . 'merge-buffer)
+	   ("," . 'evil-goto-mark))
+     :config
+     (evil-mode 1)
+     (evil-leader/set-key
+       ;; buffers & windows
+       "b b" 'helm-buffers-list
+       "b o" 'other-buffer
+       "b i" 'ibuffer
+       "o" 'other-window
+       "q" 'kill-buffer
 
-    ;; misc
-    "a" 'comment-dwim
-    "i" 'indent-region
-    "w" '(lambda () (interactive)
-	   (paredit-mode)
-	   (evil-paredit-mode))
+       ;; misc
+       "a" 'comment-dwim
+       "i" 'indent-region
+       "w" '(lambda () (interactive)
+	      (paredit-mode)
+	      (evil-paredit-mode))
 
+       ;;buffer navigation
+       "j" 'evil-avy-goto-char
 
+       ;; files
+       "f f" 'fzf
+       "f d" 'dired-jump
+       "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
+       "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
+       "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+       "f n" '(lambda () (interactive)
+		(find-file "/etc/nixos/configuration.nix")
+		(sudo-edit))
 
-    ;;buffer navigation
-    "j" 'evil-avy-goto-char
+       ;; Projectile stuff
+       "p p" 'projectile-find-file-dwim
+       "p a" 'projectile-ag
+       "p g" 'projectile-vc
 
-    ;; files
-    "f f" 'fzf
-    "f d" 'dired-jump
-    "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
-    "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
-    "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-    "f n" '(lambda () (interactive)
-	     (find-file "/etc/nixos/configuration.nix")
-	     (sudo-edit))
+       ;;utilities
+       "+" 'calc))
 
-    ;; Projectile stuff
-    "p p" 'projectile-find-file-dwim
-    "p a" 'projectile-ag
-    "p g" 'projectile-vc
+   (use-package evil-surround
+     :ensure t
+     :config
+     (global-evil-surround-mode 1))
 
-    ;;utilities
-    "+" 'calc))
-
-(use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode 1))
-#+END_SRC
+   (use-package evil-paredit
+     :ensure t)
+   #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq scroll-conservatively 100
@@ -250,11 +251,6 @@
      (add-hook 'csharp-mode-hook 'omnisharp-mode)
      (add-to-list 'company-backends 'company-omnisharp))
    #+END_SRC
-** racket
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package racket-mode
-  :ensure t)
-#+END_SRC
 ** plant
     requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -342,6 +338,10 @@
     :after polymode
     :mode ("//.org//'"))
 
+  (use-package org-brain
+    :ensure t
+    :config
+    (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -425,11 +425,6 @@
     "r k" 'cider-eval-buffer
     "r d" 'helm-clojuredocs))
 #+END_SRC
-** Paredit and friends
-#+BEGIN_SRC emacs-lisp :tangle
-  (use-package evil-paredit
-    :ensure t)
-#+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package cargo
@@ -475,22 +470,27 @@
 #+END_SRC
 * git stuff
    #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package evil-magit
-  :ensure t
-  :config
-  (evil-leader/set-key "g s" 'magit-status))
+   (use-package evil-magit
+     :ensure t
+     :config
+     (evil-leader/set-key "g s" 'magit-status)
+     :custom
+     (magit-repository-directories (expand-file-name "~/git/projects")))
 
-(use-package git-timemachine
-  :ensure t)
+   (use-package git-timemachine
+     :ensure t)
 
-(setenv "SSH_ASKPASS" "git-gui--askpass")
+   (setenv "SSH_ASKPASS" "git-gui--askpass")
 
-(use-package ssh-agency
-  :ensure t)
+   (use-package ssh-agency
+     :ensure t)
 
-(use-package magithub
-  :ensure t)
-#+END_SRC
+   (use-package forge
+     :ensure t)
+
+   ;; interactive github functions for extra sauce
+   (load-file (expand-file-name "~/.emacs.d/elisp/git-extras.el"))
+   #+END_SRC
 * ui
 ** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
