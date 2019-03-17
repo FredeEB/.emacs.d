@@ -1,8 +1,7 @@
 ;;; package -- Org-latex ease of use things
 ;;;
 ;;; Commentary:
-;;; Does org style insertion of LaTeX headers, provided that one's added
-;;; manually to "define" the location of LaTeX headers.
+;;; Adds a number of macros to manipulate org-files
 ;;;
 ;;; Code:
 
@@ -25,6 +24,17 @@
   (save-excursion
     (goto-char (point-min))
     (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n\n")))
+
+(defun org-reveal-add-root ()
+  "Insert Reveal root tag for org-re-reveal exports"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (insert (format "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
+		    (cdr (assoc 'version (with-current-buffer
+					  (url-retrieve-synchronously "https://api.cdnjs.com/libraries/reveal.js")
+					(goto-char (+ url-http-end-of-headers 1))
+					(json-read-object))))))))
 
 (defun org-macros-src-block-add-name (name)
   "Add a NAME to the current sourceblock."
