@@ -15,7 +15,7 @@
 
 
    (set-frame-font "Fira Code-12" nil t)
-   (load-file "/home/bun/.emacs.d/elisp/utilties.el")
+   (load-file (expand-file-name "~/.emacs.d/elisp/utilties.el"))
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -101,6 +101,9 @@
       default-directory "/home/bun/"
       tramp-default-method "ssh"
       large-file-warning-threshold nil)
+
+;; sane normal keybinds
+(global-set-key (kbd "C-s") 'save-buffer)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (tool-bar-mode -1)
@@ -321,7 +324,7 @@
   (setq org-export-latex-listings 'minted)
   (setq org-src-fontify-natively t)
 
-  (load "~/.emacs.d/elisp/org-macros.el")
+  (load-file (expand-file-name "~/.emacs.d/elisp/org-macros.el"))
 
   (use-package org-tree-slide
     :ensure t)
@@ -356,7 +359,7 @@
     :init
     (global-company-mode)
     :custom
-    (company-global-modes '(c++-mode c-mode emacs-lisp-mode python-mode csharp-mode plantuml-mode))
+    (company-global-modes '(prog-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 #+END_SRC
