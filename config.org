@@ -6,8 +6,7 @@
 		       (not (gnutls-available-p))))
 	  (proto (if no-ssl "http" "https")))
      (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-     (package-initialize))
+     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t))
 
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
@@ -119,6 +118,8 @@
 (setq delete-trailing-lines t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; Electricity!!
+(add-hook 'prog-mode-hook 'electric-pair-mode)
 ;;tmp stuff
 (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 
@@ -135,18 +136,14 @@
   Quality of life packages. many require external software. Look at each package for dependecies
 ** agressive indent
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package aggressive-indent
-     :ensure t)
+ (use-package aggressive-indent
+   :ensure t)
    #+END_SRC
 ** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
       :ensure t)
 #+END_SRC
-** electricity
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (add-hook 'prog-mode-hook 'electric-pair-mode)
-   #+END_SRC
 ** engine
    used to search web resources.
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -261,7 +258,7 @@
     :ensure t
     :custom
     (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
-    (org-plantuml-jar-path (expand-file-name (executable-find "plantuml")))
+    (org-plantuml-jar-path (replace-regexp-in-string "bin" "lib" (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
@@ -429,13 +426,16 @@
     "r d" 'helm-clojuredocs))
 #+END_SRC
 ** rust
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package cargo
-  :ensure t)
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package cargo
+     :ensure t)
 
-(use-package toml-mode
-  :ensure t)
-#+END_SRC
+   (use-package toml-mode
+     :ensure t)
+
+   (add-hook 'rust-mode-hook 'cargo-minor-mode)
+
+   #+END_SRC
 ** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package web-mode
