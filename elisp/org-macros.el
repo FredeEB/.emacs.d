@@ -5,6 +5,8 @@
 ;;;
 ;;; Code:
 
+(require 'json)
+(require 'url)
 
 (defun org-latex-include-header (packages)
   "Add a latex header with PACKAGES to the current document."
@@ -30,11 +32,14 @@
   (interactive)
   (save-excursion
     (goto-char (point-min))
-    (insert (format "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
-		    (cdr (assoc 'version (with-current-buffer
-					  (url-retrieve-synchronously "https://api.cdnjs.com/libraries/reveal.js")
-					(goto-char (+ url-http-end-of-headers 1))
-					(json-read-object))))))))
+    (insert
+     (format "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
+	     (cdr
+	      (assoc 'version
+		     (with-current-buffer
+			 (url-retrieve-synchronously "https://api.cdnjs.com/libraries/reveal.js")
+		       (goto-char (+ url-http-end-of-headers 1))
+		       (json-read-object))))))))
 
 (defun org-macros-src-block-add-name (name)
   "Add a NAME to the current sourceblock."

@@ -6,7 +6,8 @@
 		       (not (gnutls-available-p))))
 	  (proto (if no-ssl "http" "https")))
      (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t))
+     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+     (package-initialize))
 
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
