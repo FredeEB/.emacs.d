@@ -265,15 +265,12 @@
   (use-package flycheck-plantuml
     :ensure t)
 
-  ;; requires entr
-  ;; TODO: remove entr as dependency
-  (defun plantuml-preview-extern ()
-    "Starts entr to recompile current diagram, and opens the png to show the image. tested working with sxiv"
-    (interactive)
-    (start-process-shell-command "entr" "*PlantExtern*"
-     (format "ls %s | entr -r plantuml %s"
-	     (buffer-name) (buffer-name)))
-    (find-file (format "%s.png" (file-name-sans-extension (buffer-name)))))
+  ;; recompiles plantuml diagrams on save
+(defun recompile-plantuml ()
+  (add-hook 'after-save-hook
+	    (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
+
+(add-hook 'plantuml-mode-hook 'recompile-plantuml)
 #+END_SRC
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
