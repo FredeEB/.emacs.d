@@ -213,14 +213,6 @@
                              ("\\.flac\\'" "mpv" (file))
                              ("\\.mp3\\'" "mpv" (file))
 			     ("\\.mp4\\'" "mpv" (file)))))
-
-#+END_SRC
-** rainbow
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (rainbow-delimiters-mode))
 #+END_SRC
 ** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -574,6 +566,13 @@
         :ensure t
         :config
         (frames-only-mode))
+#+END_SRC
+** rainbow
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (rainbow-delimiters-mode))
 #+END_SRC
 ** treemacs
    #+BEGIN_SRC emacs-lisp :tangle yes
