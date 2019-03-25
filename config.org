@@ -1,35 +1,41 @@
 * Fixes
 ** init
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (require 'package)
-   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-		       (not (gnutls-available-p))))
-	  (proto (if no-ssl "http" "https")))
-     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-     (package-initialize))
+   ;; Bootstrap quelpa
+   (if (require 'quelpa nil t)
+       (quelpa-self-upgrade)
+     (with-temp-buffer
+       (url-insert-file-contents "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
+       (eval-buffer)))
 
-   (unless (package-installed-p 'use-package)
-     (package-refresh-contents)
-     (package-install 'use-package))
+   (setq quelpa-stable-p t)
+   (setq use-pacakge-ensure-function 'quelpa)
+   (setq use-package-always-ensure t)
 
 
-   (set-frame-font "Fira Code-12" nil t)
-   (load-file (expand-file-name "~/.emacs.d/elisp/utilties.el"))
+   ;; Install quelpa-use-package, which will install use-package as well
+   (quelpa
+    '(quelpa-use-package
+      :fetcher git
+      :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+   (require 'quelpa-use-package)
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
+   (setq evil-want-integration nil
+	 evil-want-keybinding nil)
+
    (use-package evil-leader
      :ensure t
-     :custom
-     (evil-want-integration t)
-     (evil-want-keybinding nil)
+     :quelpa t
      :init
      (global-evil-leader-mode)
      (evil-leader/set-leader "<SPC>"))
 
    (use-package evil-collection
      :ensure t
+     :quelpa t
+     :after evil-leader
      :custom
      (evil-collection-company-use-tng nil)
      :init
@@ -37,7 +43,8 @@
 
    (use-package evil
      :ensure t
-     :after evil-leader
+     :quelpa t
+     :after evil-collection
      :bind
      (:map evil-normal-state-map
 	   ("´" . 'evil-goto-mark)
@@ -83,11 +90,18 @@
 
    (use-package evil-surround
      :ensure t
+     :quelpa t
      :config
      (global-evil-surround-mode 1))
 
    (use-package evil-paredit
-     :ensure t)
+     :ensure t
+     :quelpa t)
+
+
+   (use-package evil-anzu
+     :ensure t
+     :quelpa t)
    #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -138,18 +152,22 @@
 ** agressive indent
    #+BEGIN_SRC emacs-lisp :tangle yes
  (use-package aggressive-indent
-   :ensure t)
+   :ensure t
+   :quelpa t
+)
    #+END_SRC
 ** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
-      :ensure t)
+      :ensure t
+      :quelpa t)
 #+END_SRC
 ** engine
    used to search web resources.
    #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package engine-mode
   :ensure t
+  :quelpa t
   :config
   (defengine cppreference
     "https://en.cppreference.com/mwiki/index.php?search=%s")
@@ -168,6 +186,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package fzf
     :ensure t
+    :quelpa t
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
@@ -175,12 +194,23 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package hungry-delete
     :ensure t
+    :quelpa t
     :config (global-hungry-delete-mode))
 #+END_SRC
+** howdoi
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package howdoi
+     :ensure t
+     :quelpa t
+     :config
+     (evil-leader/set-key
+       "h" 'howdoi-query-insert-code-snippet-at-point))
+   #+END_SRC
 ** iedit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package iedit
   :ensure t
+  :quelpa t
   :config
   (defhydra hydra-iedit-menu ()
     ("j" iedit-next-occurrence)
@@ -201,6 +231,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package openwith
     :ensure t
+    :quelpa t
     :config
     (openwith-mode t)
     :custom
@@ -217,7 +248,8 @@
 ** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package sudo-edit
-  :ensure t)
+  :ensure t
+  :quelpa t)
 #+END_SRC
 * language packs
   mostly syntax higlighters
@@ -226,6 +258,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package matlab-mode
     :ensure t
+    :quelpa t
     :hook 'matlab-shell
     :mode ("\\.m\\'" . matlab-mode)
     :custom
@@ -235,10 +268,12 @@
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package csharp-mode
-     :ensure t)
+     :ensure t
+     :quelpa t)
 
    (use-package omnisharp
      :ensure t
+     :quelpa t
      :after company
      :config
      (add-hook 'csharp-mode-hook 'omnisharp-mode)
@@ -249,13 +284,15 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
     :ensure t
+    :quelpa t
     :custom
     (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
     (org-plantuml-jar-path (replace-regexp-in-string "bin" "lib" (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
-    :ensure t)
+    :ensure t
+    :quelpa t)
 
   ;; recompiles plantuml diagrams on save
 (defun recompile-plantuml ()
@@ -268,6 +305,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package textile-mode
     :ensure t
+    :quelpa t
     :hook '(textile-mode . visual-line-mode)
     :mode ("\\.textile\\'"))
 #+END_SRC
@@ -287,10 +325,10 @@
      (js . t)))
 
   ;;oxes
-  (use-package ox-jira :ensure t)
-  (use-package ox-html5slide :ensure t)
-  (use-package org-re-reveal :ensure t)
-  (use-package ox-textile :ensure t)
+  (use-package ox-jira :ensure t :quelpa t)
+  (use-package ox-html5slide :ensure t :quelpa t)
+  (use-package org-re-reveal :ensure t :quelpa t)
+  (use-package ox-textile :ensure t :quelpa t)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -301,10 +339,12 @@
 
   (add-hook 'org-mode-hook 'visual-line-mode)
   (use-package org-ref
-    :ensure t)
+    :ensure t
+    :quelpa t)
 
   (use-package org-bullets
     :ensure t
+    :quelpa t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
@@ -314,46 +354,60 @@
   (load-file (expand-file-name "~/.emacs.d/elisp/org-macros.el"))
 
   (use-package org-tree-slide
-    :ensure t)
+    :ensure t
+    :quelpa t)
 
   (defmath uconvert (v u)
     "Convert value V into compatible unit U"
     (math-convert-units v u))
 
   (use-package polymode
-    :ensure t)
+    :ensure t
+    :quelpa t)
 
   (use-package poly-org
     :ensure t
+    :quelpa t
     :after polymode
     :mode ("//.org//'"))
 
   (use-package org-brain
     :ensure t
+    :quelpa t
     :config
     (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package yaml-mode
-  :ensure t)
+  :ensure t
+  :quelpa t)
    #+END_SRC
 * programming
 ** company
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company
     :ensure t
+    :quelpa t
     :init
     (global-company-mode)
     :custom
-    (company-global-modes '(prog-mode))
+    (company-global-modes '(prog-mode csharp-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 #+END_SRC
+** doxygen
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   ;; (use-package doxymacs
+   ;;   :quelpa
+   ;;   (:fetcher github :repo "emacsattic/doxymacs"))
+
+   #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package cquery
     :ensure t
+    :quelpa t
     :custom
     (cquery-executable (executable-find "cquery"))
     (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
@@ -369,27 +423,32 @@
 
   (use-package lsp-mode
     :ensure t
+    :quelpa t
     :commands lsp
     :config (require 'lsp-clients))
 
   (use-package lsp-ui
     :ensure t
+    :quelpa t
     :commands lsp-ui-mode)
 
   (use-package company-lsp
     :ensure t
+    :quelpa t
     :commands company-lsp
     :config
     (push 'company-lsp company-backends))
 
   (use-package dap-mode
     :ensure t
+    :quelpa t
     :config (require 'dap-lldb))
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package clojure-mode
   :ensure t
+  :quelpa t
   :config
   (evil-leader/set-key-for-mode 'clojure-mode
     "e" 'cider-eval-last-sexp
@@ -397,17 +456,21 @@
 
 (use-package cider
   :ensure t
+  :quelpa t
   :custom
   (cider-lein-parameters "repl :headless :host localhost"))
 
 (use-package flycheck-clojure
-  :ensure t)
+  :ensure t
+  :quelpa t)
 
 (use-package helm-clojuredocs
-  :ensure t)
+  :ensure t
+  :quelpa t)
 
 (use-package cljr-helm
   :ensure t
+  :quelpa t
   :config
   (evil-leader/set-key-for-mode 'cider-mode
     "r h" 'cljr-helm
@@ -418,10 +481,12 @@
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package cargo
-     :ensure t)
+     :ensure t
+     :quelpa t)
 
    (use-package toml-mode
-     :ensure t)
+     :ensure t
+     :quelpa t)
 
    (add-hook 'rust-mode-hook 'cargo-minor-mode)
 
@@ -430,34 +495,45 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package web-mode
       :ensure t
+      :quelpa t
       :hook
       (html-mode))
 
     (use-package emmet-mode
       :ensure t
+      :quelpa t
       :bind
       ("M-p" . 'emmet-expand-yas))
 
     (use-package rainbow-mode
       :ensure t
+      :quelpa t
       :init
       (rainbow-mode 1)
       :hook web-mode)
 
-    (use-package js2-mode
-      :ensure t)
+    (use-package rjsx-mode
+      :ensure t
+      :quelpa t)
+
+    (use-package react-snippets
+      :ensure t
+      :quelpa t)
 
     (use-package json-mode
-      :ensure t)
+      :ensure t
+      :quelpa t)
 
 #+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package yasnippet-snippets
-    :ensure t)
+    :ensure t
+    :quelpa t)
 
   (use-package yasnippet
     :ensure t
+    :quelpa t
     :init
     (yas-global-mode 1))
 #+END_SRC
@@ -465,21 +541,25 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package evil-magit
      :ensure t
+     :quelpa (evil-magit :fetcher github :repo "emacs-evil/evil-magit")
      :config
      (evil-leader/set-key "g s" 'magit-status)
      :custom
      (magit-repository-directories (expand-file-name "~/git/projects")))
 
    (use-package git-timemachine
-     :ensure t)
+     :ensure t
+     :quelpa t)
 
    (setenv "SSH_ASKPASS" "git-gui--askpass")
 
    (use-package ssh-agency
-     :ensure t)
+     :ensure t
+     :quelpa t)
 
-   (use-package forge
-     :ensure t)
+  (use-package forge
+     :ensure t
+     :quelpa t)
 
    ;; interactive github functions for extra sauce
    (load-file (expand-file-name "~/.emacs.d/elisp/git-extras.el"))
@@ -488,19 +568,17 @@
 ** ag
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package ag
-  :ensure t)
+  :ensure t
+  :quelpa t)
 (use-package helm-ag
-  :ensure t)
-#+END_SRC
-** carbon
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package carbon-now-sh
-  :ensure t)
+  :ensure t
+  :quelpa t)
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package helm
   :ensure t
+  :quelpa t
   :config
   (require 'helm-config)
   (helm-mode)
@@ -511,35 +589,37 @@
 
 (use-package helm-make
   :ensure t
+  :quelpa t
   :config
-  (evil-leader/set-key "c" 'helm-make))
+  (evil-leader/set-key "c" 'helm-make-projectile))
 
 (use-package helm-company
-  :ensure t)
+  :ensure t
+  :quelpa t)
 
 (use-package helm-swoop
   :ensure t
+  :quelpa t
   :bind
   (:map evil-normal-state-map
     ("/" . 'helm-swoop)))
 
-    (use-package helm-xref
-      :ensure t)
-
-    (use-package helm-projectile
-      :ensure t
-      :config
-      (evil-leader/set-key
-	"p p" 'helm-projectile
-	"p f" 'helm-projectile-find-file-dwim
-	"p a" 'helm-projectile-ag
-	"p s" 'projectile-add-known-project
-	"p c" 'projectile-compile-project))
+(use-package helm-projectile
+  :ensure t
+  :quelpa t
+  :config
+  (evil-leader/set-key
+    "p p" 'helm-projectile
+    "p f" 'helm-projectile-find-file-dwim
+    "p a" 'helm-projectile-ag
+    "p s" 'projectile-add-known-project
+    "p c" 'projectile-compile-project))
 #+END_SRC
 ** modeline
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-modeline
     :ensure t
+    :quelpa t
     :defer t
     :hook (after-init . doom-modeline-init)
     :custom
@@ -549,6 +629,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-themes
     :ensure t
+    :quelpa t
     :config
     (load-theme 'doom-molokai t))
 #+END_SRC
@@ -556,6 +637,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package which-key
     :ensure t
+    :quelpa t
     :init
     (which-key-mode))
 #+END_SRC
@@ -564,6 +646,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package frames-only-mode
         :ensure t
+	:quelpa t
         :config
         (frames-only-mode))
 #+END_SRC
@@ -571,6 +654,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package rainbow-delimiters
     :ensure t
+    :quelpa t
     :init
     (rainbow-delimiters-mode))
 #+END_SRC
@@ -578,6 +662,7 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package treemacs-evil
      :ensure t
+     :quelpa t
      :config
      (evil-leader/set-key
        "u" 'treemacs
@@ -587,14 +672,14 @@
 * nix
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package nix-mode
-  :ensure t)
+  :ensure t
+  :quelpa t)
 
 (use-package helm-nixos-options
-  :ensure t)
+  :ensure t
+  :quelpa t)
 
 (use-package company-nixos-options
-  :ensure t)
-
-(use-package nix-sandbox
-  :ensure t)
+  :ensure t
+  :quelpa t)
 #+END_SRC
