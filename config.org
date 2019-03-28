@@ -541,6 +541,9 @@
   (use-package react-snippets
     :ensure t)
 
+  (use-package react-snippets
+    :ensure t)
+
   (use-package yasnippet
     :ensure t
     :quelpa t
