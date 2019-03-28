@@ -16,7 +16,10 @@
   (insert
    (format "%s" (get-github-repo-field user repo field))))
 
-(defun org-github-link (user repo)
+(defun org-insert-github-link (user repo)
   "Inserts a github link at USER/REPO."
   (interactive "sUser: \nsRepo: ")
-  (insert (format "[[https://github.com/%s/%s][%s/%s]]" user repo user repo)))
+  (org-github-link (format "%s/%s" user repo)))
+
+(defun org-github-link (repo)
+  (insert (format "[[https://github.com/%s][%s]]" repo repo)))

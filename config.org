@@ -1,4 +1,4 @@
-* Fixes
+* fixes
 ** init
    #+BEGIN_SRC emacs-lisp :tangle yes
    ;; Bootstrap quelpa
@@ -146,8 +146,12 @@
         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
       org-export-latex-listings 'minted
       org-src-fontify-natively t)
+
+;; font
+(add-to-list 'default-frame-alist
+	     '(font . "Fira Code-12"))
 #+END_SRC
-* QOL
+* qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** agressive indent
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -392,7 +396,7 @@
     :init
     (global-company-mode)
     :custom
-    (company-global-modes '(prog-mode csharp-mode))
+    (company-global-modes (prog-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 #+END_SRC
@@ -623,7 +627,13 @@
     :defer t
     :hook (after-init . doom-modeline-init)
     :custom
-    (doom-modeline-buffer-file-name-style 'truncate-with-project))
+    (doom-modeline-buffer-file-name-style 'relative-from-project)
+    (doom-modeline-height 35)
+    (doom-modeline-bar-width 4)
+    (doom-modeline-lsp t)
+    (doom-modeline-icon t)
+    (doom-modeline-major-mode-icon t)
+    (doom-modeline-major-mode-color-icon t))
 #+END_SRC
 ** theme
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -631,7 +641,7 @@
     :ensure t
     :quelpa t
     :config
-    (load-theme 'doom-molokai t))
+    (load-theme 'doom-challenger-deep t))
 #+END_SRC
 ** Which key
 #+BEGIN_SRC emacs-lisp :tangle yes
