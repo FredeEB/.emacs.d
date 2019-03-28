@@ -509,6 +509,9 @@
       :bind
       ("M-p" . 'emmet-expand-yas))
 
+    (use-package impatient-mode
+      :ensure t)
+
     (use-package rainbow-mode
       :ensure t
       :quelpa t
@@ -534,6 +537,9 @@
   (use-package yasnippet-snippets
     :ensure t
     :quelpa t)
+
+  (use-package react-snippets
+    :ensure t)
 
   (use-package yasnippet
     :ensure t
