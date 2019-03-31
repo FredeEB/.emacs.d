@@ -8,10 +8,8 @@
        (url-insert-file-contents "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
        (eval-buffer)))
 
-   (setq quelpa-stable-p t)
    (setq use-pacakge-ensure-function 'quelpa)
    (setq use-package-always-ensure t)
-
 
    ;; Install quelpa-use-package, which will install use-package as well
    (quelpa
@@ -19,6 +17,7 @@
       :fetcher git
       :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
    (require 'quelpa-use-package)
+
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -105,6 +104,10 @@
    #+END_SRC
 ** Basics
 #+BEGIN_SRC emacs-lisp :tangle yes
+(defun reload-config ()
+  (interactive)
+  (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+
 (setq scroll-conservatively 100
       scroll-margin 5
       inhibit-startup-message t
@@ -135,6 +138,7 @@
 
 ;; Electricity!!
 (add-hook 'prog-mode-hook 'electric-pair-mode)
+
 ;;tmp stuff
 (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 
