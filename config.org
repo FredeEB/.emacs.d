@@ -8,7 +8,6 @@
        (url-insert-file-contents "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
        (eval-buffer)))
 
-   (setq quelpa-stable-p t)
    (setq use-pacakge-ensure-function 'quelpa)
    (setq use-package-always-ensure t)
 
@@ -20,6 +19,54 @@
       :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
    (require 'quelpa-use-package)
    #+END_SRC
+** Basics
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq scroll-conservatively 100
+      scroll-margin 5
+      inhibit-startup-message t
+      initial-scratch-message ""
+      ring-bell-function 'ignore
+      tab-width 2
+      display-line-numbers-current-absolute t
+      default-directory "/home/bun/"
+      tramp-default-method "ssh"
+      large-file-warning-threshold nil)
+
+;; sane normal keybinds
+(global-set-key (kbd "C-s") 'save-buffer)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(global-display-line-numbers-mode)
+
+;; Load zshrc
+(setq shell-file-name "zsh")
+(setq shell-command-switch "-ic")
+
+;; File beautification
+(setq delete-trailing-lines t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Electricity!!
+(add-hook 'prog-mode-hook 'electric-pair-mode)
+;;tmp stuff
+(defalias 'sesman-linked-sessions 'sesman--linked-sessions)
+
+;;latex stuff
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+      org-export-latex-listings 'minted
+      org-src-fontify-natively t)
+
+;; font
+(add-to-list 'default-frame-alist
+	     '(font . "Fira Code-12"))
+#+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq evil-want-integration nil
@@ -103,54 +150,7 @@
      :ensure t
      :quelpa t)
    #+END_SRC
-** Basics
-#+BEGIN_SRC emacs-lisp :tangle yes
-(setq scroll-conservatively 100
-      scroll-margin 5
-      inhibit-startup-message t
-      initial-scratch-message ""
-      ring-bell-function 'ignore
-      tab-width 2
-      display-line-numbers-current-absolute t
-      default-directory "/home/bun/"
-      tramp-default-method "ssh"
-      large-file-warning-threshold nil)
 
-;; sane normal keybinds
-(global-set-key (kbd "C-s") 'save-buffer)
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(global-display-line-numbers-mode)
-
-;; Load zshrc
-(setq shell-file-name "zsh")
-(setq shell-command-switch "-ic")
-
-;; File beautification
-(setq delete-trailing-lines t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; Electricity!!
-(add-hook 'prog-mode-hook 'electric-pair-mode)
-;;tmp stuff
-(defalias 'sesman-linked-sessions 'sesman--linked-sessions)
-
-;;latex stuff
-(setq org-latex-listings 'minted
-      org-latex-packages-alist '(("" "minted"))
-      org-latex-pdf-process
-      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-      org-export-latex-listings 'minted
-      org-src-fontify-natively t)
-
-;; font
-(add-to-list 'default-frame-alist
-	     '(font . "Fira Code-12"))
-#+END_SRC
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** agressive indent
@@ -216,14 +216,8 @@
   :ensure t
   :quelpa t
   :config
-  (defhydra hydra-iedit-menu ()
-    ("j" iedit-next-occurrence)
-    ("k" iedit-prev-occurrence)
-    ("q" iedit-quit)
-    ("t" iedit-toggle-selection)
-    ("f" iedit-restrict-function))
   (evil-leader/set-key
-    "m" 'iedit-then-hydra))
+    "m" 'iedit-mode))
 
 (defun iedit-then-hydra ()
   (interactive)
@@ -510,7 +504,7 @@
       ("M-p" . 'emmet-expand-yas))
 
     (use-package impatient-mode
-      :ensure t)
+      :quelpa t)
 
     (use-package rainbow-mode
       :ensure t
@@ -662,12 +656,12 @@
 #+END_SRC
 ** frames only
     for better compatibility with i3
-#+BEGIN_SRC emacs-lisp :tangle yes
-      (use-package frames-only-mode
-        :ensure t
-	:quelpa t
-        :config
-        (frames-only-mode))
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package frames-only-mode
+      :ensure t
+      :quelpa t
+      :config
+      (frames-only-mode))
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp :tangle yes
