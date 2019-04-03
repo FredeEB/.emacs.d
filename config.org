@@ -30,7 +30,8 @@
       display-line-numbers-current-absolute t
       default-directory "/home/bun/"
       tramp-default-method "ssh"
-      large-file-warning-threshold nil)
+      large-file-warning-threshold nil
+      subword-mode t)
 
 ;; sane normal keybinds
 (global-set-key (kbd "C-s") 'save-buffer)
@@ -263,6 +264,16 @@
     (matlab-indent-function t)
     (matlab-shell-command "matlab"))
 #+END_SRC
+** docker
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package docker
+     :quelpa t
+     :ensure t)
+
+   (use-package dockerfile-mode
+     :quelpa t
+     :ensure t)
+   #+END_SRC
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package csharp-mode
@@ -405,25 +416,22 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package cquery
     :ensure t
+    :quelpa t)
+  ;; (use-package ccls
+  ;;   :quelpa
+  ;;   :ensure t)
+
+  (use-package lsp-mode
+    :ensure t
     :quelpa t
-    :custom
-    (cquery-executable (executable-find "cquery"))
-    (cquery-extra-init-params '(:index (:comments 2) :cacheFormat "msgpack"))
-    (company-transformers nil)
-    (cquery-sem-highlight-method 'font-lock)
-    :config
+    :commands lsp
+    :config (require 'lsp-clients)
     (evil-leader/set-key
       "r d" 'lsp-ui-peek-find-definitions
       "r i" 'lsp-ui-peek-find-implementation
       "r r" 'lsp-ui-peek-find-references
       "r j" 'lsp-ui-find-next-reference
       "r k" 'lsp-ui-find-prev-reference))
-
-  (use-package lsp-mode
-    :ensure t
-    :quelpa t
-    :commands lsp
-    :config (require 'lsp-clients))
 
   (use-package lsp-ui
     :ensure t
@@ -505,13 +513,6 @@
 
     (use-package impatient-mode
       :quelpa t)
-
-    (use-package rainbow-mode
-      :ensure t
-      :quelpa t
-      :init
-      (rainbow-mode 1)
-      :hook web-mode)
 
     (use-package rjsx-mode
       :ensure t
