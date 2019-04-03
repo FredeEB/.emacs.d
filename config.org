@@ -512,6 +512,7 @@
       ("M-p" . 'emmet-expand-yas))
 
     (use-package impatient-mode
+      :ensure t
       :quelpa t)
 
     (use-package rjsx-mode
@@ -532,6 +533,9 @@
   (use-package yasnippet-snippets
     :ensure t
     :quelpa t)
+
+  (use-package react-snippets
+    :ensure t)
 
   (use-package react-snippets
     :ensure t)
