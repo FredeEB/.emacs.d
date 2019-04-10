@@ -67,6 +67,10 @@
 ;; font
 (add-to-list 'default-frame-alist
 	     '(font . "Fira Code-12"))
+
+(use-package cask
+  :quelpa t
+  :ensure t)
 #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -333,11 +337,13 @@
      (emacs-lisp . t)
      (js . t)))
 
+
   ;;oxes
   (use-package ox-jira :ensure t :quelpa t)
   (use-package ox-html5slide :ensure t :quelpa t)
   (use-package org-re-reveal :ensure t :quelpa t)
   (use-package ox-textile :ensure t :quelpa t)
+  (add-to-list 'org-export-backends 'groff)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -404,6 +410,10 @@
     (company-global-modes (prog-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
+
+  (use-package ggtags
+    :quelpa t
+    :ensure t)
 #+END_SRC
 ** doxygen
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -411,6 +421,12 @@
    ;;   :quelpa
    ;;   (:fetcher github :repo "emacsattic/doxymacs"))
 
+   #+END_SRC
+** elisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package elsa
+     :quelpa t
+     :ensure t)
    #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -573,6 +589,11 @@
      :ensure t
      :quelpa t)
 
+   (use-package git-gutter-fringe+
+     :quelpa t
+     :ensure t
+     :config
+     (git-gutter+-mode))
    ;; interactive github functions for extra sauce
    (load-file (expand-file-name "~/.emacs.d/elisp/git-extras.el"))
    #+END_SRC
