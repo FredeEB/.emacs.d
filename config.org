@@ -42,6 +42,8 @@
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode)
 
+(setq standard-indent 2)
+
 ;; Load zshrc
 (setq shell-file-name "zsh")
 (setq shell-command-switch "-ic")
@@ -180,11 +182,23 @@
     "https://google.com/search?q=%s")
   (defengine youtube
     "https://www.youtube.com/results?search_query=%s")
+  (defengine dockerhub
+    "https://hub.docker.com/search?q=%s&type=image")
+  (defengine github
+    "https://github.com/search?q=%s")
+  (defengine rustdoc
+    "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
+  (defengine wikipedia
+    "https://en.wikipedia.org/wiki/%s")
   ;; evil keybindings for search eninges
   (evil-leader/set-key
     "s c" 'engine/search-cppreference
-    "s g" 'engine/search-google
-    "s y" 'engine/search-youtube))
+    "s y" 'engine/search-youtube
+    "s d" 'engine/search-dockerhub
+    "s r" 'engine/search-rustdoc
+    "s w" 'engine/search-wikipedia
+    "s g i" 'engine/search-github
+    "s g o" 'engine/search-google))
    #+END_SRC
 ** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
@@ -384,7 +398,9 @@
     :ensure t
     :quelpa t
     :config
-    (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
+    (evil-leader/set-key
+      "n" 'org-brain-goto))
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -399,27 +415,19 @@
     :ensure t
     :quelpa t
     :init
-    (global-company-mode)
+    (global-company-mode t)
     :custom
-    (company-global-modes (prog-mode))
     (company-idle-delay 0)
     (company-minimum-prefix-length 1))
 #+END_SRC
-** doxygen
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   ;; (use-package doxymacs
-   ;;   :quelpa
-   ;;   (:fetcher github :repo "emacsattic/doxymacs"))
-
-   #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package cquery
-    :ensure t
-    :quelpa t)
-  ;; (use-package ccls
-  ;;   :quelpa
-  ;;   :ensure t)
+  ;; (use-package cquery
+  ;;   :ensure t
+  ;;   :quelpa t)
+  (use-package ccls
+    :quelpa
+    :ensure t)
 
   (use-package lsp-mode
     :ensure t
@@ -499,25 +507,36 @@
    #+END_SRC
 ** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; everything in one package
     (use-package web-mode
       :ensure t
       :quelpa t
-      :hook
-      (html-mode))
+      :mode
+      ("\\.js\\'" . web-mode)
+      ("\\.css\\'" . web-mode)
+      ("\\.jsx\\'" . web-mode)
+      ("\\.tsx\\'" . typescript-mode)
+      ("\\.html\\'" . web-mode)
+      ("\\.scss\\'" . web-mode))
 
+    ;; Macro>overload
     (use-package emmet-mode
       :ensure t
       :quelpa t
       :bind
       ("M-p" . 'emmet-expand-yas))
 
+    ;; server static files
     (use-package impatient-mode
       :ensure t
       :quelpa t)
 
-    (use-package rjsx-mode
+    ;; typescript lang server
+    (use-package tide
+      :quelpa t
       :ensure t
-      :quelpa t)
+      :commands tide-mode
+      :mode ("\\.tsx\\'" . tide-mode))
 
     (use-package react-snippets
       :ensure t
@@ -526,7 +545,6 @@
     (use-package json-mode
       :ensure t
       :quelpa t)
-
 #+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -664,9 +682,7 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package frames-only-mode
       :ensure t
-      :quelpa t
-      :config
-      (frames-only-mode))
+      :quelpa t)
 #+END_SRC
 ** rainbow
 #+BEGIN_SRC emacs-lisp :tangle yes
