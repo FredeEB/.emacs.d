@@ -11,6 +11,8 @@
    (setq use-pacakge-ensure-function 'quelpa)
    (setq use-package-always-ensure t)
 
+   (require 'package)
+   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
    ;; Install quelpa-use-package, which will install use-package as well
    (quelpa
@@ -19,8 +21,8 @@
       :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
    (require 'quelpa-use-package)
    #+END_SRC
-** Basics 
-   #+BEGIN_SRC emacs-lisp :tangle yes 
+** Basics
+   #+BEGIN_SRC emacs-lisp :tangle yes
    (setq scroll-conservatively 100
 	 scroll-margin 5
 	 inhibit-startup-message t
@@ -28,7 +30,7 @@
 	 ring-bell-function 'ignore
 	 tab-width 2
 	 display-line-numbers-current-absolute t
-	 default-directory "/home/bun/"
+	 default-directory (expand-file-name "~/")
 	 tramp-default-method "ssh"
 	 large-file-warning-threshold nil
 	 subword-mode t)
@@ -43,8 +45,8 @@
    (setq standard-indent 2)
 
    ;; Load zshrc
-   (setq shell-file-name "zsh")
-   (setq shell-command-switch "-ic")
+   (setq shell-file-name "sh")
+   (setq shell-command-switch "-c")
 
    ;; File beautification
    (setq delete-trailing-lines t)
@@ -55,6 +57,10 @@
 
    ;;tmp stuff
    (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
+
+   ;;extra utilities
+   (load-file (expand-file-name "~/.emacs.d/elisp/utilties.el"))
+   (load-file (expand-file-name "~/.emacs.d/elisp/lock-in.el"))
 
    ;;latex stuff
    (setq org-latex-listings 'minted
@@ -144,7 +150,7 @@
 ** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
-        :quelpa t)
+      :quelpa t)
 #+END_SRC
 ** engine
    used to search web resources.
@@ -184,12 +190,6 @@
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
-** Hungry delete
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package hungry-delete
-    :quelpa t
-    :config (global-hungry-delete-mode))
-#+END_SRC
 ** howdoi
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package howdoi
@@ -198,6 +198,12 @@
      (evil-leader/set-key
        "h" 'howdoi-query-insert-code-snippet-at-point))
    #+END_SRC
+** Hungry delete
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package hungry-delete
+    :quelpa t
+    :config (global-hungry-delete-mode))
+#+END_SRC
 ** iedit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package iedit
@@ -211,6 +217,11 @@
   (iedit-mode)
   (hydra-iedit-menu/body))
 #+END_SRC
+** kubernetes
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package kubernetes
+     :quelpa t)
+   #+END_SRC
 ** openwith
     requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -219,33 +230,32 @@
     :config
     (openwith-mode t)
     :custom
-    (openwith-associations '(("\\.pdf\\'" "zathura" (file))
-                             ("\\.png\\'" "sxiv" (file))
-                             ("\\.jpg\\'" "sxiv" (file))
-                             ("\\.svg\\'" "sxiv" (file))
-                             ("\\.jpeg\\'" "sxiv" (file))
-                             ("\\.bmp\\'" "sxiv" (file))
-                             ("\\.flac\\'" "mpv" (file))
-                             ("\\.mp3\\'" "mpv" (file))
-			     ("\\.mp4\\'" "mpv" (file)))))
+    (openwith-associations
+     '(("\\.pdf\\'" "zathura" (file))
+       ("\\.jpg\\'" "sxiv" (file))
+       ("\\.svg\\'" "sxiv" (file))
+       ("\\.jpeg\\'" "sxiv" (file))
+       ("\\.bmp\\'" "sxiv" (file))
+       ("\\.flac\\'" "mpv" (file))
+       ("\\.mkv\\'" "mpv" (file))
+       ("\\.mp3\\'" "mpv" (file))
+       ("\\.mp4\\'" "mpv" (file)))))
 #+END_SRC
+** request
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package request
+     :quelpa t)
+   #+END_SRC
 ** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package sudo-edit
   :quelpa t)
 #+END_SRC
-** request
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package request
-     :quelpa t
-     :ensure t)
-   #+END_SRC
 * language packs
   mostly syntax higlighters
 ** matlab
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
    #+BEGIN_SRC emacs-lisp :tangle yes
-
    (use-package matlab-mode
      :quelpa t
      :hook 'matlab-shell
@@ -285,18 +295,22 @@
     :quelpa t
     :custom
     (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
-    (org-plantuml-jar-path (replace-regexp-in-string "bin" "lib" (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
+    (org-plantuml-jar-path
+     (replace-regexp-in-string
+      "bin"
+      "lib"
+      (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
     :quelpa t)
 
   ;; recompiles plantuml diagrams on save
-(defun recompile-plantuml ()
-  (add-hook 'after-save-hook
-	    (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
+  (defun recompile-plantuml ()
+    (add-hook 'after-save-hook
+	      (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
 
-(add-hook 'plantuml-mode-hook 'recompile-plantuml)
+  (add-hook 'plantuml-mode-hook 'recompile-plantuml)
 #+END_SRC
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -311,6 +325,7 @@
    'org-babel-load-languages
    '((python . t)
      (C . T)
+     (clojure . T)
      (plantuml . t)
      (shell . t)
      (python .t)
@@ -347,8 +362,6 @@
   (setq org-export-latex-listings 'minted)
   (setq org-src-fontify-natively t)
 
-  (load-file (expand-file-name "~/.emacs.d/elisp/org-macros.el"))
-
   (use-package org-tree-slide :quelpa t)
 
   (use-package org-gcal
@@ -375,90 +388,164 @@
   (defmath uconvert (v u)
     "Convert value V into compatible unit U"
     (math-convert-units v u))
+
+  (use-package org-plus-contrib
+    :ensure t)
+
+  (add-hook 'org-mode-hook
+	    (lambda ()
+	      (openwith-mode nil)
+	      (org-display-inline-images t)))
+
+
+  (defmath uconvert (v u)
+    "Convert value V into compatible unit U"
+    (math-convert-units v u))
+#+END_SRC
+
+**** org-extras
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun export-and-find ()
+    (interactive)
+    (org-latex-export-to-pdf)
+    (find-file
+     (format "%s.pdf" (file-name-base (buffer-name)))))
+
+  (defun org-latex-include-header (packages)
+    "Add a latex header with PACKAGES to the current document."
+    (interactive
+     (list (split-string (read-string "Package(s): "))))
+    (save-excursion
+      (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
+	  (if (not (search-backward "#+AUTHOR:" nil t))
+	      (goto-char 0)))
+      (forward-line)
+      (dolist (package packages)
+	(insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
+
+  (defun org-latex-insert-meta (title author)
+    "Insert TITLE and AUTHOR headers for latex."
+    (interactive "sTitle: \nsAuthor: ")
+    (save-excursion
+      (goto-char (point-min))
+      (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n\n")))
+
+  (defun org-reveal-add-root ()
+    "Insert Reveal root tag for org-re-reveal exports"
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (insert
+       (format
+	"#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
+	(cdr
+	 (assoc 'version
+		(with-current-buffer
+		    (url-retrieve-synchronously
+		     "https://api.cdnjs.com/libraries/reveal.js")
+		  (goto-char (+ url-http-end-of-headers 1))
+		  (json-read-object))))))))
+
+  (defun org-macros-src-block-add-name (name)
+    "Add a NAME to the current sourceblock."
+    (interactive "sName: ")
+    (save-excursion
+      (if (not (search-backward "#+BEGIN_SRC" nil t))
+	  (message "Src block not found"))
+      (newline)
+      (forward-line -1)
+      (insert (concat "#+NAME: " name))))
 #+END_SRC
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package yaml-mode
-  :quelpa t)
+   (use-package yaml-mode
+     :quelpa t)
    #+END_SRC
 * programming
 ** company
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package company
-    :quelpa t
-    :init
-    (global-company-mode t)
-    :custom
-    (company-idle-delay 0)
-    (company-minimum-prefix-length 1))
-
-  (use-package etags :quelpa t)
-#+END_SRC
-** elisp
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package elsa :quelpa t)
+   (use-package company
+     :quelpa t
+     :init
+     (global-company-mode t)
+     :custom
+     (company-idle-delay 0)
+     (company-minimum-prefix-length 1))
    #+END_SRC
-** LSP
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; (use-package cquery
-  ;;   ;;   :quelpa t)
-  (use-package ccls
-    :quelpa
-    :ensure t)
+** lisp
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   ;; common lisp
+(use-package slime :quelpa t)
+(use-package slime-company :quelpa t)
 
-  (use-package lsp-mode
-    :quelpa t
-    :commands lsp
-    :config (require 'lsp-clients)
-    (evil-leader/set-key
-      "r d" 'lsp-ui-peek-find-definitions
-      "r i" 'lsp-ui-peek-find-implementation
-      "r r" 'lsp-ui-peek-find-references
-      "r j" 'lsp-ui-find-next-reference
-      "r k" 'lsp-ui-find-prev-reference))
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program (executable-find "sbcl"))
+(slime-setup '(slime-fancy slime-company))
+;; get sbcl from package manager
+;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
 
-  (use-package lsp-ui
-    :quelpa t
-    :commands lsp-ui-mode)
+;; elisp
+(use-package elsa :quelpa t)
 
-  (use-package company-lsp
-    :quelpa t
-    :commands company-lsp
-    :config
-    (push 'company-lsp company-backends))
-
-  (use-package dap-mode
-    :quelpa t
-    :config (require 'dap-lldb))
-#+END_SRC
-** clojure
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package clojure-mode
-  :quelpa t
-  :config
-  (evil-leader/set-key-for-mode 'clojure-mode
-    "e" 'cider-eval-last-sexp
-    "k" 'cider-eval-buffer))
-
-(use-package cider
-  :quelpa t
+;; clojure
+(use-package clojure-mode :quelpa t)
+(use-package cider :quelpa t
   :custom
   (cider-lein-parameters "repl :headless :host localhost"))
 
-(use-package flycheck-clojure
-  :quelpa t)
+(use-package flycheck-clojure :quelpa t)
+(use-package helm-clojuredocs :quelpa t)
+(use-package cljr-helm :quelpa t)
 
-(use-package helm-clojuredocs
-  :quelpa t)
+;; racket
+(use-package racket-mode :quelpa t)
+   #+END_SRC
+** LSP
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; (use-package cquery
+;;   :quelpa t)
+(use-package ccls
+  :ensure t)
 
-(use-package cljr-helm
+(use-package lsp-mode
   :quelpa t
+  :commands lsp
+  :config (require 'lsp-clients)
+  (evil-leader/set-key
+    "r d" 'lsp-ui-peek-find-definitions
+    "r i" 'lsp-ui-peek-find-implementation
+    "r r" 'lsp-ui-peek-find-references
+    "r j" 'lsp-ui-find-next-reference
+    "r k" 'lsp-ui-find-prev-reference))
+
+(use-package lsp-ui
+  :quelpa t
+  :commands lsp-ui-mode)
+
+(use-package company-lsp
+  :quelpa t
+  :commands company-lsp
   :config
-  (evil-leader/set-key-for-mode 'cider-mode
-    "r h" 'cljr-helm
-    "r r" 'cider-eval-last-sexp
-    "r k" 'cider-eval-buffer
-    "r d" 'helm-clojuredocs))
+  (push 'company-lsp company-backends))
+
+(use-package dap-mode
+  :quelpa t
+  :config (require 'dap-gdb-lldb))
+
+
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection '("docker-langserver" "--stdio"))
+  :major-modes '(dockerfile-mode)
+  :server-id 'Docker))
+
+
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'python-mode-hook 'lsp)
+(add-hook 'rust-mode-hook 'lsp)
+(add-hook 'dockerfile-mode-hook 'lsp)
+
+
 #+END_SRC
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -505,17 +592,29 @@
     (use-package json-mode
         :quelpa t)
 #+END_SRC
+** python
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package pipenv
+     :quelpa t
+     :hook (python-mode . pipenv-mode)
+     :custom
+     pipenv-projectile-after-switch-function
+     #'pipenv-projectile-after-switch-extended)
+   #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package yasnippet-snippets :quelpa t)
-  (use-package react-snippets :quelpa t)
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package yasnippet-snippets :quelpa t)
+   (use-package react-snippets :quelpa t)
 
-  (use-package yasnippet
-    :quelpa t
-    :init
-    (yas-global-mode 1))
-#+END_SRC
+   (use-package yasnippet
+     :quelpa t
+     :init
+     (yas-global-mode 1))
+
+   (use-package auto-yasnippet
+     :quelpa t)
+   #+END_SRC
 * misc
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
@@ -576,6 +675,10 @@
      (doom-modeline-major-mode-icon t)
      (doom-modeline-major-mode-color-icon t))
 
+   (use-package solaire-mode
+     :quelpa t
+     :config
+     (solaire-global-mode))
    #+END_SRC
 ** Which key
  #+BEGIN_SRC emacs-lisp :tangle yes
@@ -634,7 +737,7 @@
     ;; Git
     "g s" 'magit-status
     "g t" 'git-timemachine
-    "g g" 'git-gutter+-mode
+    "g g" 'global-git-gutter+-mode
 
     ;;utilities
     "+" 'calc
@@ -646,13 +749,30 @@
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project)
 
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "M-p") 'emmet-expand-yas)
 
-  (define-key evil-normal-state-map (kbd "'") 'evil-goto-mark)
-  (define-key evil-normal-state-map (kbd "´") 'evil-goto-mark-line)
-  (define-key evil-normal-state-map (kbd "/") 'helm-swoop)
-  (define-key evil-normal-state-map (kbd "C-e") 'merge-buffer)
+  (evil-leader/set-key-for-mode 'cider-mode
+    "r h" 'cljr-helm
+    "r r" 'cider-eval-last-sexp
+    "r k" 'cider-eval-buffer
+    "r d" 'helm-clojuredocs
+    "e" 'cider-eval-last-sexp
+    "k" 'cider-eval-buffer)
+
+  ;;global state
+  (evil-define-key nil global-map (kbd "C-x C-f") 'helm-find-files)
+  (evil-define-key nil global-map (kbd "C-x C-b") 'helm-buffers-list)
+  (evil-define-key nil global-map (kbd "M-x") 'helm-M-x)
+  (evil-define-key nil global-map (kbd "M-p") 'emmet-expand-yas)
+
+  (evil-define-key 'normal global-map (kbd "'") 'evil-goto-mark)
+  (evil-define-key 'normal global-map (kbd "´") 'evil-goto-mark-line)
+  (evil-define-key 'normal global-map (kbd "C-e") 'merge-buffer)
+  (evil-define-key 'normal global-map (kbd "Q") 'insert-output-of-executed-line)
+  (evil-define-key 'normal global-map (kbd "C-U") 'aya-create)
+  (evil-define-key 'normal global-map (kbd "C-I") 'aya-expand)
+
+
+  ;; orgmode
+  (evil-define-key 'normal poly-org-mode-map (kbd "U") 'export-and-find)
+  (evil-define-key 'normal org-mode-map (kbd "U") 'export-and-find)
   #+END_SRC
