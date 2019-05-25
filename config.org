@@ -46,7 +46,15 @@
 
    ;; Load zshrc
    (setq shell-file-name "sh")
-   (setq shell-command-switch "-c")
+   (setq shell-command-switch "-ic")
+
+   ;; make tramp play nice
+   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
+   ;; environments
+   (use-package exec-path-from-shell
+     :defer t
+     :quelpa t)
 
    ;; File beautification
    (setq delete-trailing-lines t)
@@ -64,16 +72,20 @@
 
    ;;latex stuff
    (setq org-latex-listings 'minted
-	 org-latex-packages-alist '(("" "minted"))
+	 org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
 	 org-latex-pdf-process
 	 '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	   "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
-   ;; font
+
+;; font
    (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
 
-   (use-package cask :quelpa t)
+   (use-package cask :defer t :quelpa t)
+   (use-package use-package-ensure-system-package
+     :defer t
+     :quelpa t)
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -81,12 +93,14 @@
 	 evil-want-keybinding nil)
 
    (use-package evil-leader
+     :defer t
      :quelpa t
      :init
      (global-evil-leader-mode)
      (evil-leader/set-leader "<SPC>"))
 
    (use-package evil-collection
+     :defer t
      :quelpa t
      :after evil-leader
      :custom
@@ -95,14 +109,15 @@
      (evil-collection-init))
 
    (use-package evil
+     :defer t
      :quelpa t
      :after evil-collection
      :config
      (evil-mode 1))
 
-   (use-package evil-paredit :quelpa t)
-   (use-package evil-anzu :quelpa t)
-   (use-package evil-surround :quelpa t
+   (use-package evil-paredit :defer t :quelpa t)
+   (use-package evil-anzu :defer t :quelpa t)
+   (use-package evil-surround :defer t :quelpa t
      :config
      (evil-surround-mode))
    #+END_SRC
@@ -110,52 +125,75 @@
    Magit setup.
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package evil-magit
+      :defer t
       :quelpa t
       :custom
       (magit-repository-directories (expand-file-name "~/git/projects")))
 
-    (use-package forge :quelpa t)
-    (use-package ssh-agency :quelpa t)
+    (use-package forge :defer t :quelpa t)
+    (use-package ssh-agency :defer t :quelpa t)
 
     (setenv "SSH_ASKPASS" "git-gui--askpass")
     #+END_SRC
 
     Tools for more git integration
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package git-timemachine :quelpa t)
-    (use-package git-gutter-fringe+ :quelpa t
+    (use-package git-timemachine :defer t :quelpa t)
+    (use-package git-gutter-fringe+ :defer t :quelpa t
       :config
       (git-gutter+-mode))
     #+END_SRC
 ***  Extra sauce!
-
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (load-file (expand-file-name "~/.emacs.d/elisp/git-extras.el"))
+      (defun get-github-repo-field (user repo field)
+	"fetches USER/REPO from github api and retrieves FIELD"
+	(cdr
+	 (assoc field
+		(with-current-buffer
+		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
+		  (goto-char (+ 1 url-http-end-of-headers))
+		  (json-read-object)))))
+
+      (defun insert-github-repo-field (user repo field)
+	"Inserts FIELD from api.github.com/USER/REPO"
+	(interactive "sUser: \nsRepo: \nSField: ")
+	(insert
+	 (format "%s" (get-github-repo-field user repo field))))
+
+      (defun org-insert-github-link (user repo)
+	"Inserts a github link at USER/REPO."
+	(interactive "sUser: \nsRepo: ")
+	(org-github-link (format "%s/%s" user repo)))
+
+      (defun org-github-link (repo)
+	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
     #+END_SRC
 ** file management
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package ranger :quelpa t)
-   (use-package treemacs-evil :quelpa t)
-   (use-package ag :quelpa t)
-   (use-package helm-ag :quelpa t)
+   (use-package ranger :defer t :quelpa t)
+   (use-package treemacs-evil :defer t :quelpa t)
+   (use-package helm-ag :defer t :quelpa t)
  #+END_SRC
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** agressive indent
    #+BEGIN_SRC emacs-lisp :tangle yes
  (use-package aggressive-indent
-    :quelpa t
+   :defer t
+   :quelpa t
 )
    #+END_SRC
 ** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
+      :defer t
       :quelpa t)
 #+END_SRC
 ** engine
    used to search web resources.
    #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package engine-mode
+  :defer t
   :quelpa t
   :config
   (defengine cppreference
@@ -186,6 +224,7 @@
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package fzf
+    :defer t
     :quelpa t
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
@@ -193,7 +232,8 @@
 ** howdoi
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package howdoi
-      :quelpa t
+     :defer t
+     :quelpa t
      :config
      (evil-leader/set-key
        "h" 'howdoi-query-insert-code-snippet-at-point))
@@ -201,12 +241,14 @@
 ** Hungry delete
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package hungry-delete
+    :defer t
     :quelpa t
     :config (global-hungry-delete-mode))
 #+END_SRC
 ** iedit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package iedit
+  :defer t
   :quelpa t
   :config
   (evil-leader/set-key
@@ -220,12 +262,14 @@
 ** kubernetes
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package kubernetes
+     :defer t
      :quelpa t)
    #+END_SRC
 ** openwith
     requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package openwith
+    :defer t
     :quelpa t
     :config
     (openwith-mode t)
@@ -244,11 +288,13 @@
 ** request
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package request
+     :defer t
      :quelpa t)
    #+END_SRC
 ** sudo-edit
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package sudo-edit
+  :defer t
   :quelpa t)
 #+END_SRC
 * language packs
@@ -257,6 +303,7 @@
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package matlab-mode
+     :defer t
      :quelpa t
      :hook 'matlab-shell
      :mode ("\\.m\\'" . matlab-mode)
@@ -269,20 +316,24 @@
 ** docker
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package docker
+     :defer t
      :quelpa t
      :ensure t)
 
    (use-package dockerfile-mode
+     :defer t
      :quelpa t
      :ensure t)
    #+END_SRC
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package csharp-mode
-      :quelpa t)
+     :defer t
+     :quelpa t)
 
    (use-package omnisharp
-      :quelpa t
+     :defer t
+     :quelpa t
      :after company
      :config
      (add-hook 'csharp-mode-hook 'omnisharp-mode)
@@ -292,6 +343,7 @@
     requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
+    :defer t
     :quelpa t
     :custom
     (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
@@ -303,6 +355,7 @@
     :magic ("@startuml" . plantuml-mode))
 
   (use-package flycheck-plantuml
+    :defer t
     :quelpa t)
 
   ;; recompiles plantuml diagrams on save
@@ -321,6 +374,7 @@
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package textile-mode
+    :defer t
     :quelpa t
     :hook '(textile-mode . visual-line-mode)
     :mode ("\\.textile\\'"))
@@ -343,11 +397,12 @@
 
 
   ;;oxes
-  (use-package ox-jira :ensure t :quelpa t)
-  (use-package ox-html5slide :ensure t :quelpa t)
-  (use-package org-re-reveal :ensure t :quelpa t)
-  (use-package ox-textile :ensure t :quelpa t)
-  (add-to-list 'org-export-backends 'groff)
+  (use-package ox-jira :ensure t :defer t :quelpa t)
+  (use-package ox-html5slide :ensure t :defer t :quelpa t)
+  (use-package org-re-reveal :ensure t :defer t :quelpa t)
+  (use-package ox-textile :ensure t :defer t :quelpa t)
+
+  (setq org-reveal-note-key-char nil)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
@@ -358,9 +413,11 @@
 
   (add-hook 'org-mode-hook 'visual-line-mode)
   (use-package org-ref
+    :defer t
     :quelpa t)
 
   (use-package org-bullets
+    :defer t
     :quelpa t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -368,23 +425,26 @@
   (setq org-export-latex-listings 'minted)
   (setq org-src-fontify-natively t)
 
-  (use-package org-tree-slide :quelpa t)
+  (use-package org-tree-slide :defer t :quelpa t)
 
   (use-package org-gcal
+    :defer t
     :quelpa t
     :custom
     (org-gcal-client-id (shell-command-to-string "pass Org/gcal/client"))
     (org-gcal-client-secret (shell-command-to-string "pass Org/gcal/secret"))
     (org-gcal-file-alist '(("frederikbreandstrup@gmail.com" . "~/cal.org"))))
 
-  (use-package polymode :quelpa t)
+  (use-package polymode :defer t :quelpa t)
 
   (use-package poly-org
+    :defer t
     :quelpa t
     :after polymode
     :mode ("//.org//'"))
 
   (use-package org-brain
+    :defer t
     :quelpa t
     :config
     (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
@@ -465,12 +525,14 @@
 ** yaml
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package yaml-mode
+     :defer t
      :quelpa t)
    #+END_SRC
 * programming
 ** company
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package company
+     :defer t
      :quelpa t
      :init
      (global-company-mode t)
@@ -481,8 +543,8 @@
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
    ;; common lisp
-(use-package slime :quelpa t)
-(use-package slime-company :quelpa t)
+(use-package slime :defer t :quelpa t)
+(use-package slime-company :defer t :quelpa t)
 
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program (executable-find "sbcl"))
@@ -491,29 +553,42 @@
 ;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
 
 ;; elisp
-(use-package elsa :quelpa t)
+(use-package elsa :defer t :quelpa t)
 
 ;; clojure
-(use-package clojure-mode :quelpa t)
-(use-package cider :quelpa t
+(use-package clojure-mode :defer t :quelpa t)
+(use-package cider :defer t :quelpa t
   :custom
   (cider-lein-parameters "repl :headless :host localhost"))
 
-(use-package flycheck-clojure :quelpa t)
-(use-package helm-clojuredocs :quelpa t)
-(use-package cljr-helm :quelpa t)
+(use-package flycheck-clojure :defer t :quelpa t)
+(use-package helm-clojuredocs :defer t :quelpa t)
+(use-package cljr-helm :defer t :quelpa t)
 
 ;; racket
-(use-package racket-mode :quelpa t)
+(use-package racket-mode :defer t :quelpa t)
    #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (use-package cquery
 ;;   :quelpa t)
 (use-package ccls
-  :ensure t)
+  :defer t
+  :after 'lsp-mode
+  :quelpa t)
+
+(use-package flycheck-clang-tidy
+  :defer t
+  :quelpa t
+  :custom
+  (flycheck-clang-tidy-build-path ""))
+
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
+
 
 (use-package lsp-mode
+  :defer t
   :quelpa t
   :commands lsp
   :config (require 'lsp-clients)
@@ -525,25 +600,22 @@
     "r k" 'lsp-ui-find-prev-reference))
 
 (use-package lsp-ui
+  :defer t
   :quelpa t
   :commands lsp-ui-mode)
 
 (use-package company-lsp
+  :defer t
   :quelpa t
   :commands company-lsp
   :config
   (push 'company-lsp company-backends))
 
 (use-package dap-mode
+  :defer t
   :quelpa t
   :config (require 'dap-gdb-lldb))
 
-
-(lsp-register-client
- (make-lsp-client
-  :new-connection (lsp-stdio-connection '("docker-langserver" "--stdio"))
-  :major-modes '(dockerfile-mode)
-  :server-id 'Docker))
 
 
 (add-hook 'c++-mode-hook 'lsp)
@@ -556,10 +628,12 @@
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package cargo
-      :quelpa t)
+     :defer t
+     :quelpa t)
 
    (use-package toml-mode
-      :quelpa t)
+     :defer t
+     :quelpa t)
 
    (add-hook 'rust-mode-hook 'cargo-minor-mode)
 
@@ -568,7 +642,8 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
     ;; everything in one package
     (use-package web-mode
-        :quelpa t
+      :defer t
+      :quelpa t
       :mode
       ("\\.js\\'" . web-mode)
       ("\\.css\\'" . web-mode)
@@ -578,29 +653,34 @@
       ("\\.scss\\'" . web-mode))
 
     ;; Macro>overload
-    (use-package emmet-mode :quelpa t)
+    (use-package emmet-mode :defer t :quelpa t)
     (setq emmet-expand-jsx-className? t)
 
 
     ;; server static files
     (use-package impatient-mode
-        :quelpa t)
+      :defer t
+      :quelpa t)
 
     ;; typescript lang server
     (use-package tide
+      :defer t
       :quelpa t
-        :commands tide-mode
+      :commands tide-mode
       :mode ("\\.tsx\\'" . tide-mode))
 
     (use-package react-snippets
-        :quelpa t)
+      :defer t
+      :quelpa t)
 
     (use-package json-mode
-        :quelpa t)
+      :defer t
+      :quelpa t)
 #+END_SRC
 ** python
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package pipenv
+     :defer t
      :quelpa t
      :hook (python-mode . pipenv-mode)
      :custom
@@ -613,15 +693,17 @@
 ** yasnippet
    All the snippets! (or atleast most of them)
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yasnippet-snippets :quelpa t)
-   (use-package react-snippets :quelpa t)
+   (use-package yasnippet-snippets :defer t :quelpa t)
+   (use-package react-snippets :defer t :quelpa t)
 
    (use-package yasnippet
+     :defer t
      :quelpa t
      :init
      (yas-global-mode 1))
 
    (use-package auto-yasnippet
+     :defer t
      :quelpa t)
 
    (use-package company-yasnippet
@@ -631,51 +713,69 @@
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
  (use-package nix-mode
+   :defer t
+   :quelpa t)
+
+ (use-package nix-buffer
+   :defer t
    :quelpa t)
 
  (use-package helm-nixos-options
+   :defer t
    :quelpa t)
 
  (use-package company-nixos-options
+   :defer t
    :quelpa t)
  #+END_SRC
 ** mail
    #+BEGIN_SRC emacs-lisp :tangle yes
    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
    (require 'mu4e)
-   (require 'mu4e-contrib)
-
-
-   (setq mu4e-html2text-command 'mu4e-shr2text)
-   (add-hook 'mu4e-view-mode-hook
-	     (lambda ()
-	       (local-set-key (kbd "<tab>") 'shr-next-link)
-	       (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-
-
    #+END_SRC
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
  (use-package helm
+   :defer t
    :quelpa t
    :config
    (require 'helm-config)
    (helm-mode))
 
- (use-package helm-make :quelpa t)
- (use-package helm-company :quelpa t)
- (use-package helm-swoop :quelpa t)
- (use-package helm-projectile :quelpa t)
+ (use-package helm-make :defer t :quelpa t)
+ (use-package helm-company :defer t :quelpa t)
+ (use-package helm-swoop :defer t :quelpa t)
+ (use-package helm-projectile :defer t :quelpa t)
  #+END_SRC
+** symbols
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defconst prettify-symbols-alist
+       '(("lambda" . ?λ)
+	 ("[ ]" . ?☐)
+	 ("[X]" . ?☑)
+	 ("#+" . ?Ω)
+	 ("*" . ?α)
+	 ("**" . ?β)
+	 ("***" . ?γ)
+	 ("****" . ?δ)))
+
+     (add-hook 'org-mode-hook
+	       (lambda () (prettify-symbols-mode)))
+   #+END_SRC
+
+
+
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package doom-themes
-     :quelpa t
-     :config
-     (load-theme 'doom-solarized-light t))
+     :defer t
+     :quelpa t)
+
+   (load-theme 'doom-solarized-light t)
 
    (use-package doom-modeline
+     :defer t
      :quelpa t
      :hook (after-init . doom-modeline-init)
      :custom
@@ -688,6 +788,7 @@
      (doom-modeline-major-mode-color-icon t))
 
    (use-package solaire-mode
+     :defer t
      :quelpa t
      :config
      (solaire-global-mode))
@@ -695,6 +796,7 @@
 ** Which key
  #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package which-key
+     :defer t
      :quelpa t
      :init
      (which-key-mode))
@@ -702,7 +804,7 @@
 ** frames only
      for better compatibility with i3
      #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package frames-only-mode :quelpa t)
+     (use-package frames-only-mode :defer t :quelpa t)
  #+END_SRC
 ** rainbow
 * hotkeys
@@ -713,7 +815,9 @@
     "b o" 'other-buffer
     "b i" 'ibuffer
     "o" 'other-window
-    "q" 'kill-buffer
+    "q" '(lambda () (interactive)
+	   (kill-buffer)
+	   (delete-window))
 
     ;; misc
     "a" 'comment-dwim
@@ -740,11 +844,6 @@
     "t p" 'treemacs-add-project-to-workspace
     "t r" 'treemacs-remove-project-from-workspace
 
-    ;; Projectile stuff
-    "p p" 'projectile-find-file-dwim
-    "p a" 'projectile-ag
-    "p g" 'projectile-vc
-    "c" 'helm-make-projectile
 
     ;; Git
     "g s" 'magit-status
@@ -754,12 +853,16 @@
     ;;utilities
     "+" 'calc
     "-" 'mu4e
+    "<RET>" '(lambda () (interactive)
+	       (split-window-sensibly)
+	       (ansi-term "/bin/dash"))
 
     "p p" 'helm-projectile
     "p f" 'helm-projectile-find-file-dwim
     "p a" 'helm-projectile-ag
     "p s" 'projectile-add-known-project
-    "p c" 'projectile-compile-project)
+    "p c" 'projectile-compile-project
+    "c" 'helm-make)
 
 
   (evil-leader/set-key-for-mode 'cider-mode
@@ -783,6 +886,7 @@
   (evil-define-key 'normal global-map (kbd "C-e") 'merge-buffer)
   (evil-define-key 'normal global-map (kbd "Q") 'insert-output-of-executed-line)
 
+  (evil-define-key 'visual global-map (kbd "S") 'evil-surround-region)
 
   ;; orgmode
   (evil-define-key 'normal poly-org-mode-map (kbd "U") 'export-and-find)
