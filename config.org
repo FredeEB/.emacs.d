@@ -312,6 +312,12 @@
 
   (add-hook 'plantuml-mode-hook 'recompile-plantuml)
 #+END_SRC
+** latex
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package auctex
+     :defer t
+     :quelpa t)
+   #+END_SRC
 ** textile
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package textile-mode
@@ -600,6 +606,9 @@
      :custom
      pipenv-projectile-after-switch-function
      #'pipenv-projectile-after-switch-extended)
+
+   (use-package jedi
+     :quelpa t)
    #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
@@ -613,6 +622,9 @@
      (yas-global-mode 1))
 
    (use-package auto-yasnippet
+     :quelpa t)
+
+   (use-package company-yasnippet
      :quelpa t)
    #+END_SRC
 * misc
@@ -763,13 +775,13 @@
   (evil-define-key nil global-map (kbd "C-x C-b") 'helm-buffers-list)
   (evil-define-key nil global-map (kbd "M-x") 'helm-M-x)
   (evil-define-key nil global-map (kbd "M-p") 'emmet-expand-yas)
+  (evil-define-key nil global-map (kbd "C-U") 'aya-create)
+  (evil-define-key nil global-map (kbd "C-I") 'aya-expand)
 
   (evil-define-key 'normal global-map (kbd "'") 'evil-goto-mark)
   (evil-define-key 'normal global-map (kbd "´") 'evil-goto-mark-line)
   (evil-define-key 'normal global-map (kbd "C-e") 'merge-buffer)
   (evil-define-key 'normal global-map (kbd "Q") 'insert-output-of-executed-line)
-  (evil-define-key 'normal global-map (kbd "C-U") 'aya-create)
-  (evil-define-key 'normal global-map (kbd "C-I") 'aya-expand)
 
 
   ;; orgmode
