@@ -45,8 +45,8 @@
    (setq standard-indent 2)
 
    ;; Load zshrc
-   (setq shell-file-name "sh")
-   (setq shell-command-switch "-ic")
+   (setq shell-file-name "zsh")
+   (setq shell-command-switch "-c")
 
    ;; make tramp play nice
    (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
@@ -127,6 +127,8 @@
     (use-package evil-magit
       :defer t
       :quelpa t
+      :init
+      (evil-magit-init)
       :custom
       (magit-repository-directories (expand-file-name "~/git/projects")))
 
@@ -269,7 +271,6 @@
     requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package openwith
-    :defer t
     :quelpa t
     :config
     (openwith-mode t)
@@ -733,6 +734,18 @@
    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
    (require 'mu4e)
    #+END_SRC
+** restclient
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package restclient
+    :defer t
+    :quelpa t)
+  #+END_SRC
+** system tools
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package symon
+     :defer t
+     :quelpa t)
+   #+END_SRC
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
@@ -853,9 +866,7 @@
     ;;utilities
     "+" 'calc
     "-" 'mu4e
-    "<RET>" '(lambda () (interactive)
-	       (split-window-sensibly)
-	       (ansi-term "/bin/dash"))
+    "<RET>" 'eshell
 
     "p p" 'helm-projectile
     "p f" 'helm-projectile-find-file-dwim
