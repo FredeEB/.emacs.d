@@ -115,11 +115,11 @@
      :config
      (evil-mode 1))
 
-   (use-package evil-paredit :defer t :quelpa t)
+   (use-package evil-paredit :defer t :quelpa t
+     :hook ((emacs-lisp-mode clojure-mode racket-mode) . 'evil-paredit-mode))
+
    (use-package evil-anzu :defer t :quelpa t)
-   (use-package evil-surround :defer t :quelpa t
-     :config
-     (evil-surround-mode))
+   (use-package evil-surround :defer t :quelpa t)
    #+END_SRC
 ** git
    Magit setup.
@@ -231,6 +231,15 @@
     :custom
     (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
 #+END_SRC
+** helpful
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package helpful
+  :quelpa t
+  :bind
+  ("C-h f" . 'helpful-function)
+  ("C-h v" . 'helpful-variable)
+  ("C-h k" . 'helpful-key))
+#+END_SRC
 ** howdoi
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package howdoi
@@ -318,13 +327,15 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package docker
      :defer t
-     :quelpa t
-     :ensure t)
+     :quelpa t)
 
    (use-package dockerfile-mode
      :defer t
-     :quelpa t
-     :ensure t)
+     :quelpa t)
+
+   (use-package docker-tramp
+     :defer t
+     :quelpa t)
    #+END_SRC
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -380,6 +391,12 @@
     :hook '(textile-mode . visual-line-mode)
     :mode ("\\.textile\\'"))
 #+END_SRC
+** bake
+** sconstruct
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (push '("SConstruct" . python-mode) auto-mode-alist)
+   (push '("SConscript" . python-mode) auto-mode-alist)
+   #+END_SRC
 ** org stuff
 #+BEGIN_SRC emacs-lisp :tangle yes
   (org-babel-do-load-languages
@@ -397,22 +414,28 @@
      (js . t)))
 
 
-  ;;oxes
-  (use-package ox-jira :ensure t :defer t :quelpa t)
-  (use-package ox-html5slide :ensure t :defer t :quelpa t)
-  (use-package org-re-reveal :ensure t :defer t :quelpa t)
-  (use-package ox-textile :ensure t :defer t :quelpa t)
-
-  (setq org-reveal-note-key-char nil)
+  ;; tmp fix for <\w
+  (require 'org-tempo)
 
   ;; agenda and stuff
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c c") 'org-capture)
+
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "WAITING(@/!)" "|" "DONE(d!)")))
+	'((sequence "TODO(t)" "IN PROGRESS(p)" "FEEDBACK(f)" "|" "DONE(d)"))
+
+	org-columns-default-format
+	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
+
+	org-capture-templates
+	'(("t" "Todo" entry (file+headline "~/org/agenda.org" "Tasks")
+           "* TODO %?\n  %i\n  %a")
+          ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
+           "* %?\n %i\n")))
 
   (add-hook 'org-mode-hook 'visual-line-mode)
+
   (use-package org-ref
     :defer t
     :quelpa t)
@@ -434,7 +457,7 @@
     :custom
     (org-gcal-client-id (shell-command-to-string "pass Org/gcal/client"))
     (org-gcal-client-secret (shell-command-to-string "pass Org/gcal/secret"))
-    (org-gcal-file-alist '(("frederikbreandstrup@gmail.com" . "~/cal.org"))))
+    (org-gcal-file-alist '(("frederikbreandstrup@gmail.com" . "~/org/cal.org"))))
 
   (use-package polymode :defer t :quelpa t)
 
@@ -452,18 +475,10 @@
     (evil-leader/set-key
       "n" 'org-brain-goto))
 
-  (defmath uconvert (v u)
-    "Convert value V into compatible unit U"
-    (math-convert-units v u))
-
-  (use-package org-plus-contrib
-    :ensure t)
-
   (add-hook 'org-mode-hook
 	    (lambda ()
 	      (openwith-mode nil)
 	      (org-display-inline-images t)))
-
 
   (defmath uconvert (v u)
     "Convert value V into compatible unit U"
@@ -561,6 +576,7 @@
 (use-package cider :defer t :quelpa t
   :custom
   (cider-lein-parameters "repl :headless :host localhost"))
+(use-package clojure-lsp :defer t :quelpa t)
 
 (use-package flycheck-clojure :defer t :quelpa t)
 (use-package helm-clojuredocs :defer t :quelpa t)
@@ -569,20 +585,31 @@
 ;; racket
 (use-package racket-mode :defer t :quelpa t)
    #+END_SRC
+** python
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package pipenv
+     :defer t
+     :quelpa t
+     :hook (python-mode . pipenv-mode)
+     :custom
+     pipenv-projectile-after-switch-function
+     #'pipenv-projectile-after-switch-extended)
+
+   (use-package jedi
+     :defer t
+     :quelpa t)
+   #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; (use-package cquery
-;;   :quelpa t)
 (use-package ccls
   :defer t
-  :after 'lsp-mode
   :quelpa t)
 
 (use-package flycheck-clang-tidy
   :defer t
   :quelpa t
   :custom
-  (flycheck-clang-tidy-build-path ""))
+  (flycheck-clang-tidy-build-path "build"))
 
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
@@ -592,13 +619,8 @@
   :defer t
   :quelpa t
   :commands lsp
-  :config (require 'lsp-clients)
-  (evil-leader/set-key
-    "r d" 'lsp-ui-peek-find-definitions
-    "r i" 'lsp-ui-peek-find-implementation
-    "r r" 'lsp-ui-peek-find-references
-    "r j" 'lsp-ui-find-next-reference
-    "r k" 'lsp-ui-find-prev-reference))
+  :init (require 'lsp-clients)
+  :config (flycheck-mode))
 
 (use-package lsp-ui
   :defer t
@@ -617,12 +639,13 @@
   :quelpa t
   :config (require 'dap-gdb-lldb))
 
-
-
 (add-hook 'c++-mode-hook 'lsp)
 (add-hook 'python-mode-hook 'lsp)
 (add-hook 'rust-mode-hook 'lsp)
 (add-hook 'dockerfile-mode-hook 'lsp)
+
+(use-package lsp-treemacs :defer t :quelpa t)
+(use-package helm-lsp :defer t :quelpa t)
 
 
 #+END_SRC
@@ -647,6 +670,7 @@
       :quelpa t
       :mode
       ("\\.js\\'" . web-mode)
+      ("\\.ts\\'" . web-mode)
       ("\\.css\\'" . web-mode)
       ("\\.jsx\\'" . web-mode)
       ("\\.tsx\\'" . typescript-mode)
@@ -678,19 +702,6 @@
       :defer t
       :quelpa t)
 #+END_SRC
-** python
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package pipenv
-     :defer t
-     :quelpa t
-     :hook (python-mode . pipenv-mode)
-     :custom
-     pipenv-projectile-after-switch-function
-     #'pipenv-projectile-after-switch-extended)
-
-   (use-package jedi
-     :quelpa t)
-   #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -767,7 +778,6 @@
        '(("lambda" . ?λ)
 	 ("[ ]" . ?☐)
 	 ("[X]" . ?☑)
-	 ("#+" . ?Ω)
 	 ("*" . ?α)
 	 ("**" . ?β)
 	 ("***" . ?γ)
@@ -776,16 +786,14 @@
      (add-hook 'org-mode-hook
 	       (lambda () (prettify-symbols-mode)))
    #+END_SRC
-
-
-
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package doom-themes
      :defer t
      :quelpa t)
 
-   (load-theme 'doom-solarized-light t)
+   (load-theme 'doom-dracula t)
+
 
    (use-package doom-modeline
      :defer t
@@ -820,10 +828,18 @@
      (use-package frames-only-mode :defer t :quelpa t)
  #+END_SRC
 ** rainbow
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package rainbow-delimeters
+     :defer t
+     :quelpa t
+     :config
+     (rainbow-delimiters-mode))
+   #+END_SRC
 * hotkeys
   #+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Leader keys
   (evil-leader/set-key
-    ;; buffers & windows
+    ;;buffers & windows
     "b b" 'helm-buffers-list
     "b o" 'other-buffer
     "b i" 'ibuffer
@@ -832,41 +848,45 @@
 	   (kill-buffer)
 	   (delete-window))
 
-    ;; misc
+    ;;misc
     "a" 'comment-dwim
     "i" 'indent-region
-    "w" '(lambda () (interactive)
-	   (paredit-mode)
-	   (evil-paredit-mode))
 
     ;;buffer navigation
     "j" 'evil-avy-goto-char
 
-    ;; files
+    ;;files
     "f f" 'fzf
     "f d" 'ranger
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-    "f n" '(lambda () (interactive)
-	     (find-file "/etc/nixos/configuration.nix")
-	     (sudo-edit))
 
     ;;treemacs
     "u" 'treemacs
     "t p" 'treemacs-add-project-to-workspace
     "t r" 'treemacs-remove-project-from-workspace
 
+    ;;lsp
+    "r d" 'lsp-ui-peek-find-definitions
+    "r i" 'lsp-ui-peek-find-implementation
+    "r r" 'lsp-ui-peek-find-references
+    "r j" 'lsp-ui-find-next-reference
+    "r k" 'lsp-ui-find-prev-reference
+    "d" 'lsp-execute-code-action
 
-    ;; Git
+    ;;Git
     "g s" 'magit-status
     "g t" 'git-timemachine
     "g g" 'global-git-gutter+-mode
 
+    ;;Docker
+    "g d" 'docker
+
     ;;utilities
     "+" 'calc
     "-" 'mu4e
-    "<RET>" 'eshell
+    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell))
 
     "p p" 'helm-projectile
     "p f" 'helm-projectile-find-file-dwim
@@ -884,22 +904,37 @@
     "e" 'cider-eval-last-sexp
     "k" 'cider-eval-buffer)
 
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode
+    "e" 'eval-last-sexp
+    "k" 'eval-buffer)
+
+  (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
   ;;global state
-  (evil-define-key nil global-map (kbd "C-x C-f") 'helm-find-files)
-  (evil-define-key nil global-map (kbd "C-x C-b") 'helm-buffers-list)
-  (evil-define-key nil global-map (kbd "M-x") 'helm-M-x)
-  (evil-define-key nil global-map (kbd "M-p") 'emmet-expand-yas)
-  (evil-define-key nil global-map (kbd "C-U") 'aya-create)
-  (evil-define-key nil global-map (kbd "C-I") 'aya-expand)
+  (evil-define-key nil global-map
+    "C-x C-f" 'helm-find-files
+    "C-x C-b" 'helm-buffers-list
+    "M-x" 'helm-M-x
+    "M-p" 'emmet-expand-yas
+    "C-S-c" 'aya-create
+    "C-S-e" 'aya-expand)
 
-  (evil-define-key 'normal global-map (kbd "'") 'evil-goto-mark)
-  (evil-define-key 'normal global-map (kbd "´") 'evil-goto-mark-line)
-  (evil-define-key 'normal global-map (kbd "C-e") 'merge-buffer)
-  (evil-define-key 'normal global-map (kbd "Q") 'insert-output-of-executed-line)
 
-  (evil-define-key 'visual global-map (kbd "S") 'evil-surround-region)
+  (evil-define-key 'normal global-map
+    "'" 'evil-goto-mark
+    "´" 'evil-goto-mark-line
+    "Q" 'insert-output-of-executed-line)
+
+  (evil-define-key 'visual global-map
+    "S" 'evil-surround-region)
 
   ;; orgmode
-  (evil-define-key 'normal poly-org-mode-map (kbd "U") 'export-and-find)
-  (evil-define-key 'normal org-mode-map (kbd "U") 'export-and-find)
+  (evil-define-key 'normal poly-org-mode-map
+    "U" 'export-and-find)
+
+  ;; paredit mode
+  (evil-define-key nil evil-paredit-mode-map
+    "M-l" 'paredit-forward-slurp-sexp
+    "M-h" 'paredit-backward-slurp-sexp
+    "M-L" 'paredit-backward-barf-sexp
+    "M-H" 'paredit-forward-barf-sexp)
   #+END_SRC
