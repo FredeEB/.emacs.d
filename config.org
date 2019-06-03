@@ -2,6 +2,8 @@
 ** init
    #+BEGIN_SRC emacs-lisp :tangle yes
    ;; Bootstrap quelpa
+   (setq gc-cons-threshold (* 100 1000 1000))
+
    (if (require 'quelpa nil t)
        (quelpa-self-upgrade)
      (with-temp-buffer
@@ -22,6 +24,24 @@
    (require 'quelpa-use-package)
    #+END_SRC
 ** Basics
+   setting up daily journals
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (require 'calendar)
+   (defvar journal-dir (expand-file-name "~/org/journals/"))
+   (defvar journal (apply 'format "%sjournal%d%.2d%.2d.org" journal-dir (reverse (calendar-current-date))))
+
+   (setq initial-buffer-choice journal)
+
+   (when (not (file-exists-p journal))
+     (copy-file (format "%sjournal-template.org" journal-dir) journal))
+
+   (defun find-journal ()
+     "goto `journal'"
+     (interactive)
+     (find-file journal))
+   #+END_SRC
+
+   Other setup
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq scroll-conservatively 100
 	 scroll-margin 5
@@ -66,10 +86,6 @@
    ;;tmp stuff
    (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
 
-   ;;extra utilities
-   (load-file (expand-file-name "~/.emacs.d/elisp/utilties.el"))
-   (load-file (expand-file-name "~/.emacs.d/elisp/lock-in.el"))
-
    ;;latex stuff
    (setq org-latex-listings 'minted
 	 org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
@@ -81,6 +97,7 @@
 
 ;; font
    (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+   (setq font-lock-maximum-decoration 3)
 
    (use-package cask :defer t :quelpa t)
    (use-package use-package-ensure-system-package
@@ -115,9 +132,7 @@
      :config
      (evil-mode 1))
 
-   (use-package evil-paredit :defer t :quelpa t
-     :hook ((emacs-lisp-mode clojure-mode racket-mode) . 'evil-paredit-mode))
-
+   (use-package evil-paredit :defer t :quelpa t)
    (use-package evil-anzu :defer t :quelpa t)
    (use-package evil-surround :defer t :quelpa t)
    #+END_SRC
@@ -182,8 +197,7 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
  (use-package aggressive-indent
    :defer t
-   :quelpa t
-)
+   :quelpa t)
    #+END_SRC
 ** avy
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -213,14 +227,7 @@
   (defengine wikipedia
     "https://en.wikipedia.org/wiki/%s")
   ;; evil keybindings for search eninges
-  (evil-leader/set-key
-    "s c" 'engine/search-cppreference
-    "s y" 'engine/search-youtube
-    "s d" 'engine/search-dockerhub
-    "s r" 'engine/search-rustdoc
-    "s w" 'engine/search-wikipedia
-    "s g i" 'engine/search-github
-    "s g o" 'engine/search-google))
+  )
    #+END_SRC
 ** fzf
     this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
@@ -558,32 +565,38 @@
    #+END_SRC
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
+   ;; paredit!
+   (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+   (add-hook 'lisp-mode-hook 'paredit-mode)
+   (add-hook 'clojure-mode-hook 'paredit-mode)
+   (add-hook 'clojurescript-mode-hook 'paredit-mode)
+
    ;; common lisp
-(use-package slime :defer t :quelpa t)
-(use-package slime-company :defer t :quelpa t)
+   (use-package slime :defer t :quelpa t)
+   (use-package slime-company :defer t :quelpa t)
 
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program (executable-find "sbcl"))
-(slime-setup '(slime-fancy slime-company))
-;; get sbcl from package manager
-;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
+   (load (expand-file-name "~/quicklisp/slime-helper.el"))
+   (setq inferior-lisp-program (executable-find "sbcl"))
+   (slime-setup '(slime-fancy slime-company))
+   ;; get sbcl from package manager
+   ;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
 
-;; elisp
-(use-package elsa :defer t :quelpa t)
+   ;; elisp
+   (use-package elsa :defer t :quelpa t)
 
-;; clojure
-(use-package clojure-mode :defer t :quelpa t)
-(use-package cider :defer t :quelpa t
-  :custom
-  (cider-lein-parameters "repl :headless :host localhost"))
-(use-package clojure-lsp :defer t :quelpa t)
+   ;; clojure
+   (use-package clojure-mode :defer t :quelpa t)
+   (use-package cider :defer t :quelpa t
+     :custom
+     (cider-lein-parameters "repl :headless :host localhost"))
+   (use-package clojure-lsp :defer t :quelpa t)
 
-(use-package flycheck-clojure :defer t :quelpa t)
-(use-package helm-clojuredocs :defer t :quelpa t)
-(use-package cljr-helm :defer t :quelpa t)
+   (use-package flycheck-clojure :defer t :quelpa t)
+   (use-package helm-clojuredocs :defer t :quelpa t)
+   (use-package cljr-helm :defer t :quelpa t)
 
-;; racket
-(use-package racket-mode :defer t :quelpa t)
+   ;; racket
+   (use-package racket-mode :defer t :quelpa t)
    #+END_SRC
 ** python
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -722,6 +735,19 @@
      :quelpa t)
    #+END_SRC
 * misc
+** shell
+   insert result from terminal (try "Q" on the next line)
+   seq 1 255 | xargs printf "%.2x\n" | fmt -w 49
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (defun insert-output-of-executed-line ()
+  "executes line at point in default shell and inserts stdout"
+  (interactive)
+  (insert
+   (shell-command-to-string
+    (delete-and-extract-region
+     (point-at-bol)
+     (point-at-eol)))))
+   #+END_SRC
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
  (use-package nix-mode
@@ -763,13 +789,12 @@
  (use-package helm
    :defer t
    :quelpa t
-   :config
+   :init
    (require 'helm-config)
    (helm-mode))
 
  (use-package helm-make :defer t :quelpa t)
  (use-package helm-company :defer t :quelpa t)
- (use-package helm-swoop :defer t :quelpa t)
  (use-package helm-projectile :defer t :quelpa t)
  #+END_SRC
 ** symbols
@@ -790,10 +815,9 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package doom-themes
      :defer t
-     :quelpa t)
-
-   (load-theme 'doom-dracula t)
-
+     :quelpa t
+     :init
+     (load-theme 'doom-dracula t))
 
    (use-package doom-modeline
      :defer t
@@ -861,6 +885,7 @@
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+    "f j" 'find-journal
 
     ;;treemacs
     "u" 'treemacs
@@ -893,7 +918,16 @@
     "p a" 'helm-projectile-ag
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
-    "c" 'helm-make)
+    "c" 'helm-make
+
+    ;;engine
+    "s c" 'engine/search-cppreference
+    "s y" 'engine/search-youtube
+    "s d" 'engine/search-dockerhub
+    "s r" 'engine/search-rustdoc
+    "s w" 'engine/search-wikipedia
+    "s g i" 'engine/search-github
+    "s g o" 'engine/search-google)
 
 
   (evil-leader/set-key-for-mode 'cider-mode
@@ -911,13 +945,12 @@
   (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
   ;;global state
   (evil-define-key nil global-map
-    "C-x C-f" 'helm-find-files
-    "C-x C-b" 'helm-buffers-list
-    "M-x" 'helm-M-x
-    "M-p" 'emmet-expand-yas
-    "C-S-c" 'aya-create
-    "C-S-e" 'aya-expand)
-
+    (kbd "C-x C-f") 'helm-find-files
+    (kbd "C-x C-b") 'helm-buffers-list
+    (kbd "M-x") 'helm-M-x
+    (kbd "M-p") 'emmet-expand-yas
+    (kbd "C-S-c") 'aya-create
+    (kbd "C-S-e") 'aya-expand)
 
   (evil-define-key 'normal global-map
     "'" 'evil-goto-mark
@@ -932,9 +965,15 @@
     "U" 'export-and-find)
 
   ;; paredit mode
-  (evil-define-key nil evil-paredit-mode-map
+  (evil-define-key nil paredit-mode-map
     "M-l" 'paredit-forward-slurp-sexp
     "M-h" 'paredit-backward-slurp-sexp
     "M-L" 'paredit-backward-barf-sexp
     "M-H" 'paredit-forward-barf-sexp)
+  #+END_SRC
+
+* Finalizing
+  Reset garbage collection threshold
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  (setq gc-cons-threshold (* 2 1000 1000))
   #+END_SRC
