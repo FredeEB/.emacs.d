@@ -1,50 +1,97 @@
 * Basics
-** init
+** package.el
    #+BEGIN_SRC emacs-lisp :tangle yes
-   ;; Bootstrap quelpa
-   (setq gc-cons-threshold (* 100 1000 1000))
-
-   (if (require 'quelpa nil t)
-       (quelpa-self-upgrade)
-     (with-temp-buffer
-       (url-insert-file-contents "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
-       (eval-buffer)))
-
-   (setq use-pacakge-ensure-function 'quelpa)
-   (setq use-package-always-ensure t)
-
    (require 'package)
-   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		       (not (gnutls-available-p))))
+	  (proto (if no-ssl "http" "https")))
+     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+     (package-initialize))
 
-   ;; Install quelpa-use-package, which will install use-package as well
-   (quelpa
-    '(quelpa-use-package
-      :fetcher git
-      :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
-   (require 'quelpa-use-package)
+   (unless (package-installed-p 'use-package)
+     (package-refresh-contents)
+     (package-install 'use-package))
    #+END_SRC
-** Basics
-   setting up daily journals
+** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (require 'calendar)
-   (defvar journal-dir (expand-file-name "~/org/journals/"))
-   (defvar journal (apply 'format "%sjournal%d%.2d%.2d.org" journal-dir (reverse (calendar-current-date))))
+   (setq evil-want-integration t
+	 evil-want-keybinding nil)
 
-   (setq initial-buffer-choice journal)
+   (use-package evil-leader :defer t :ensure t
+     :init
+     (global-evil-leader-mode)
+     (evil-leader/set-leader "<SPC>"))
 
-   (when (not (file-exists-p journal))
-     (copy-file (format "%sjournal-template.org" journal-dir) journal))
+   (use-package evil-collection :defer t :ensure t
+     :after evil-leader
+     :custom
+     (evil-collection-company-use-tng nil)
+     :init
+     (evil-collection-init))
 
-   (defun find-journal ()
-     "goto `journal'"
-     (interactive)
-     (find-file journal))
+   (use-package evil :defer t :ensure t
+     :after evil-collection
+     :config
+     (evil-mode 1))
+
+   (use-package evil-paredit :defer t :ensure t)
+   (use-package evil-anzu :defer t :ensure t)
+   (use-package evil-surround :defer t :ensure t
+     :config
+     (evil-surround-mode))
    #+END_SRC
+** git
+   Magit setup.
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package evil-magit :defer t :ensure t
+      :init
+      (evil-magit-init)
+      :custom
+      (magit-repository-directories (expand-file-name "~/git/projects")))
 
-   Other setup
+    (use-package forge :defer t :ensure t)
+    (use-package ssh-agency :defer t :ensure t)
+
+    (setenv "SSH_ASKPASS" "git-gui--askpass")
+    #+END_SRC
+
+    Tools for more git integration
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package git-timemachine :defer t :ensure t)
+    (use-package git-gutter-fringe+ :defer t :ensure t
+      :config
+      (git-gutter+-mode))
+    #+END_SRC
+***  Extra sauce!
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defun get-github-repo-field (user repo field)
+	"fetches USER/REPO from github api and retrieves FIELD"
+	(cdr
+	 (assoc field
+		(with-current-buffer
+		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
+		  (json-read-object)))))
+
+      (defun insert-github-repo-field (user repo field)
+	"Inserts FIELD from api.github.com/USER/REPO"
+	(interactive "sUser: \nsRepo: \nSField: ")
+	(insert
+	 (format "%s" (get-github-repo-field user repo field))))
+
+      (defun org-insert-github-link (user repo)
+	"Inserts a github link at USER/REPO."
+	(interactive "sUser: \nsRepo: ")
+	(org-github-link (format "%s/%s" user repo)))
+
+      (defun org-github-link (repo)
+	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
+    #+END_SRC
+** misc
+   default settings
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq scroll-conservatively 100
-	 scroll-margin 5
+	 scroll-margin 0
 	 inhibit-startup-message t
 	 initial-scratch-message ""
 	 ring-bell-function 'ignore
@@ -52,11 +99,11 @@
 	 display-line-numbers-current-absolute t
 	 default-directory (expand-file-name "~/")
 	 tramp-default-method "ssh"
-	 large-file-warning-threshold nil
-	 subword-mode t)
+	 large-file-warning-threshold nil)
+
 
    ;; sane normal keybinds
-   (global-set-key (kbd "C-s") 'save-buffer)
+   (global-subword-mode)
    (defalias 'yes-or-no-p 'y-or-n-p)
    (tool-bar-mode -1)
    (menu-bar-mode -1)
@@ -65,16 +112,14 @@
    (setq standard-indent 2)
 
    ;; Load zshrc
-   (setq shell-file-name "zsh")
+   (setq shell-file-name "bash")
    (setq shell-command-switch "-c")
 
    ;; make tramp play nice
    (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
    ;; environments
-   (use-package exec-path-from-shell
-     :defer t
-     :quelpa t)
+   (use-package exec-path-from-shell :defer t :ensure t)
 
    ;; File beautification
    (setq delete-trailing-lines t)
@@ -94,265 +139,92 @@
 	   "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
-
-;; font
+   ;; font
    (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
    (setq font-lock-maximum-decoration 3)
-
-   (use-package cask :defer t :quelpa t)
-   (use-package use-package-ensure-system-package
-     :defer t
-     :quelpa t)
    #+END_SRC
-** evil-mode
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (setq evil-want-integration t
-	 evil-want-keybinding nil)
-
-   (use-package evil-leader
-     :defer t
-     :quelpa t
-     :init
-     (global-evil-leader-mode)
-     (evil-leader/set-leader "<SPC>"))
-
-   (use-package evil-collection
-     :defer t
-     :quelpa t
-     :after evil-leader
-     :custom
-     (evil-collection-company-use-tng nil)
-     :init
-     (evil-collection-init))
-
-   (use-package evil
-     :defer t
-     :quelpa t
-     :after evil-collection
-     :config
-     (evil-mode 1))
-
-   (use-package evil-paredit :defer t :quelpa t)
-   (use-package evil-anzu :defer t :quelpa t)
-   (use-package evil-surround :defer t :quelpa t)
-   #+END_SRC
-** git
-   Magit setup.
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package evil-magit
-      :defer t
-      :quelpa t
-      :init
-      (evil-magit-init)
-      :custom
-      (magit-repository-directories (expand-file-name "~/git/projects")))
-
-    (use-package forge :defer t :quelpa t)
-    (use-package ssh-agency :defer t :quelpa t)
-
-    (setenv "SSH_ASKPASS" "git-gui--askpass")
-    #+END_SRC
-
-    Tools for more git integration
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package git-timemachine :defer t :quelpa t)
-    (use-package git-gutter-fringe+ :defer t :quelpa t
-      :config
-      (git-gutter+-mode))
-    #+END_SRC
-***  Extra sauce!
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (defun get-github-repo-field (user repo field)
-	"fetches USER/REPO from github api and retrieves FIELD"
-	(cdr
-	 (assoc field
-		(with-current-buffer
-		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
-		  (goto-char (+ 1 url-http-end-of-headers))
-		  (json-read-object)))))
-
-      (defun insert-github-repo-field (user repo field)
-	"Inserts FIELD from api.github.com/USER/REPO"
-	(interactive "sUser: \nsRepo: \nSField: ")
-	(insert
-	 (format "%s" (get-github-repo-field user repo field))))
-
-      (defun org-insert-github-link (user repo)
-	"Inserts a github link at USER/REPO."
-	(interactive "sUser: \nsRepo: ")
-	(org-github-link (format "%s/%s" user repo)))
-
-      (defun org-github-link (repo)
-	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
-    #+END_SRC
-** file management
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package ranger :defer t :quelpa t)
-   (use-package treemacs-evil :defer t :quelpa t)
-   (use-package helm-ag :defer t :quelpa t)
- #+END_SRC
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
-** agressive indent
+** editing
    #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package aggressive-indent
-   :defer t
-   :quelpa t)
+   (use-package aggressive-indent :defer t :ensure t)
+   (use-package avy :defer t :ensure t)
+   (use-package iedit :defer t :ensure t)
    #+END_SRC
-** avy
+** help
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package helpful :defer t :ensure t)
+  (use-package howdoi :defer t :ensure t)
+   #+END_SRC
+*** engine
+    used to search web resources.
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package avy
-      :defer t
-      :quelpa t)
-#+END_SRC
-** engine
-   used to search web resources.
+ (use-package engine-mode :defer t :ensure t
+   :config
+   (defengine cppreference
+     "https://en.cppreference.com/mwiki/index.php?search=%s")
+   (defengine google
+     "https://google.com/search?q=%s")
+   (defengine youtube
+     "https://www.youtube.com/results?search_query=%s")
+   (defengine dockerhub
+     "https://hub.docker.com/search?q=%s&type=image")
+   (defengine github
+     "https://github.com/search?q=%s")
+   (defengine rustdoc
+     "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
+   (defengine wikipedia
+     "https://en.wikipedia.org/wiki/%s"))
+    #+END_SRC
+** utilities
    #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package engine-mode
-  :defer t
-  :quelpa t
-  :config
-  (defengine cppreference
-    "https://en.cppreference.com/mwiki/index.php?search=%s")
-  (defengine google
-    "https://google.com/search?q=%s")
-  (defengine youtube
-    "https://www.youtube.com/results?search_query=%s")
-  (defengine dockerhub
-    "https://hub.docker.com/search?q=%s&type=image")
-  (defengine github
-    "https://github.com/search?q=%s")
-  (defengine rustdoc
-    "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
-  (defengine wikipedia
-    "https://en.wikipedia.org/wiki/%s")
-  ;; evil keybindings for search eninges
-  )
+   (use-package kubernetes :defer t :ensure t)
+   (use-package request :defer t :ensure t)
+   (use-package sudo-edit :defer t :ensure t)
+   (use-package treemacs-evil :defer t :ensure t)
    #+END_SRC
-** fzf
-    this implementation requires either zplug, or some reconfiguration. See my [[https://github.com/fredeeb/dotfiles][dotfiles]] for more info.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package fzf
-    :defer t
-    :quelpa t
-    :custom
-    (fzf/executable "~/.zplug/repos/junegunn/fzf-bin/fzf-bin"))
-#+END_SRC
-** helpful
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package helpful
-  :quelpa t
-  :bind
-  ("C-h f" . 'helpful-function)
-  ("C-h v" . 'helpful-variable)
-  ("C-h k" . 'helpful-key))
-#+END_SRC
-** howdoi
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package howdoi
-     :defer t
-     :quelpa t
+*** docker
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package docker :defer t :ensure t)
+    (use-package dockerfile-mode :defer t :ensure t)
+    (use-package docker-tramp :defer t :ensure t)
+    #+END_SRC
+*** openwith
+     requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
+ #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package openwith
+     :ensure t
      :config
-     (evil-leader/set-key
-       "h" 'howdoi-query-insert-code-snippet-at-point))
-   #+END_SRC
-** Hungry delete
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package hungry-delete
-    :defer t
-    :quelpa t
-    :config (global-hungry-delete-mode))
-#+END_SRC
-** iedit
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package iedit
-  :defer t
-  :quelpa t
-  :config
-  (evil-leader/set-key
-    "m" 'iedit-mode))
-
-(defun iedit-then-hydra ()
-  (interactive)
-  (iedit-mode)
-  (hydra-iedit-menu/body))
-#+END_SRC
-** kubernetes
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package kubernetes
-     :defer t
-     :quelpa t)
-   #+END_SRC
-** openwith
-    requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package openwith
-    :quelpa t
-    :config
-    (openwith-mode t)
-    :custom
-    (openwith-associations
-     '(("\\.pdf\\'" "zathura" (file))
-       ("\\.jpg\\'" "sxiv" (file))
-       ("\\.svg\\'" "sxiv" (file))
-       ("\\.jpeg\\'" "sxiv" (file))
-       ("\\.bmp\\'" "sxiv" (file))
-       ("\\.flac\\'" "mpv" (file))
-       ("\\.mkv\\'" "mpv" (file))
-       ("\\.mp3\\'" "mpv" (file))
-       ("\\.mp4\\'" "mpv" (file)))))
-#+END_SRC
-** request
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package request
-     :defer t
-     :quelpa t)
-   #+END_SRC
-** sudo-edit
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package sudo-edit
-  :defer t
-  :quelpa t)
-#+END_SRC
+     (openwith-mode t)
+     :custom
+     (openwith-associations
+      '(("\\.pdf\\'" "zathura" (file))
+	("\\.jpg\\'" "sxiv" (file))
+	("\\.svg\\'" "sxiv" (file))
+	("\\.jpeg\\'" "sxiv" (file))
+	("\\.bmp\\'" "sxiv" (file))
+	("\\.flac\\'" "mpv" (file))
+	("\\.mkv\\'" "mpv" (file))
+	("\\.mp3\\'" "mpv" (file))
+	("\\.mp4\\'" "mpv" (file)))))
+ #+END_SRC
 * language packs
-  mostly syntax higlighters
 ** matlab
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package matlab-mode
-     :defer t
-     :quelpa t
-     :hook 'matlab-shell
+   (use-package matlab-mode :defer t :ensure t
+     :hook (matlab-shell)
      :mode ("\\.m\\'" . matlab-mode)
      :config
      (matlab-cedet-setup)
      :custom
-   (matlab-indent-function t)
-   (matlab-shell-command "matlab"))
-   #+END_SRC
-** docker
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package docker
-     :defer t
-     :quelpa t)
-
-   (use-package dockerfile-mode
-     :defer t
-     :quelpa t)
-
-   (use-package docker-tramp
-     :defer t
-     :quelpa t)
+     (matlab-indent-function t)
+     (matlab-shell-command "matlab"))
    #+END_SRC
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package csharp-mode
-     :defer t
-     :quelpa t)
-
-   (use-package omnisharp
-     :defer t
-     :quelpa t
+   (use-package csharp-mode :defer t :ensure t)
+   (use-package omnisharp :defer t :ensure t
      :after company
      :config
      (add-hook 'csharp-mode-hook 'omnisharp-mode)
@@ -363,7 +235,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
     :defer t
-    :quelpa t
+    :ensure t
     :custom
     (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
     (org-plantuml-jar-path
@@ -373,9 +245,7 @@
       (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
 
-  (use-package flycheck-plantuml
-    :defer t
-    :quelpa t)
+  (use-package flycheck-plantuml :defer t :ensure t)
 
   ;; recompiles plantuml diagrams on save
   (defun recompile-plantuml ()
@@ -384,30 +254,19 @@
 
   (add-hook 'plantuml-mode-hook 'recompile-plantuml)
 #+END_SRC
-** latex
+** others
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package auctex
-     :defer t
-     :quelpa t)
-   #+END_SRC
-** textile
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package textile-mode
-    :defer t
-    :quelpa t
-    :hook '(textile-mode . visual-line-mode)
-    :mode ("\\.textile\\'"))
-#+END_SRC
-** bake
-** sconstruct
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package auctex :defer t :ensure t)
+   (use-package yaml-mode :defer t :ensure t)
+   (use-package json-mode :defer t :ensure t)
+
+   ;;scons
    (push '("SConstruct" . python-mode) auto-mode-alist)
    (push '("SConscript" . python-mode) auto-mode-alist)
    #+END_SRC
-** org stuff
+* org stuff
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (org-babel-do-load-languages
-   'org-babel-load-languages
+  (org-babel-do-load-languages 'org-babel-load-languages
    '((python . t)
      (C . T)
      (clojure . T)
@@ -420,67 +279,43 @@
      (emacs-lisp . t)
      (js . t)))
 
-
-  ;; tmp fix for <\w
+  (use-package ox-reveal :defer t :ensure t)
   (require 'org-tempo)
-
-  ;; agenda and stuff
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture)
-
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "IN PROGRESS(p)" "FEEDBACK(f)" "|" "DONE(d)"))
-
+	'((sequence "TODO(t)" "FEEDBACK(f)" "|" "DONE(d)" "NOT FINISHED(n)"))
 	org-columns-default-format
 	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
-
 	org-capture-templates
 	'(("t" "Todo" entry (file+headline "~/org/agenda.org" "Tasks")
            "* TODO %?\n  %i\n  %a")
           ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
            "* %?\n %i\n")))
 
-  (add-hook 'org-mode-hook 'visual-line-mode)
-
-  (use-package org-ref
-    :defer t
-    :quelpa t)
-
-  (use-package org-bullets
-    :defer t
-    :quelpa t
+  (use-package org-ref :defer t :ensure t)
+  (use-package org-bullets :defer t :ensure t
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-  (setq org-export-latex-listings 'minted)
-  (setq org-src-fontify-natively t)
 
-  (use-package org-tree-slide :defer t :quelpa t)
-
-  (use-package org-gcal
-    :defer t
-    :quelpa t
-    :custom
-    (org-gcal-client-id (shell-command-to-string "pass Org/gcal/client"))
-    (org-gcal-client-secret (shell-command-to-string "pass Org/gcal/secret"))
-    (org-gcal-file-alist '(("frederikbreandstrup@gmail.com" . "~/org/cal.org"))))
-
-  (use-package polymode :defer t :quelpa t)
-
-  (use-package poly-org
-    :defer t
-    :quelpa t
+  (use-package org-tree-slide :defer t :ensure t)
+  (use-package org-kanban :defer t :ensure t)
+  (use-package polymode :defer t :ensure t)
+  (use-package poly-org :defer t :ensure t
     :after polymode
     :mode ("//.org//'"))
 
-  (use-package org-brain
-    :defer t
-    :quelpa t
+  (use-package org-brain :defer t :ensure t
     :config
     (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
     (evil-leader/set-key
       "n" 'org-brain-goto))
+
+  (use-package org-download :defer t :ensure t
+    :config
+    (add-hook 'dired-mode-hook 'org-download-enable))
+
+  (setq org-export-latex-listings 'minted)
+  (setq org-src-fontify-natively t)
 
   (add-hook 'org-mode-hook
 	    (lambda ()
@@ -491,8 +326,7 @@
     "Convert value V into compatible unit U"
     (math-convert-units v u))
 #+END_SRC
-
-**** org-extras
+** org-extras
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defun export-and-find ()
     (interactive)
@@ -517,7 +351,7 @@
     (interactive "sTitle: \nsAuthor: ")
     (save-excursion
       (goto-char (point-min))
-      (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n\n")))
+      (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
 
   (defun org-reveal-add-root ()
     "Insert Reveal root tag for org-re-reveal exports"
@@ -545,18 +379,42 @@
       (forward-line -1)
       (insert (concat "#+NAME: " name))))
 #+END_SRC
-** yaml
+** journals
+   setting up daily journals
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yaml-mode
-     :defer t
-     :quelpa t)
+   (defvar journal-dir (expand-file-name "~/Dropbox/journals/"))
+   (defvar journal
+     (format "%sjournal%s.org"
+	     journal-dir
+	     (truncate-string-to-width
+	      (shell-command-to-string "date \"+%Y%m%d\"") 8)))
+
+   (setq initial-buffer-choice journal
+	 org-agenda-files (directory-files journal-dir t "^journal[^-].*"))
+
+   (defvar org-journal-template
+     (concat
+      "#+TITLE: Journal\n"
+      "#+DATE: " (shell-command-to-string "date +'%A %d/%m/%Y'")
+      "* TODAY\n"
+      "** TODO\n"
+      "* KANBAN\n"
+      "#+BEGIN: kanban\n"
+      "#+END:\n"
+      "* NOTES"))
+
+   (when (not (file-exists-p journal))
+     (write-region org-journal-template nil journal))
+
+   (defun find-journal ()
+     "goto `journal'"
+     (interactive)
+     (find-file journal))
    #+END_SRC
 * programming
 ** company
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package company
-     :defer t
-     :quelpa t
+   (use-package company :defer t :ensure t
      :init
      (global-company-mode t)
      :custom
@@ -572,8 +430,8 @@
    (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
    ;; common lisp
-   (use-package slime :defer t :quelpa t)
-   (use-package slime-company :defer t :quelpa t)
+   (use-package slime :defer t :ensure t)
+   (use-package slime-company :defer t :ensure t)
 
    (load (expand-file-name "~/quicklisp/slime-helper.el"))
    (setq inferior-lisp-program (executable-find "sbcl"))
@@ -582,220 +440,165 @@
    ;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
 
    ;; elisp
-   (use-package elsa :defer t :quelpa t)
+   (use-package elsa :defer t :ensure t)
 
    ;; clojure
-   (use-package clojure-mode :defer t :quelpa t)
-   (use-package cider :defer t :quelpa t
+   (use-package clojure-mode :defer t :ensure t)
+   (use-package cider :defer t :ensure t
      :custom
      (cider-lein-parameters "repl :headless :host localhost"))
-   (use-package clojure-lsp :defer t :quelpa t)
 
-   (use-package flycheck-clojure :defer t :quelpa t)
-   (use-package helm-clojuredocs :defer t :quelpa t)
-   (use-package cljr-helm :defer t :quelpa t)
+   (use-package flycheck-clojure :defer t :ensure t)
+   (use-package helm-clojuredocs :defer t :ensure t)
+   (use-package cljr-helm :defer t :ensure t)
 
    ;; racket
-   (use-package racket-mode :defer t :quelpa t)
+   (use-package racket-mode :defer t :ensure t)
    #+END_SRC
 ** python
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package pipenv
-     :defer t
-     :quelpa t
+   (use-package pipenv :defer t :ensure t
      :hook (python-mode . pipenv-mode)
      :custom
      pipenv-projectile-after-switch-function
      #'pipenv-projectile-after-switch-extended)
 
-   (use-package jedi
-     :defer t
-     :quelpa t)
+   (use-package jedi :defer t :ensure t)
    #+END_SRC
-** LSP
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package ccls
-  :defer t
-  :quelpa t)
-
-(use-package flycheck-clang-tidy
-  :defer t
-  :quelpa t
+** C++
+   #+BEGIN_SRC emacs-lisp :tangle yes
+(use-package ccls :defer t :ensure t)
+(use-package flycheck-clang-tidy :defer t :ensure t
   :custom
-  (flycheck-clang-tidy-build-path "build"))
+  (flycheck-clang-tidy-build-path ""))
 
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-clang-tidy-setup))
-
-
-(use-package lsp-mode
-  :defer t
-  :quelpa t
-  :commands lsp
-  :init (require 'lsp-clients)
-  :config (flycheck-mode))
-
-(use-package lsp-ui
-  :defer t
-  :quelpa t
-  :commands lsp-ui-mode)
-
-(use-package company-lsp
-  :defer t
-  :quelpa t
-  :commands company-lsp
-  :config
-  (push 'company-lsp company-backends))
-
-(use-package dap-mode
-  :defer t
-  :quelpa t
-  :config (require 'dap-gdb-lldb))
-
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'python-mode-hook 'lsp)
-(add-hook 'rust-mode-hook 'lsp)
-(add-hook 'dockerfile-mode-hook 'lsp)
-
-(use-package lsp-treemacs :defer t :quelpa t)
-(use-package helm-lsp :defer t :quelpa t)
-
-
-#+END_SRC
+(use-package disaster :defer t :ensure t)
+(use-package demangle-mode :defer t :ensure t
+  :mode ("\\*assembly\\*"))
+   #+END_SRC
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package cargo
-     :defer t
-     :quelpa t)
-
-   (use-package toml-mode
-     :defer t
-     :quelpa t)
-
+   (use-package cargo :defer t :ensure t)
+   (use-package toml-mode :defer t :ensure t)
    (add-hook 'rust-mode-hook 'cargo-minor-mode)
-
+   #+END_SRC
+** Go
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package go-mode :defer t :ensure t)
    #+END_SRC
 ** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
     ;; everything in one package
-    (use-package web-mode
-      :defer t
-      :quelpa t
+    (use-package web-mode :defer t :ensure t
       :mode
       ("\\.js\\'" . web-mode)
       ("\\.ts\\'" . web-mode)
       ("\\.css\\'" . web-mode)
       ("\\.jsx\\'" . web-mode)
-      ("\\.tsx\\'" . typescript-mode)
+      ("\\.tsx\\'" . web-mode)
       ("\\.html\\'" . web-mode)
       ("\\.scss\\'" . web-mode))
 
-    ;; Macro>overload
-    (use-package emmet-mode :defer t :quelpa t)
-    (setq emmet-expand-jsx-className? t)
+    (use-package impatient-mode :defer t :ensure t)
+    (use-package lorem-ipsum :defer t :ensure t)
+    (use-package emmet-mode :defer t :ensure t
+      :custom
+      (emmet-expand-jsx-className t))
 
-
-    ;; server static files
-    (use-package impatient-mode
-      :defer t
-      :quelpa t)
-
-    ;; typescript lang server
-    (use-package tide
-      :defer t
-      :quelpa t
+    (use-package tide :defer t :ensure t
       :commands tide-mode
       :mode ("\\.tsx\\'" . tide-mode))
 
-    (use-package react-snippets
-      :defer t
-      :quelpa t)
+    (use-package restclient :defer t :ensure t)
 
-    (use-package json-mode
-      :defer t
-      :quelpa t)
+#+END_SRC
+** LSP
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package lsp-mode :defer t :ensure t
+  :commands lsp
+  :init (require 'lsp-clients)
+  :config (flycheck-mode))
+
+(use-package lsp-ui :defer t :ensure t
+  :commands lsp-ui-mode)
+
+(use-package company-lsp :defer t :ensure t
+  :commands company-lsp
+  :config
+  (push 'company-lsp company-backends))
+
+(use-package dap-mode :defer t :ensure t
+  :config (require 'dap-gdb-lldb))
+
+(use-package lsp-treemacs :defer t :ensure t)
+(use-package helm-lsp :defer t :ensure t)
+
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'python-mode-hook 'lsp)
+(add-hook 'rust-mode-hook 'lsp)
 #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yasnippet-snippets :defer t :quelpa t)
-   (use-package react-snippets :defer t :quelpa t)
+   (use-package yasnippet-snippets :defer t :ensure t)
+   (use-package react-snippets :defer t :ensure t)
 
-   (use-package yasnippet
-     :defer t
-     :quelpa t
+   (use-package yasnippet :defer t :ensure t
      :init
      (yas-global-mode 1))
 
-   (use-package auto-yasnippet
-     :defer t
-     :quelpa t)
+   (use-package auto-yasnippet :defer t :ensure t)
 
-   (use-package company-yasnippet
-     :quelpa t)
+   ;; make company and yasnippet play nice
+   (defun company-yasnippet-or-completion ()
+     (interactive)
+     (let ((yas-fallback-behavior nil))
+       (unless (yas-expand)
+	 (call-interactively #'company-complete-common))))
+
+   (add-hook 'company-mode-hook
+	     (lambda () (substitute-key-definition
+		    'company-complete-common
+		    'company-yasnippet-or-completion
+		    company-active-map)))
    #+END_SRC
 * misc
 ** shell
    insert result from terminal (try "Q" on the next line)
    seq 1 255 | xargs printf "%.2x\n" | fmt -w 49
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (defun insert-output-of-executed-line ()
-  "executes line at point in default shell and inserts stdout"
-  (interactive)
-  (insert
-   (shell-command-to-string
-    (delete-and-extract-region
-     (point-at-bol)
-     (point-at-eol)))))
+     (defun insert-output-of-executed-line ()
+       "executes line at point in default shell and inserts stdout"
+       (interactive)
+       (insert
+	(shell-command-to-string
+	 (delete-and-extract-region
+	  (point-at-bol)
+	  (point-at-eol)))))
    #+END_SRC
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
- (use-package nix-mode
-   :defer t
-   :quelpa t)
-
- (use-package nix-buffer
-   :defer t
-   :quelpa t)
-
- (use-package helm-nixos-options
-   :defer t
-   :quelpa t)
-
- (use-package company-nixos-options
-   :defer t
-   :quelpa t)
+ (use-package nix-mode :defer t :ensure t)
+ (use-package nix-buffer :defer t :ensure t)
+ (use-package helm-nixos-options :defer t :ensure t)
+ (use-package company-nixos-options :defer t :ensure t)
  #+END_SRC
 ** mail
    #+BEGIN_SRC emacs-lisp :tangle yes
    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
    (require 'mu4e)
    #+END_SRC
-** restclient
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package restclient
-    :defer t
-    :quelpa t)
-  #+END_SRC
-** system tools
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package symon
-     :defer t
-     :quelpa t)
-   #+END_SRC
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package helm
-   :defer t
-   :quelpa t
+ (use-package helm :defer t :ensure t
    :init
    (require 'helm-config)
    (helm-mode))
 
- (use-package helm-make :defer t :quelpa t)
- (use-package helm-company :defer t :quelpa t)
- (use-package helm-projectile :defer t :quelpa t)
+ (use-package helm-make :defer t :ensure t)
+ (use-package helm-company :defer t :ensure t)
+ (use-package helm-projectile :defer t :ensure t)
  #+END_SRC
 ** symbols
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -813,15 +616,11 @@
    #+END_SRC
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package doom-themes
-     :defer t
-     :quelpa t
+   (use-package doom-themes :defer t :ensure t
      :init
      (load-theme 'doom-dracula t))
 
-   (use-package doom-modeline
-     :defer t
-     :quelpa t
+   (use-package doom-modeline :defer t :ensure t
      :hook (after-init . doom-modeline-init)
      :custom
      (doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -832,33 +631,16 @@
      (doom-modeline-major-mode-icon t)
      (doom-modeline-major-mode-color-icon t))
 
-   (use-package solaire-mode
-     :defer t
-     :quelpa t
+   (use-package solaire-mode :defer t :ensure t
      :config
      (solaire-global-mode))
    #+END_SRC
 ** Which key
  #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package which-key
-     :defer t
-     :quelpa t
+   (use-package which-key :defer t :ensure t
      :init
      (which-key-mode))
  #+END_SRC
-** frames only
-     for better compatibility with i3
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package frames-only-mode :defer t :quelpa t)
- #+END_SRC
-** rainbow
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package rainbow-delimeters
-     :defer t
-     :quelpa t
-     :config
-     (rainbow-delimiters-mode))
-   #+END_SRC
 * hotkeys
   #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Leader keys
@@ -875,13 +657,14 @@
     ;;misc
     "a" 'comment-dwim
     "i" 'indent-region
+    "h" 'howdoi-query-insert-code-snippet-at-point
 
     ;;buffer navigation
     "j" 'evil-avy-goto-char
 
     ;;files
     "f f" 'fzf
-    "f d" 'ranger
+    "f d" 'dired-jump
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
@@ -913,6 +696,7 @@
     "-" 'mu4e
     "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell))
 
+    ;;projectile
     "p p" 'helm-projectile
     "p f" 'helm-projectile-find-file-dwim
     "p a" 'helm-projectile-ag
@@ -929,6 +713,8 @@
     "s g i" 'engine/search-github
     "s g o" 'engine/search-google)
 
+  (evil-leader/set-key-for-mode 'org-mode
+    "m s" 'org-kanban/shift)
 
   (evil-leader/set-key-for-mode 'cider-mode
     "r h" 'cljr-helm
@@ -950,7 +736,11 @@
     (kbd "M-x") 'helm-M-x
     (kbd "M-p") 'emmet-expand-yas
     (kbd "C-S-c") 'aya-create
-    (kbd "C-S-e") 'aya-expand)
+    (kbd "C-S-e") 'aya-expand
+    (kbd "C-s") 'save-buffer
+    (kbd "C-h f") . 'helpful-function
+    (kbd "C-h v") . 'helpful-variable
+    (kbd "C-h k") . 'helpful-key)
 
   (evil-define-key 'normal global-map
     "'" 'evil-goto-mark
@@ -966,14 +756,8 @@
 
   ;; paredit mode
   (evil-define-key nil paredit-mode-map
-    "M-l" 'paredit-forward-slurp-sexp
-    "M-h" 'paredit-backward-slurp-sexp
-    "M-L" 'paredit-backward-barf-sexp
-    "M-H" 'paredit-forward-barf-sexp)
-  #+END_SRC
-
-* Finalizing
-  Reset garbage collection threshold
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq gc-cons-threshold (* 2 1000 1000))
+    (kbd "M-l") 'paredit-forward-slurp-sexp
+    (kbd "M-h") 'paredit-backward-slurp-sexp
+    (kbd "M-L") 'paredit-backward-barf-sexp
+    (kbd "M-H") 'paredit-forward-barf-sexp)
   #+END_SRC
