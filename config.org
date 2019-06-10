@@ -265,6 +265,7 @@
    (push '("SConscript" . python-mode) auto-mode-alist)
    #+END_SRC
 * org stuff
+** basic
 #+BEGIN_SRC emacs-lisp :tangle yes
   (org-babel-do-load-languages 'org-babel-load-languages
    '((python . t)
@@ -327,57 +328,58 @@
     (math-convert-units v u))
 #+END_SRC
 ** org-extras
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defun export-and-find ()
-    (interactive)
-    (org-latex-export-to-pdf)
-    (find-file
-     (format "%s.pdf" (file-name-base (buffer-name)))))
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defun export-and-find ()
+       (interactive)
+       (org-latex-export-to-pdf)
+       (when (not (process-status "openwith-process"))
+	 (find-file
+	  (format "%s.pdf" (file-name-base (buffer-name))))))
 
-  (defun org-latex-include-header (packages)
-    "Add a latex header with PACKAGES to the current document."
-    (interactive
-     (list (split-string (read-string "Package(s): "))))
-    (save-excursion
-      (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
-	  (if (not (search-backward "#+AUTHOR:" nil t))
-	      (goto-char 0)))
-      (forward-line)
-      (dolist (package packages)
-	(insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
+     (defun org-latex-include-header (packages)
+       "Add a latex header with PACKAGES to the current document."
+       (interactive
+	(list (split-string (read-string "Package(s): "))))
+       (save-excursion
+	 (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
+	     (if (not (search-backward "#+AUTHOR:" nil t))
+		 (goto-char 0)))
+	 (forward-line)
+	 (dolist (package packages)
+	   (insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
 
-  (defun org-latex-insert-meta (title author)
-    "Insert TITLE and AUTHOR headers for latex."
-    (interactive "sTitle: \nsAuthor: ")
-    (save-excursion
-      (goto-char (point-min))
-      (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
+     (defun org-latex-insert-meta (title author)
+       "Insert TITLE and AUTHOR headers for latex."
+       (interactive "sTitle: \nsAuthor: ")
+       (save-excursion
+	 (goto-char (point-min))
+	 (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
 
-  (defun org-reveal-add-root ()
-    "Insert Reveal root tag for org-re-reveal exports"
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (insert
-       (format
-	"#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
-	(cdr
-	 (assoc 'version
-		(with-current-buffer
-		    (url-retrieve-synchronously
-		     "https://api.cdnjs.com/libraries/reveal.js")
-		  (goto-char (+ url-http-end-of-headers 1))
-		  (json-read-object))))))))
+     (defun org-reveal-add-root ()
+       "Insert Reveal root tag for org-re-reveal exports"
+       (interactive)
+       (save-excursion
+	 (goto-char (point-min))
+	 (insert
+	  (format
+	   "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
+	   (cdr
+	    (assoc 'version
+		   (with-current-buffer
+		       (url-retrieve-synchronously
+			"https://api.cdnjs.com/libraries/reveal.js")
+		     (goto-char (+ url-http-end-of-headers 1))
+		     (json-read-object))))))))
 
-  (defun org-macros-src-block-add-name (name)
-    "Add a NAME to the current sourceblock."
-    (interactive "sName: ")
-    (save-excursion
-      (if (not (search-backward "#+BEGIN_SRC" nil t))
-	  (message "Src block not found"))
-      (newline)
-      (forward-line -1)
-      (insert (concat "#+NAME: " name))))
+     (defun org-macros-src-block-add-name (name)
+       "Add a NAME to the current sourceblock."
+       (interactive "sName: ")
+       (save-excursion
+	 (if (not (search-backward "#+BEGIN_SRC" nil t))
+	     (message "Src block not found"))
+	 (newline)
+	 (forward-line -1)
+	 (insert (concat "#+NAME: " name))))
 #+END_SRC
 ** journals
    setting up daily journals
@@ -512,30 +514,13 @@
     (use-package restclient :defer t :ensure t)
 
 #+END_SRC
-** LSP
+** eglot
 #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package lsp-mode :defer t :ensure t
-  :commands lsp
-  :init (require 'lsp-clients)
-  :config (flycheck-mode))
+  (use-package eglot :defer t :ensure t
+    :hook (c++-mode rust-mode python-mode))
 
-(use-package lsp-ui :defer t :ensure t
-  :commands lsp-ui-mode)
-
-(use-package company-lsp :defer t :ensure t
-  :commands company-lsp
-  :config
-  (push 'company-lsp company-backends))
-
-(use-package dap-mode :defer t :ensure t
-  :config (require 'dap-gdb-lldb))
-
-(use-package lsp-treemacs :defer t :ensure t)
-(use-package helm-lsp :defer t :ensure t)
-
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'python-mode-hook 'lsp)
-(add-hook 'rust-mode-hook 'lsp)
+  (use-package eldoc-box :defer t :ensure t
+    :hook eglot-mode)
 #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
@@ -626,7 +611,6 @@
      (doom-modeline-buffer-file-name-style 'relative-from-project)
      (doom-modeline-height 35)
      (doom-modeline-bar-width 4)
-     (doom-modeline-lsp t)
      (doom-modeline-icon t)
      (doom-modeline-major-mode-icon t)
      (doom-modeline-major-mode-color-icon t))
@@ -675,18 +659,15 @@
     "t p" 'treemacs-add-project-to-workspace
     "t r" 'treemacs-remove-project-from-workspace
 
-    ;;lsp
-    "r d" 'lsp-ui-peek-find-definitions
-    "r i" 'lsp-ui-peek-find-implementation
-    "r r" 'lsp-ui-peek-find-references
-    "r j" 'lsp-ui-find-next-reference
-    "r k" 'lsp-ui-find-prev-reference
-    "d" 'lsp-execute-code-action
-
     ;;Git
     "g s" 'magit-status
     "g t" 'git-timemachine
     "g g" 'global-git-gutter+-mode
+
+    ;;eglot
+    "r r" 'eglot-rename
+    "r c" 'eglot-code-actions
+    "r s" 'eglot-reconnect
 
     ;;Docker
     "g d" 'docker
@@ -738,9 +719,9 @@
     (kbd "C-S-c") 'aya-create
     (kbd "C-S-e") 'aya-expand
     (kbd "C-s") 'save-buffer
-    (kbd "C-h f") . 'helpful-function
-    (kbd "C-h v") . 'helpful-variable
-    (kbd "C-h k") . 'helpful-key)
+    (kbd "C-h f") 'helpful-function
+    (kbd "C-h v") 'helpful-variable
+    (kbd "C-h k") 'helpful-key)
 
   (evil-define-key 'normal global-map
     "'" 'evil-goto-mark
