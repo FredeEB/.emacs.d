@@ -419,6 +419,8 @@
    (use-package company :defer t :ensure t
      :init
      (global-company-mode t)
+     :config
+     (add-hook 'eshell-mode-hook (lambda () (company-mode nil)))
      :custom
      (company-idle-delay 0)
      (company-minimum-prefix-length 1))
@@ -472,7 +474,9 @@
 (use-package ccls :defer t :ensure t)
 (use-package flycheck-clang-tidy :defer t :ensure t
   :custom
-  (flycheck-clang-tidy-build-path ""))
+  (flycheck-clang-tidy-build-path "")
+  (flycheck-clang-language-standard "c++1z"))
+(use-package clang-format :defer t :ensure t)
 
 (use-package disaster :defer t :ensure t)
 (use-package demangle-mode :defer t :ensure t
@@ -630,9 +634,7 @@
   ;; Leader keys
   (evil-leader/set-key
     ;;buffers & windows
-    "b b" 'helm-buffers-list
-    "b o" 'other-buffer
-    "b i" 'ibuffer
+    "b" 'helm-buffers-list
     "o" 'other-window
     "q" '(lambda () (interactive)
 	   (kill-buffer)
