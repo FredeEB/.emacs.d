@@ -417,10 +417,7 @@
 ** company
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package company :defer t :ensure t
-     :init
-     (global-company-mode t)
-     :config
-     (add-hook 'eshell-mode-hook (lambda () (company-mode nil)))
+     :hook (prog-mode . company-mode)
      :custom
      (company-idle-delay 0)
      (company-minimum-prefix-length 1))
@@ -505,23 +502,19 @@
       ("\\.html\\'" . web-mode)
       ("\\.scss\\'" . web-mode))
 
+    (use-package npm-mode :defer t :ensure t)
     (use-package impatient-mode :defer t :ensure t)
     (use-package lorem-ipsum :defer t :ensure t)
     (use-package emmet-mode :defer t :ensure t
       :custom
       (emmet-expand-jsx-className t))
 
-    (use-package tide :defer t :ensure t
-      :commands tide-mode
-      :mode ("\\.tsx\\'" . tide-mode))
-
     (use-package restclient :defer t :ensure t)
-
 #+END_SRC
 ** eglot
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package eglot :defer t :ensure t
-    :hook (c++-mode rust-mode python-mode))
+    :hook (c++-mode rust-mode python-mode typescript-mode))
 
   (use-package eldoc-box :defer t :ensure t
     :hook eglot-mode)
@@ -574,8 +567,9 @@
  #+END_SRC
 ** mail
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-   (require 'mu4e)
+     (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
+       (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+       (require 'mu4e))
    #+END_SRC
 * ui
 ** helm
