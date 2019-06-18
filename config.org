@@ -582,6 +582,7 @@
  (use-package helm-make :defer t :ensure t)
  (use-package helm-company :defer t :ensure t)
  (use-package helm-projectile :defer t :ensure t)
+ (use-package f3 :defer t :ensure t)
  #+END_SRC
 ** symbols
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -643,7 +644,7 @@
     "j" 'evil-avy-goto-char
 
     ;;files
-    "f f" 'fzf
+    "f f" 'f3
     "f d" 'dired-jump
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
