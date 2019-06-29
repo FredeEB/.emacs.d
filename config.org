@@ -119,7 +119,9 @@
    (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
    ;; environments
-   (use-package exec-path-from-shell :defer t :ensure t)
+   (use-package exec-path-from-shell :defer t :ensure t
+     :config (exec-path-from-shell-initialize))
+
 
    ;; File beautification
    (setq delete-trailing-lines t)
@@ -140,7 +142,7 @@
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
    ;; font
-   (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
+   (add-to-list 'default-frame-alist '(font . "Iosevka SS04"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
 * qol
@@ -241,7 +243,7 @@
     (org-plantuml-jar-path
      (replace-regexp-in-string
       "bin"
-      "lib"
+      "share/java/plantuml"
       (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
 
@@ -389,21 +391,17 @@
    (defvar journal
      (format "%sjournal%s.org"
 	     journal-dir
-	     (truncate-string-to-width
-	      (shell-command-to-string "date \"+%Y%m%d\"") 8)))
+	     (format-time-string "%Y%m%d")))
 
    (setq initial-buffer-choice journal
-	 org-agenda-files (directory-files journal-dir t "^journal[^-].*"))
+	 org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
 
    (defvar org-journal-template
      (concat
       "#+TITLE: Journal\n"
-      "#+DATE: " (shell-command-to-string "date +'%A %d/%m/%Y'")
+      "#+DATE: " (format-time-string "%A %d/%m/%Y\n")
       "* TODAY\n"
       "** TODO\n"
-      "* KANBAN\n"
-      "#+BEGIN: kanban\n"
-      "#+END:\n"
       "* NOTES"))
 
    (when (not (file-exists-p journal))
@@ -469,26 +467,32 @@
    #+END_SRC
 ** C++
    #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package ccls :defer t :ensure t)
-(use-package flycheck-clang-tidy :defer t :ensure t
-  :custom
-  (flycheck-clang-tidy-build-path "")
-  (flycheck-clang-language-standard "c++1z"))
-(use-package clang-format :defer t :ensure t)
+     (use-package ccls :defer t :ensure t)
+     (use-package clang-format :defer t :ensure t)
+     (use-package flycheck-clang-tidy :defer t :ensure t
+       :custom
+       (flycheck-clang-tidy-build-path "")
+       (flycheck-clang-language-standard "c++2a"))
 
-(use-package disaster :defer t :ensure t)
-(use-package demangle-mode :defer t :ensure t
-  :mode ("\\*assembly\\*"))
+     (use-package disaster :defer t :ensure t)
+     (use-package demangle-mode :defer t :ensure t
+       :mode ("\\*assembly\\*"))
    #+END_SRC
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package cargo :defer t :ensure t)
-   (use-package toml-mode :defer t :ensure t)
-   (add-hook 'rust-mode-hook 'cargo-minor-mode)
+     (use-package cargo :defer t :ensure t
+       :hook (rust-mode . cargo-minor-mode))
+     (use-package toml-mode :defer t :ensure t)
    #+END_SRC
 ** Go
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package go-mode :defer t :ensure t)
+     (use-package go-mode :defer t :ensure t
+       :init (push (expand-file-name "~/go/bin" exec-path)))
+
+   (defun go-run ()
+     (interactive)
+     (save-buffer)
+     (async-shell-command (concat "go run " (buffer-name))))
    #+END_SRC
 ** Web
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -515,10 +519,10 @@
 ** eglot
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package eglot :defer t :ensure t
-    :hook (c++-mode rust-mode python-mode typescript-mode))
+    :hook (c++-mode rust-mode python-mode typescript-mode go-mode))
 
   (use-package eldoc-box :defer t :ensure t
-    :hook eglot-mode)
+    :hook (eglot-mode . eldoc-box-hover-mode))
 #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
@@ -681,7 +685,7 @@
     "p a" 'helm-projectile-ag
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
-    "c" 'helm-make
+    "c" 'helm-make-projectile
 
     ;;engine
     "s c" 'engine/search-cppreference
@@ -719,7 +723,13 @@
     (kbd "C-s") 'save-buffer
     (kbd "C-h f") 'helpful-function
     (kbd "C-h v") 'helpful-variable
-    (kbd "C-h k") 'helpful-key)
+    (kbd "C-h k") 'helpful-key
+    (kbd "C-c l") 'org-store-link
+    (kbd "C-c a") 'org-todo-list
+    (kbd "C-c c") 'org-capture)
+
+  (evil-define-key nil go-mode-map
+    (kbd "C-c C-c") 'go-run)
 
   (evil-define-key 'normal global-map
     "'" 'evil-goto-mark
