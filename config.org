@@ -240,14 +240,15 @@
   (use-package plantuml-mode
     :defer t
     :ensure t
-    :custom
-    (plantuml-jar-path (expand-file-name (executable-find "plantuml")))
-    (org-plantuml-jar-path
-     (replace-regexp-in-string
-      "bin"
-      "share/java/plantuml"
-      (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar")))
     :magic ("@startuml" . plantuml-mode))
+
+  (when (executable-find "plantuml")
+    (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
+	  org-plantuml-jar-path
+	  (replace-regexp-in-string
+	   "bin"
+	   "share/java/plantuml"
+	   (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
 
   (use-package flycheck-plantuml :defer t :ensure t)
 
@@ -480,7 +481,8 @@
 ** Go
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-mode :defer t :ensure t
-       :init (push (expand-file-name "~/go/bin" exec-path)))
+       :config
+       (push (expand-file-name "~/go/bin" exec-path)))
 
    (defun go-run ()
      (interactive)
