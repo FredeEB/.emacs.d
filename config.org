@@ -117,9 +117,6 @@
    (setq shell-file-name "bash")
    (setq shell-command-switch "-c")
 
-   ;; make tramp play nice
-   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
-
    ;; environments
    (use-package exec-path-from-shell :defer t :ensure t
      :config (exec-path-from-shell-initialize))
@@ -144,7 +141,7 @@
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
    ;; font
-   (add-to-list 'default-frame-alist '(font . "Iosevka SS04"))
+   (add-to-list 'default-frame-alist '(font . "Iosevka SS04 15"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
 * qol
@@ -264,6 +261,7 @@
    (use-package auctex :defer t :ensure t)
    (use-package yaml-mode :defer t :ensure t)
    (use-package json-mode :defer t :ensure t)
+   (use-package protobuf-mode :defer t :ensure t)
 
    ;;scons
    (push '("SConstruct" . python-mode) auto-mode-alist)
@@ -294,10 +292,10 @@
 	org-columns-default-format
 	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
 	org-capture-templates
-	'(("t" "Todo" entry (file+headline "~/org/agenda.org" "Tasks")
-           "* TODO %?\n  %i\n  %a")
-          ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
-           "* %?\n %i\n")))
+	'(("t" "Todo" entry (file+headline journal "TODAY")
+           "** TODO %?\n")
+          ("n" "Notes" entry (file+headline journal "NOTES")
+           "** %?\n\n")))
 
   (use-package org-ref :defer t :ensure t)
   (use-package org-bullets :defer t :ensure t
@@ -419,12 +417,43 @@
 * programming
 ** company
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package company :defer t :ensure t
-     :hook (prog-mode . company-mode)
-     :custom
-     (company-idle-delay 0)
-     (company-minimum-prefix-length 1))
+     (use-package company :defer t :ensure t
+       :hook (prog-mode . company-mode)
+       :custom
+       (company-idle-delay 0)
+       (company-minimum-prefix-length 1)
+       (company-show-numbers t)
+       :config
+             (let ((map company-active-map))
+	(mapc
+	 (lambda (x)
+	   (define-key map (format "%d" x) 'ora-company-number))
+	 (number-sequence 0 9))
+	(define-key map " " (lambda ()
+                              (interactive)
+                              (company-abort)
+                              (self-insert-command 1)))
+	(define-key map (kbd "<return>") nil))
+
+      (defun ora-company-number ()
+	"Forward to `company-complete-number'.
+
+         Unless the number is potentially par of the canidiate.
+         In that case, insert the number"
+	(interactive)
+	(let* ((k (this-command-keys))
+               (re (concat "^" company-prefix k)))
+	  (if (cl-find-if (lambda (s) (string-match re s))
+			  company-candidates)
+              (self-insert-command 1)
+	    (company-complete-number (string-to-number k))))))
+
+     (use-package company-box :defer t :ensure t
+       :custom (company-box-enable-icon nil))
    #+END_SRC
+*** number completion
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+END_SRC
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
    ;; paredit!
@@ -511,13 +540,15 @@
 
     (use-package restclient :defer t :ensure t)
 #+END_SRC
-** eglot
+** lsp
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package eglot :defer t :ensure t
-    :hook (c++-mode rust-mode python-mode typescript-mode go-mode))
+  (use-package company-lsp :defer t :ensure t)
+  (use-package lsp-mode :defer t :ensure t
+    :config (require 'lsp-clients)
+    :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp))
+  (use-package lsp-ui :defer t :ensure t)
+  (use-package dap-mode :defer t :ensure t)
 
-  (use-package eldoc-box :defer t :ensure t
-    :hook (eglot-mode . eldoc-box-hover-mode))
 #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
