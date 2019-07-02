@@ -7,6 +7,8 @@
 	  (proto (if no-ssl "http" "https")))
      (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
      (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+     (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")) t)
+     (add-to-list 'package-archives (cons "org" (concat proto "://orgmode.org/elpa/")) t)
      (package-initialize))
 
    (unless (package-installed-p 'use-package)
@@ -269,6 +271,7 @@
 * org stuff
 ** basic
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package org-plus-contrib :defer t :ensure t)
   (org-babel-do-load-languages 'org-babel-load-languages
    '((python . t)
      (C . T)
@@ -428,16 +431,6 @@
    (add-hook 'lisp-mode-hook 'paredit-mode)
    (add-hook 'clojure-mode-hook 'paredit-mode)
    (add-hook 'clojurescript-mode-hook 'paredit-mode)
-
-   ;; common lisp
-   (use-package slime :defer t :ensure t)
-   (use-package slime-company :defer t :ensure t)
-
-   (load (expand-file-name "~/quicklisp/slime-helper.el"))
-   (setq inferior-lisp-program (executable-find "sbcl"))
-   (slime-setup '(slime-fancy slime-company))
-   ;; get sbcl from package manager
-   ;; get quicklisp too https://beta.quicklisp.org/quicklisp.lisp
 
    ;; elisp
    (use-package elsa :defer t :ensure t)
