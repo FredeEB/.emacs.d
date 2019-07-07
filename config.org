@@ -121,6 +121,8 @@
    (use-package exec-path-from-shell :defer t :ensure t
      :config (exec-path-from-shell-initialize))
 
+   ;; make tramp play nice
+   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
    ;; File beautification
    (setq delete-trailing-lines t)
@@ -409,10 +411,20 @@
    (when (not (file-exists-p journal))
      (write-region org-journal-template nil journal))
 
-   (defun find-journal ()
-     "goto `journal'"
-     (interactive)
-     (find-file journal))
+   (defun find-journal (days-ago)
+     "Find journal from DAYS-AGO"
+     (interactive "p")
+     (if (not current-prefix-arg)
+	 (find-file
+	  journal)
+       (find-file
+	(concat
+	 journal-dir
+	 "journal"
+	 (format-time-string
+	  "%Y%m%d"
+	  (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
+	 ".org"))))
    #+END_SRC
 * programming
 ** company
@@ -490,7 +502,7 @@
    #+END_SRC
 ** C++
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package ccls :defer t :ensure t)
+     (use-package ccls :ensure t)
      (use-package clang-format :defer t :ensure t)
      (use-package flycheck-clang-tidy :defer t :ensure t
        :custom
@@ -600,7 +612,9 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
        (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-       (require 'mu4e))
+       (require 'mu4e)
+
+       (use-package mu4e-alert :defer t :ensure t))
    #+END_SRC
 * ui
 ** helm
@@ -643,7 +657,8 @@
      (doom-modeline-bar-width 4)
      (doom-modeline-icon t)
      (doom-modeline-major-mode-icon t)
-     (doom-modeline-major-mode-color-icon t))
+     (doom-modeline-major-mode-color-icon nil)
+     (doom-modeline-mu4e t))
 
    (use-package solaire-mode :defer t :ensure t
      :config
@@ -680,6 +695,7 @@
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+    "f p" '(lambda () (interactive) (find-file "~/git/projects"))
     "f j" 'find-journal
 
     ;;treemacs
@@ -720,8 +736,16 @@
     "s r" 'engine/search-rustdoc
     "s w" 'engine/search-wikipedia
     "s g i" 'engine/search-github
-    "s g o" 'engine/search-google)
+    "s g o" 'engine/search-google
 
+    ;; window management
+    "w w" 'tear-off-window
+    "w h" 'windmove-swap-states-left
+    "w j" 'windmove-swap-states-down
+    "w k" 'windmove-swap-states-up
+    "w l" 'windmove-swap-states-right)
+
+  (setq windmove-wrap-around t)
   (evil-leader/set-key-for-mode 'org-mode
     "m s" 'org-kanban/shift)
 
