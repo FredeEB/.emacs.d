@@ -54,6 +54,7 @@
 
     (use-package forge :defer t :ensure t)
     (use-package ssh-agency :defer t :ensure t)
+    (use-package orgit :defer t :ensure t)
 
     (setenv "SSH_ASKPASS" "git-gui--askpass")
     #+END_SRC
@@ -499,7 +500,7 @@
    #+END_SRC
 ** C++
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package ccls :ensure t)
+     (use-package ccls :defer t :ensure t)
      (use-package clang-format :defer t :ensure t)
      (use-package flycheck-clang-tidy :defer t :ensure t
        :custom
@@ -553,7 +554,9 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company-lsp :defer t :ensure t)
   (use-package lsp-mode :defer t :ensure t
-    :config (require 'lsp-clients)
+    :config
+    (require 'ccls)
+    (require 'lsp-clients)
     :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp))
   (use-package lsp-ui :defer t :ensure t)
   (use-package dap-mode :defer t :ensure t)
@@ -612,6 +615,10 @@
        (require 'mu4e)
 
        (use-package mu4e-alert :defer t :ensure t))
+   #+END_SRC
+** media
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package emms :defer t :ensure t)
    #+END_SRC
 * ui
 ** helm
