@@ -41,7 +41,7 @@
    (use-package evil-anzu :defer t :ensure t)
    (use-package evil-surround :defer t :ensure t
      :config
-     (evil-surround-mode))
+     (global-evil-surround-mode))
    #+END_SRC
 ** git
    Magit setup.
@@ -64,7 +64,7 @@
     (use-package git-timemachine :defer t :ensure t)
     (use-package git-gutter-fringe+ :defer t :ensure t
       :config
-      (git-gutter+-mode))
+      (global-git-gutter+-mode))
     #+END_SRC
 ***  Extra sauce!
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -144,7 +144,7 @@
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
    ;; font
-   (add-to-list 'default-frame-alist '(font . "Iosevka SS04 15"))
+   (add-to-list 'default-frame-alist '(font . "Iosevka SS04 13"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
 * qol
@@ -274,6 +274,9 @@
 ** basic
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package org-plus-contrib :defer t :ensure t)
+
+  (add-hook 'org-mode-hook 'visual-line-mode)
+
   (org-babel-do-load-languages 'org-babel-load-languages
    '((python . t)
      (C . T)
@@ -289,6 +292,7 @@
 
   (use-package ox-reveal :defer t :ensure t)
   (use-package org-mime :defer t :ensure t)
+
   (require 'org-tempo)
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "FEEDBACK(f)" "|" "DONE(d)" "NOT FINISHED(n)"))
@@ -297,7 +301,7 @@
 	org-capture-templates
 	'(("t" "Todo" entry (file+headline journal "TODAY")
            "** TODO %?\n")
-          ("n" "Notes" entry (file+headline journal "NOTES")
+          ("n" "Note" entry (file+headline journal "NOTES")
            "** %?\n\n")))
 
   (use-package org-ref :defer t :ensure t)
@@ -305,19 +309,10 @@
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-
-  (use-package org-tree-slide :defer t :ensure t)
-  (use-package org-kanban :defer t :ensure t)
   (use-package polymode :defer t :ensure t)
   (use-package poly-org :defer t :ensure t
     :after polymode
     :mode ("//.org//'"))
-
-  (use-package org-brain :defer t :ensure t
-    :config
-    (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
-    (evil-leader/set-key
-      "n" 'org-brain-goto))
 
   (use-package org-download :defer t :ensure t
     :config
@@ -392,11 +387,13 @@
 ** journals
    setting up daily journals
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (defvar journal-dir (expand-file-name "~/Dropbox/journals/"))
-   (defvar journal
-     (format "%sjournal%s.org"
-	     journal-dir
-	     (format-time-string "%Y%m%d")))
+     (defvar journal-dir
+       (expand-file-name "~/Dropbox/journals/"))
+
+     (defvar journal
+       (format "%sjournal%s.org"
+	       journal-dir
+	       (format-time-string "%Y%m%d")))
 
    (setq initial-buffer-choice journal
 	 org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
@@ -474,12 +471,16 @@
 
    ;; elisp
    (use-package elsa :defer t :ensure t)
+   (use-package eros :defer t :ensure t
+     :hook (eros-mode . emacs-lisp-mode))
 
    ;; clojure
    (use-package clojure-mode :defer t :ensure t)
    (use-package cider :defer t :ensure t
      :custom
      (cider-lein-parameters "repl :headless :host localhost"))
+
+   (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 
    (use-package flycheck-clojure :defer t :ensure t)
    (use-package helm-clojuredocs :defer t :ensure t)
@@ -498,7 +499,14 @@
 
    (use-package jedi :defer t :ensure t)
    #+END_SRC
-** C++
+** elixir
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package elixir-mode :defer t :ensure t)
+     (use-package alchemist :defer t :ensure t
+       :hook (elixir-mode . alchemist-mode))
+
+   #+END_SRC
+** c++
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package ccls :defer t :ensure t)
      (use-package clang-format :defer t :ensure t)
@@ -632,6 +640,7 @@
  (use-package helm-company :defer t :ensure t)
  (use-package helm-projectile :defer t :ensure t)
  (use-package f3 :defer t :ensure t)
+ (use-package helm-rg :defer t :ensure t)
  #+END_SRC
 ** symbols
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -728,7 +737,7 @@
     ;;projectile
     "p p" 'helm-projectile
     "p f" 'helm-projectile-find-file-dwim
-    "p a" 'helm-projectile-ag
+    "p a" 'helm-projectile-rg
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
     "c" 'helm-make-projectile
