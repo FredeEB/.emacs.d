@@ -102,7 +102,8 @@
 	 display-line-numbers-current-absolute t
 	 default-directory (expand-file-name "~/")
 	 tramp-default-method "ssh"
-	 large-file-warning-threshold nil)
+	 large-file-warning-threshold nil
+	 custom-file (expand-file-name "~/.emacs.d/customs.el"))
 
 
    ;; sane normal keybinds
@@ -191,7 +192,8 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package docker :defer t :ensure t)
     (use-package dockerfile-mode :defer t :ensure t)
-    (use-package docker-tramp :defer t :ensure t)
+    (use-package docker-tramp :defer t :ensure t
+      :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
     #+END_SRC
 *** openwith
      requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
@@ -292,6 +294,7 @@
 
   (use-package ox-reveal :defer t :ensure t)
   (use-package org-mime :defer t :ensure t)
+  (use-package org-ql :defer t :ensure t)
 
   (require 'org-tempo)
   (setq org-todo-keywords
@@ -395,34 +398,34 @@
 	       journal-dir
 	       (format-time-string "%Y%m%d")))
 
-   (setq initial-buffer-choice journal
-	 org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
+     (setq initial-buffer-choice journal
+	   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
 
-   (defvar org-journal-template
-     (concat
-      "#+TITLE: Journal\n"
-      "#+DATE: " (format-time-string "%A %d/%m/%Y\n")
-      "* TODAY\n"
-      "** TODO\n"
-      "* NOTES"))
+     (defvar org-journal-template
+       (concat
+	"#+TITLE: Journal\n"
+	"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
+	"* TODAY\n"
+	"** TODO\n"
+	"* NOTES"))
 
-   (when (not (file-exists-p journal))
-     (write-region org-journal-template nil journal))
+     (when (not (file-exists-p journal))
+       (write-region org-journal-template nil journal))
 
-   (defun find-journal (days-ago)
-     "Find journal from DAYS-AGO"
-     (interactive "p")
-     (if (not current-prefix-arg)
+     (defun find-journal (days-ago)
+       "Find journal from DAYS-AGO"
+       (interactive "p")
+       (if (not current-prefix-arg)
+	   (find-file
+	    journal)
 	 (find-file
-	  journal)
-       (find-file
-	(concat
-	 journal-dir
-	 "journal"
-	 (format-time-string
-	  "%Y%m%d"
-	  (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
-	 ".org"))))
+	  (concat
+	   journal-dir
+	   "journal"
+	   (format-time-string
+	    "%Y%m%d"
+	    (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
+	   ".org"))))
    #+END_SRC
 * programming
 ** company
@@ -431,63 +434,40 @@
        :hook (prog-mode . company-mode)
        :custom
        (company-idle-delay 0)
-       (company-minimum-prefix-length 1)
-       (company-show-numbers t)
-       :config
-       (let ((map company-active-map))
-	 (mapc
-	  (lambda (x)
-	    (define-key map (format "%d" x) 'ora-company-number))
-	  (number-sequence 0 9))
-	 (define-key map " " (lambda ()
-                               (interactive)
-                               (company-abort)
-                               (self-insert-command 1)))
-	 (define-key map (kbd "<return>") nil))
+       (company-minimum-prefix-length 1))
 
-       (defun ora-company-number ()
-	 "Forward to `company-complete-number'.
-
-         Unless the number is potentially par of the canidiate.
-         In that case, insert the number"
-	 (interactive)
-	 (let* ((k (this-command-keys))
-		(re (concat "^" company-prefix k)))
-	   (if (cl-find-if (lambda (s) (string-match re s))
-			   company-candidates)
-               (self-insert-command 1)
-	     (company-complete-number (string-to-number k))))))
-
-     (use-package company-box :defer t :ensure t
-       :custom (company-box-enable-icon nil))
+     (use-package company-tabnine :defer t :ensure t
+       :config (add-to-list 'company-backends 'company-tabnine))
    #+END_SRC
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
-   ;; paredit!
-   (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-   (add-hook 'lisp-mode-hook 'paredit-mode)
-   (add-hook 'clojure-mode-hook 'paredit-mode)
-   (add-hook 'clojurescript-mode-hook 'paredit-mode)
+     (use-package parinfer :defer t :ensure t)
+     ;; paredit!
+     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+     (add-hook 'lisp-mode-hook 'paredit-mode)
+     (add-hook 'clojure-mode-hook 'paredit-mode)
+     (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
-   ;; elisp
-   (use-package elsa :defer t :ensure t)
-   (use-package eros :defer t :ensure t
-     :hook (eros-mode . emacs-lisp-mode))
+     ;; elisp
+     (use-package elsa :defer t :ensure t)
+     (use-package eros :defer t :ensure t
+       :hook (eros-mode . emacs-lisp-mode))
 
-   ;; clojure
-   (use-package clojure-mode :defer t :ensure t)
-   (use-package cider :defer t :ensure t
-     :custom
-     (cider-lein-parameters "repl :headless :host localhost"))
+     ;; clojure
+     (use-package clojure-mode :defer t :ensure t)
+     (use-package cider :defer t :ensure t
+       :custom
+       (cider-lein-parameters "repl :headless :host localhost")
+       :hook (cider-enlighten-mode . cider-mode))
 
-   (setq nrepl-use-ssh-fallback-for-remote-hosts t)
+     (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 
-   (use-package flycheck-clojure :defer t :ensure t)
-   (use-package helm-clojuredocs :defer t :ensure t)
-   (use-package cljr-helm :defer t :ensure t)
+     (use-package flycheck-clojure :defer t :ensure t)
+     (use-package helm-clojuredocs :defer t :ensure t)
+     (use-package cljr-helm :defer t :ensure t)
 
-   ;; racket
-   (use-package racket-mode :defer t :ensure t)
+     ;; racket
+     (use-package racket-mode :defer t :ensure t)
    #+END_SRC
 ** python
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -525,18 +505,26 @@
        :hook (rust-mode . cargo-minor-mode))
      (use-package toml-mode :defer t :ensure t)
    #+END_SRC
-** Go
+** haskell
+   #+begin_src emacs-lisp :tangle yes
+     (use-package haskell-mode :defer t :ensure t)
+     (use-package lsp-haskell :defer t :ensure t)
+   #+end_src
+** go
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-mode :defer t :ensure t
        :config
-       (push (expand-file-name "~/go/bin" exec-path)))
+       (push (expand-file-name "~/go/bin") exec-path))
 
    (defun go-run ()
      (interactive)
      (save-buffer)
-     (async-shell-command (concat "go run " (buffer-name))))
+     (let ((buffer "*go*"))
+       (start-process "*go*" buffer "go" "run" (buffer-name))
+       (switch-to-buffer buffer)
+       (view-mode)))
    #+END_SRC
-** Web
+** web
     #+BEGIN_SRC emacs-lisp :tangle yes
     ;; everything in one package
     (use-package web-mode :defer t :ensure t
@@ -608,6 +596,8 @@
 	 (delete-and-extract-region
 	  (point-at-bol)
 	  (point-at-eol)))))
+
+     (use-package vterm :defer t :ensure t)
    #+END_SRC
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
@@ -648,10 +638,10 @@
        '(("lambda" . ?λ)
 	 ("[ ]" . ?☐)
 	 ("[X]" . ?☑)
-	 ("*" . ?α)
-	 ("**" . ?β)
-	 ("***" . ?γ)
-	 ("****" . ?δ)))
+	 ("* " . ?α)
+	 ("** " . ?β)
+	 ("*** " . ?γ)
+	 ("**** " . ?δ)))
 
      (add-hook 'org-mode-hook
 	       (lambda () (prettify-symbols-mode)))
@@ -677,6 +667,13 @@
      :config
      (solaire-global-mode))
    #+END_SRC
+** posframe
+   #+begin_src emacs-lisp :tangle yes
+     (use-package flycheck-posframe :defer t :ensure t
+       :hook (flycheck-posframe-mode . flycheck-mode))
+     (use-package company-posframe :defer t :ensure t
+       :hook (company-posframe-mode . company-mode))
+   #+end_src
 ** Which key
  #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package which-key :defer t :ensure t
@@ -721,10 +718,9 @@
     "g t" 'git-timemachine
     "g g" 'global-git-gutter+-mode
 
-    ;;eglot
-    "r r" 'eglot-rename
-    "r c" 'eglot-code-actions
-    "r s" 'eglot-reconnect
+    ;;lsp
+    "r r" 'lsp-rename
+    "r e" 'lsp-execute-code-action
 
     ;;Docker
     "g d" 'docker
@@ -804,7 +800,9 @@
 
   ;; orgmode
   (evil-define-key 'normal poly-org-mode-map
-    "U" 'export-and-find)
+    "U" 'export-and-find
+    "L" 'org-shiftright
+    "H" 'org-shiftleft)
 
   ;; paredit mode
   (evil-define-key nil paredit-mode-map
@@ -812,4 +810,8 @@
     (kbd "M-h") 'paredit-backward-slurp-sexp
     (kbd "M-L") 'paredit-backward-barf-sexp
     (kbd "M-H") 'paredit-forward-barf-sexp)
+
+  (evil-define-key nil cider-repl-mode
+    (kbd "C-k") 'cider-repl-backward-input
+    (kbd "C-j") 'cider-repl-forward-input)
   #+END_SRC
