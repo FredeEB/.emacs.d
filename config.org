@@ -99,12 +99,10 @@
 	 initial-scratch-message ""
 	 ring-bell-function 'ignore
 	 tab-width 2
-	 display-line-numbers-current-absolute t
 	 default-directory (expand-file-name "~/")
 	 tramp-default-method "ssh"
 	 large-file-warning-threshold nil
 	 custom-file (expand-file-name "~/.emacs.d/customs.el"))
-
 
    ;; sane normal keybinds
    (global-subword-mode)
@@ -112,8 +110,8 @@
    (tool-bar-mode -1)
    (menu-bar-mode -1)
    (scroll-bar-mode -1)
-   (global-display-line-numbers-mode)
    (setq standard-indent 2)
+   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
    ;; Load zshrc
    (setq shell-file-name "bash")
@@ -148,6 +146,14 @@
    (add-to-list 'default-frame-alist '(font . "Iosevka SS04 13"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
+** shell
+   #+begin_src emacs-lisp :tangle yes
+     (use-package vterm
+       :custom
+       (vterm-shell "zsh"))
+
+     (add-hook 'vterm-mode-hook 'turn-off-evil-mode)
+   #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
@@ -728,7 +734,7 @@
     ;;utilities
     "+" 'calc
     "-" 'mu4e
-    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell))
+    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
 
     ;;projectile
     "p p" 'helm-projectile
