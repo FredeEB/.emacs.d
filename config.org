@@ -65,7 +65,8 @@
    (use-package evil-owl
      :custom
      (evil-owl-display-method 'posframe)
-     (evil-owl-extra-posfram-args '(:width 50 :height 20)))
+     (evil-owl-extra-posfram-args '(:width 50 :height 20))
+     (evil-owl-idle-delay 0))
    (evil-owl-mode)
    #+END_SRC
 ** git
@@ -506,7 +507,6 @@
      (use-package elixir-mode)
      (use-package alchemist
        :hook (elixir-mode . alchemist-mode))
-
    #+END_SRC
 ** c++
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -644,6 +644,11 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package slack)
    #+end_src
+** calctex
+   #+begin_src emacs-lisp :tangle yes
+     (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
+   #+end_src
+** doxymacs
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
