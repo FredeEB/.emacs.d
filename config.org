@@ -11,12 +11,28 @@
      (add-to-list 'package-archives (cons "org" (concat proto "://orgmode.org/elpa/")) t)
      (package-initialize))
 
-   (unless (package-installed-p 'use-package)
-     (package-refresh-contents)
-     (package-install 'use-package))
+   (defvar bootstrap-version)
+   (let ((bootstrap-file
+	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	 (bootstrap-version 5))
+     (unless (file-exists-p bootstrap-file)
+       (with-current-buffer
+           (url-retrieve-synchronously
+            "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+            'silent 'inhibit-cookies)
+	 (goto-char (point-max))
+	 (eval-print-last-sexp)))
+     (load bootstrap-file nil 'nomessage))
 
-   (setq use-package-always-defer t
-	 use-package-always-ensure t)
+   (straight-use-package 'use-package)
+   (setq straight-use-package-by-default t)
+   ;; (unless (package-installed-p 'use-package)
+   ;;   (package-refresh-contents)
+   ;;   (package-install 'use-package))
+
+   ;; (setq use-package-always-defer t
+   ;; 	 use-package-always-ensure t)
+
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -45,11 +61,11 @@
    (use-package evil-surround
      :config
      (global-evil-surround-mode))
+
    (use-package evil-owl
      :custom
      (evil-owl-display-method 'posframe)
-     (evil-owl-extra-posfram-args '(:width 50 :height 20))
-     (evil-owl-register-char-limit 50))
+     (evil-owl-extra-posfram-args '(:width 50 :height 20)))
    (evil-owl-mode)
    #+END_SRC
 ** git
@@ -275,7 +291,6 @@
 #+END_SRC
 ** others
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package auctex)
    (use-package yaml-mode)
    (use-package json-mode)
    (use-package protobuf-mode)
@@ -287,14 +302,12 @@
 * org stuff
 ** basic
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package org-plus-contrib)
-
   (add-hook 'org-mode-hook 'visual-line-mode)
 
   (org-babel-do-load-languages 'org-babel-load-languages
    '((python . t)
-     (C . T)
-     (clojure . T)
+     (C . t)
+     (clojure . t)
      (plantuml . t)
      (shell . t)
      (python .t)
@@ -447,9 +460,6 @@
        :custom
        (company-idle-delay 0)
        (company-minimum-prefix-length 1))
-
-     (use-package company-tabnine
-       :config (add-to-list 'company-backends 'company-tabnine))
    #+END_SRC
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -630,6 +640,10 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package emms)
    #+END_SRC
+** slack
+   #+begin_src emacs-lisp :tangle yes
+     (use-package slack)
+   #+end_src
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
@@ -687,7 +701,7 @@
      (use-package company-posframe)
      (flycheck-posframe-mode)
    #+end_src
-** Which key
+** which key
  #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package which-key
      :init
