@@ -14,55 +14,64 @@
    (unless (package-installed-p 'use-package)
      (package-refresh-contents)
      (package-install 'use-package))
+
+   (setq use-package-always-defer t
+	 use-package-always-ensure t)
    #+END_SRC
 ** evil-mode
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq evil-want-integration t
 	 evil-want-keybinding nil)
 
-   (use-package evil-leader :defer t :ensure t
+   (use-package evil-leader
      :init
      (global-evil-leader-mode)
      (evil-leader/set-leader "<SPC>"))
 
-   (use-package evil-collection :defer t :ensure t
+   (use-package evil-collection
      :after evil-leader
      :custom
      (evil-collection-company-use-tng nil)
      :init
      (evil-collection-init))
 
-   (use-package evil :defer t :ensure t
+   (use-package evil
      :after evil-collection
      :config
      (evil-mode 1))
 
-   (use-package evil-paredit :defer t :ensure t)
-   (use-package evil-anzu :defer t :ensure t)
-   (use-package evil-surround :defer t :ensure t
+   (use-package evil-paredit)
+   (use-package evil-anzu)
+   (use-package evil-surround
      :config
      (global-evil-surround-mode))
+   (use-package evil-owl
+     :custom
+     (evil-owl-display-method 'posframe)
+     (evil-owl-extra-posfram-args '(:width 50 :height 20))
+     (evil-owl-register-char-limit 50))
+   (evil-owl-mode)
    #+END_SRC
 ** git
    Magit setup.
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package evil-magit :defer t :ensure t
+    (use-package evil-magit
       :init
       (evil-magit-init)
       :custom
       (magit-repository-directories (expand-file-name "~/git/projects")))
 
-    (use-package forge :defer t :ensure t)
-    (use-package ssh-agency :defer t :ensure t)
-    (use-package orgit :defer t :ensure t)
+    (use-package forge)
+    (use-package ssh-agency)
+    (use-package orgit)
 
     (setenv "SSH_ASKPASS" "git-gui--askpass")
     #+END_SRC
 
     Tools for more git integration
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package git-timemachine :defer t :ensure t)
-    (use-package git-gutter-fringe+ :defer t :ensure t
+    (use-package git-timemachine)
+    (use-package git-gutter-fringe+
       :config
       (global-git-gutter+-mode))
     #+END_SRC
@@ -118,7 +127,7 @@
    (setq shell-command-switch "-c")
 
    ;; environments
-   (use-package exec-path-from-shell :defer t :ensure t
+   (use-package exec-path-from-shell
      :config (exec-path-from-shell-initialize))
 
    ;; make tramp play nice
@@ -158,19 +167,19 @@
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package aggressive-indent :defer t :ensure t)
-   (use-package avy :defer t :ensure t)
-   (use-package iedit :defer t :ensure t)
+   (use-package aggressive-indent)
+   (use-package avy)
+   (use-package iedit)
    #+END_SRC
 ** help
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package helpful :defer t :ensure t)
-  (use-package howdoi :defer t :ensure t)
+  (use-package helpful)
+  (use-package howdoi)
    #+END_SRC
 *** engine
     used to search web resources.
     #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package engine-mode :defer t :ensure t
+ (use-package engine-mode
    :config
    (defengine cppreference
      "https://en.cppreference.com/mwiki/index.php?search=%s")
@@ -189,23 +198,22 @@
     #+END_SRC
 ** utilities
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package kubernetes :defer t :ensure t)
-   (use-package request :defer t :ensure t)
-   (use-package sudo-edit :defer t :ensure t)
-   (use-package treemacs-evil :defer t :ensure t)
+   (use-package kubernetes)
+   (use-package request)
+   (use-package sudo-edit)
+   (use-package treemacs-evil)
    #+END_SRC
 *** docker
     #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package docker :defer t :ensure t)
-    (use-package dockerfile-mode :defer t :ensure t)
-    (use-package docker-tramp :defer t :ensure t
+    (use-package docker)
+    (use-package dockerfile-mode)
+    (use-package docker-tramp
       :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
     #+END_SRC
 *** openwith
      requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
  #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package openwith
-     :ensure t
      :config
      (openwith-mode t)
      :custom
@@ -224,7 +232,7 @@
 ** matlab
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package matlab-mode :defer t :ensure t
+   (use-package matlab-mode
      :hook (matlab-shell)
      :mode ("\\.m\\'" . matlab-mode)
      :config
@@ -235,8 +243,8 @@
    #+END_SRC
 ** csharp
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package csharp-mode :defer t :ensure t)
-   (use-package omnisharp :defer t :ensure t
+   (use-package csharp-mode)
+   (use-package omnisharp
      :after company
      :config
      (add-hook 'csharp-mode-hook 'omnisharp-mode)
@@ -246,8 +254,6 @@
     requires [[https://plantuml.com][plantuml]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package plantuml-mode
-    :defer t
-    :ensure t
     :magic ("@startuml" . plantuml-mode))
 
   (when (executable-find "plantuml")
@@ -258,7 +264,7 @@
 	   "share/java/plantuml"
 	   (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
 
-  (use-package flycheck-plantuml :defer t :ensure t)
+  (use-package flycheck-plantuml)
 
   ;; recompiles plantuml diagrams on save
   (defun recompile-plantuml ()
@@ -269,10 +275,10 @@
 #+END_SRC
 ** others
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package auctex :defer t :ensure t)
-   (use-package yaml-mode :defer t :ensure t)
-   (use-package json-mode :defer t :ensure t)
-   (use-package protobuf-mode :defer t :ensure t)
+   (use-package auctex)
+   (use-package yaml-mode)
+   (use-package json-mode)
+   (use-package protobuf-mode)
 
    ;;scons
    (push '("SConstruct" . python-mode) auto-mode-alist)
@@ -281,7 +287,7 @@
 * org stuff
 ** basic
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package org-plus-contrib :defer t :ensure t)
+  (use-package org-plus-contrib)
 
   (add-hook 'org-mode-hook 'visual-line-mode)
 
@@ -298,13 +304,13 @@
      (emacs-lisp . t)
      (js . t)))
 
-  (use-package ox-reveal :defer t :ensure t)
-  (use-package org-mime :defer t :ensure t)
-  (use-package org-ql :defer t :ensure t)
+  (use-package ox-reveal)
+  (use-package org-mime)
+  (use-package org-ql)
 
   (require 'org-tempo)
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "FEEDBACK(f)" "|" "DONE(d)" "NOT FINISHED(n)"))
+	'((sequence "TODO(t)" "FEEDBACK(f)" "WAITING(w)" "|" "DONE(d)" "NOT FINISHED(n)"))
 	org-columns-default-format
 	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
 	org-capture-templates
@@ -313,17 +319,18 @@
           ("n" "Note" entry (file+headline journal "NOTES")
            "** %?\n\n")))
 
-  (use-package org-ref :defer t :ensure t)
-  (use-package org-bullets :defer t :ensure t
+
+  (use-package org-ref)
+  (use-package org-bullets
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-  (use-package polymode :defer t :ensure t)
-  (use-package poly-org :defer t :ensure t
+  (use-package polymode)
+  (use-package poly-org
     :after polymode
     :mode ("//.org//'"))
 
-  (use-package org-download :defer t :ensure t
+  (use-package org-download
     :config
     (add-hook 'dired-mode-hook 'org-download-enable))
 
@@ -412,7 +419,6 @@
 	"#+TITLE: Journal\n"
 	"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
 	"* TODAY\n"
-	"** TODO\n"
 	"* NOTES"))
 
      (when (not (file-exists-p journal))
@@ -436,18 +442,18 @@
 * programming
 ** company
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package company :defer t :ensure t
+     (use-package company
        :hook (prog-mode . company-mode)
        :custom
        (company-idle-delay 0)
        (company-minimum-prefix-length 1))
 
-     (use-package company-tabnine :defer t :ensure t
+     (use-package company-tabnine
        :config (add-to-list 'company-backends 'company-tabnine))
    #+END_SRC
 ** lisp
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package parinfer :defer t :ensure t)
+     (use-package parinfer)
      ;; paredit!
      (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
      (add-hook 'lisp-mode-hook 'paredit-mode)
@@ -455,70 +461,70 @@
      (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
      ;; elisp
-     (use-package elsa :defer t :ensure t)
-     (use-package eros :defer t :ensure t
+     (use-package elsa)
+     (use-package eros
        :hook (eros-mode . emacs-lisp-mode))
 
      ;; clojure
-     (use-package clojure-mode :defer t :ensure t)
-     (use-package cider :defer t :ensure t
+     (use-package clojure-mode)
+     (use-package cider
        :custom
        (cider-lein-parameters "repl :headless :host localhost")
        :hook (cider-enlighten-mode . cider-mode))
 
      (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 
-     (use-package flycheck-clojure :defer t :ensure t)
-     (use-package helm-clojuredocs :defer t :ensure t)
-     (use-package cljr-helm :defer t :ensure t)
+     (use-package flycheck-clojure)
+     (use-package helm-clojuredocs)
+     (use-package cljr-helm)
 
      ;; racket
-     (use-package racket-mode :defer t :ensure t)
+     (use-package racket-mode)
    #+END_SRC
 ** python
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package pipenv :defer t :ensure t
+   (use-package pipenv
      :hook (python-mode . pipenv-mode)
      :custom
      pipenv-projectile-after-switch-function
      #'pipenv-projectile-after-switch-extended)
 
-   (use-package jedi :defer t :ensure t)
+   (use-package jedi)
    #+END_SRC
 ** elixir
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package elixir-mode :defer t :ensure t)
-     (use-package alchemist :defer t :ensure t
+     (use-package elixir-mode)
+     (use-package alchemist
        :hook (elixir-mode . alchemist-mode))
 
    #+END_SRC
 ** c++
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package ccls :defer t :ensure t)
-     (use-package clang-format :defer t :ensure t)
-     (use-package flycheck-clang-tidy :defer t :ensure t
+     (use-package ccls)
+     (use-package clang-format)
+     (use-package flycheck-clang-tidy
        :custom
        (flycheck-clang-tidy-build-path "")
        (flycheck-clang-language-standard "c++2a"))
 
-     (use-package disaster :defer t :ensure t)
-     (use-package demangle-mode :defer t :ensure t
+     (use-package disaster)
+     (use-package demangle-mode
        :mode ("\\*assembly\\*"))
    #+END_SRC
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package cargo :defer t :ensure t
+     (use-package cargo
        :hook (rust-mode . cargo-minor-mode))
-     (use-package toml-mode :defer t :ensure t)
+     (use-package toml-mode)
    #+END_SRC
 ** haskell
    #+begin_src emacs-lisp :tangle yes
-     (use-package haskell-mode :defer t :ensure t)
-     (use-package lsp-haskell :defer t :ensure t)
+     (use-package haskell-mode)
+     (use-package lsp-haskell)
    #+end_src
 ** go
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package go-mode :defer t :ensure t
+     (use-package go-mode
        :config
        (push (expand-file-name "~/go/bin") exec-path))
 
@@ -533,7 +539,7 @@
 ** web
     #+BEGIN_SRC emacs-lisp :tangle yes
     ;; everything in one package
-    (use-package web-mode :defer t :ensure t
+    (use-package web-mode
       :mode
       ("\\.js\\'" . web-mode)
       ("\\.ts\\'" . web-mode)
@@ -543,38 +549,38 @@
       ("\\.html\\'" . web-mode)
       ("\\.scss\\'" . web-mode))
 
-    (use-package npm-mode :defer t :ensure t)
-    (use-package impatient-mode :defer t :ensure t)
-    (use-package lorem-ipsum :defer t :ensure t)
-    (use-package emmet-mode :defer t :ensure t
+    (use-package npm-mode)
+    (use-package impatient-mode)
+    (use-package lorem-ipsum)
+    (use-package emmet-mode
       :custom
       (emmet-expand-jsx-className t))
 
-    (use-package restclient :defer t :ensure t)
+    (use-package restclient)
 #+END_SRC
 ** lsp
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package company-lsp :defer t :ensure t)
-  (use-package lsp-mode :defer t :ensure t
+  (use-package company-lsp)
+  (use-package lsp-mode
     :config
     (require 'ccls)
     (require 'lsp-clients)
     :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp))
-  (use-package lsp-ui :defer t :ensure t)
-  (use-package dap-mode :defer t :ensure t)
+  (use-package lsp-ui)
+  (use-package dap-mode)
 
 #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yasnippet-snippets :defer t :ensure t)
-   (use-package react-snippets :defer t :ensure t)
+   (use-package yasnippet-snippets)
+   (use-package react-snippets)
 
-   (use-package yasnippet :defer t :ensure t
+   (use-package yasnippet
      :init
      (yas-global-mode 1))
 
-   (use-package auto-yasnippet :defer t :ensure t)
+   (use-package auto-yasnippet)
 
    ;; make company and yasnippet play nice
    (defun company-yasnippet-or-completion ()
@@ -603,14 +609,14 @@
 	  (point-at-bol)
 	  (point-at-eol)))))
 
-     (use-package vterm :defer t :ensure t)
+     (use-package vterm)
    #+END_SRC
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
- (use-package nix-mode :defer t :ensure t)
- (use-package nix-buffer :defer t :ensure t)
- (use-package helm-nixos-options :defer t :ensure t)
- (use-package company-nixos-options :defer t :ensure t)
+ (use-package nix-mode)
+ (use-package nix-buffer)
+ (use-package helm-nixos-options)
+ (use-package company-nixos-options)
  #+END_SRC
 ** mail
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -618,25 +624,25 @@
        (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
        (require 'mu4e)
 
-       (use-package mu4e-alert :defer t :ensure t))
+       (use-package mu4e-alert))
    #+END_SRC
 ** media
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package emms :defer t :ensure t)
+     (use-package emms)
    #+END_SRC
 * ui
 ** helm
  #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package helm :defer t :ensure t
+ (use-package helm
    :init
    (require 'helm-config)
    (helm-mode))
 
- (use-package helm-make :defer t :ensure t)
- (use-package helm-company :defer t :ensure t)
- (use-package helm-projectile :defer t :ensure t)
- (use-package f3 :defer t :ensure t)
- (use-package helm-rg :defer t :ensure t)
+ (use-package helm-make)
+ (use-package helm-company)
+ (use-package helm-projectile)
+ (use-package f3)
+ (use-package helm-rg)
  #+END_SRC
 ** symbols
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -654,11 +660,11 @@
    #+END_SRC
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package doom-themes :defer t :ensure t
+   (use-package doom-themes
      :init
      (load-theme 'doom-dracula t))
 
-   (use-package doom-modeline :defer t :ensure t
+   (use-package doom-modeline
      :hook (after-init . doom-modeline-init)
      :custom
      (doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -667,22 +673,23 @@
      (doom-modeline-icon t)
      (doom-modeline-major-mode-icon t)
      (doom-modeline-major-mode-color-icon nil)
-     (doom-modeline-mu4e t))
+     (doom-modeline-segment--mu4e t))
 
-   (use-package solaire-mode :defer t :ensure t
+   (use-package solaire-mode
      :config
      (solaire-global-mode))
    #+END_SRC
 ** posframe
    #+begin_src emacs-lisp :tangle yes
-     (use-package flycheck-posframe :defer t :ensure t
-       :hook (flycheck-posframe-mode . flycheck-mode))
-     (use-package company-posframe :defer t :ensure t
-       :hook (company-posframe-mode . company-mode))
+     (use-package flycheck-posframe)
+     (company-posframe-mode)
+
+     (use-package company-posframe)
+     (flycheck-posframe-mode)
    #+end_src
 ** Which key
  #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package which-key :defer t :ensure t
+   (use-package which-key
      :init
      (which-key-mode))
  #+END_SRC
@@ -735,6 +742,7 @@
     "+" 'calc
     "-" 'mu4e
     "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
+    "'" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell))
 
     ;;projectile
     "p p" 'helm-projectile
