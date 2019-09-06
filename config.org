@@ -90,7 +90,8 @@
     (use-package git-timemachine)
     (use-package git-gutter-fringe+
       :config
-      (global-git-gutter+-mode))
+      (global-git-gutter+-mode)
+      (git-gutter-fr+-minimal))
     #+END_SRC
 ***  Extra sauce!
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -169,14 +170,15 @@
 	 org-export-latex-listings 'minted org-src-fontify-natively t)
 
    ;; font
-   (add-to-list 'default-frame-alist '(font . "Iosevka SS04 13"))
+   (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
 ** shell
    #+begin_src emacs-lisp :tangle yes
      (use-package vterm
        :custom
-       (vterm-shell "zsh"))
+       (vterm-shell "zsh")
+       (vterm-max-scrollback 1000000))
 
      (add-hook 'vterm-mode-hook 'turn-off-evil-mode)
    #+end_src
@@ -510,8 +512,10 @@
    #+END_SRC
 ** c++
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package ccls)
      (use-package clang-format)
+     (use-package modern-cpp-font-lock
+       :config
+       (modern-c++-font-lock-global-mode))
      (use-package flycheck-clang-tidy
        :custom
        (flycheck-clang-tidy-build-path "")
@@ -575,7 +579,9 @@
     :config
     (require 'ccls)
     (require 'lsp-clients)
-    :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp))
+    :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
+    :custom
+    (lsp-prefer-flymake nil))
   (use-package lsp-ui)
   (use-package dap-mode)
 
@@ -605,6 +611,10 @@
 		    'company-yasnippet-or-completion
 		    company-active-map)))
    #+END_SRC
+** tags
+   #+begin_src emacs-lisp :tangle yes
+     (use-package ggtags)
+   #+end_src
 * misc
 ** shell
    insert result from terminal (try "Q" on the next line)
@@ -701,10 +711,7 @@
 ** posframe
    #+begin_src emacs-lisp :tangle yes
      (use-package flycheck-posframe)
-     (company-posframe-mode)
-
      (use-package company-posframe)
-     (flycheck-posframe-mode)
    #+end_src
 ** which key
  #+BEGIN_SRC emacs-lisp :tangle yes
@@ -739,6 +746,7 @@
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
     "f p" '(lambda () (interactive) (find-file "~/git/projects"))
     "f j" 'find-journal
+    "f q" '(lambda () (interactive) (let ((b (buffer-name))) (dired-jump) (kill-buffer b)))
 
     ;;treemacs
     "u" 'treemacs
@@ -751,8 +759,12 @@
     "g g" 'global-git-gutter+-mode
 
     ;;lsp
-    "r r" 'lsp-rename
+    "r o" 'lsp-rename
     "r e" 'lsp-execute-code-action
+    "r d" 'lsp-ui-peek-find-definitions
+    "r i" 'lsp-ui-peek-find-implementation
+    "r r" 'lsp-ui-peek-find-references
+    "r m" 'lsp-ui-doc
 
     ;;Docker
     "g d" 'docker
@@ -818,7 +830,12 @@
     (kbd "C-h k") 'helpful-key
     (kbd "C-c l") 'org-store-link
     (kbd "C-c a") 'org-todo-list
+    (kbd "C-k") 'iedit-mode
     (kbd "C-c c") 'org-capture)
+
+  (evil-define-key 'normal iedit-mode-keymap
+    (kbd "t") 'iedit-toggle-selection
+    (kbd "f") 'iedit-restrict-function)
 
   (evil-define-key nil go-mode-map
     (kbd "C-c C-c") 'go-run)
@@ -847,4 +864,10 @@
   (evil-define-key nil cider-repl-mode
     (kbd "C-k") 'cider-repl-backward-input
     (kbd "C-j") 'cider-repl-forward-input)
+
+  (evil-define-key 'normal ggtags-mode-map
+    (kbd "g f") 'ggtags-find-file
+    (kbd "g r") 'ggtags-find-reference
+    (kbd "g d") 'ggtags-find-definition
+    (kbd "g t") 'ggtags-find-tag-dwim)
   #+END_SRC
