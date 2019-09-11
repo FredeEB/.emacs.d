@@ -181,6 +181,7 @@
        (vterm-max-scrollback 1000000))
 
      (add-hook 'vterm-mode-hook 'turn-off-evil-mode)
+     (evil-set-initial-state 'vterm-mode 'emacs)
    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
@@ -512,6 +513,9 @@
    #+END_SRC
 ** c++
    #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package ccls
+       :custom
+       (ccls-executable (expand-file-name "./ccls/build/ccls")))
      (use-package clang-format)
      (use-package modern-cpp-font-lock
        :config
@@ -783,7 +787,8 @@
     "p a" 'helm-projectile-rg
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
-    "c" 'helm-make-projectile
+    "c c" 'helm-make
+    "c p" 'helm-make-projectile
 
     ;;engine
     "s c" 'engine/search-cppreference
