@@ -661,6 +661,7 @@
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
+     (add-hook 'calc-mode-hook 'calctex-mode)
    #+end_src
 * ui
 ** helm
@@ -677,20 +678,6 @@
  (use-package helm-rg)
  (use-package helm-swoop)
  #+END_SRC
-** symbols
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defconst prettify-symbols-alist
-       '(("lambda" . ?λ)
-	 ("[ ]" . ?☐)
-	 ("[X]" . ?☑)
-	 ("* " . ?α)
-	 ("** " . ?β)
-	 ("*** " . ?γ)
-	 ("**** " . ?δ)))
-
-     (add-hook 'org-mode-hook
-	       (lambda () (prettify-symbols-mode)))
-   #+END_SRC
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package doom-themes
@@ -711,6 +698,8 @@
    (use-package solaire-mode
      :config
      (solaire-global-mode))
+
+   (use-package rainbow-delimiters)
    #+END_SRC
 ** posframe
    #+begin_src emacs-lisp :tangle yes
@@ -730,9 +719,7 @@
     ;;buffers & windows
     "b" 'helm-buffers-list
     "o" 'other-window
-    "q" '(lambda () (interactive)
-	   (kill-buffer)
-	   (delete-window))
+    "q" 'kill-buffer-and-window
 
     ;;misc
     "a" 'comment-dwim
@@ -741,8 +728,9 @@
     "g r" 'helm-swoop-from-evil-search
     "g p" 'helm-multi-swoop-projectile
 
-    ;;buffer navigation
+    ;;buffer
     "j" 'evil-avy-goto-char
+    "e" 'ediff-buffers
 
     ;;files
     "f f" 'f3
@@ -750,9 +738,8 @@
     "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-    "f p" '(lambda () (interactive) (find-file "~/git/projects"))
+    "f p" '(lambda () (interactive) (find-file "~/git"))
     "f j" 'find-journal
-    "f q" '(lambda () (interactive) (let ((b (buffer-name))) (dired-jump) (kill-buffer b)))
 
     ;;treemacs
     "u" 'treemacs
@@ -837,7 +824,7 @@
     (kbd "C-h k") 'helpful-key
     (kbd "C-c l") 'org-store-link
     (kbd "C-c a") 'org-todo-list
-    (kbd "C-k") 'iedit-mode
+    (kbd "C-k") 'kill-buffer-and-window
     (kbd "C-c c") 'org-capture)
 
   (evil-define-key 'normal iedit-mode-keymap
@@ -848,18 +835,18 @@
     (kbd "C-c C-c") 'go-run)
 
   (evil-define-key 'normal global-map
-    "'" 'evil-goto-mark
-    "´" 'evil-goto-mark-line
-    "Q" 'insert-output-of-executed-line)
+    (kbd "'") 'evil-goto-mark
+    (kbd "´") 'evil-goto-mark-line
+    (kbd "Q") 'insert-output-of-executed-line)
 
   (evil-define-key 'visual global-map
-    "S" 'evil-surround-region)
+    (kbd "S") 'evil-surround-region)
 
   ;; orgmode
   (evil-define-key 'normal poly-org-mode-map
-    "U" 'export-and-find
-    "L" 'org-shiftright
-    "H" 'org-shiftleft)
+    (kbd "U") 'export-and-find
+    (kbd "L") 'org-shiftright
+    (kbd "H") 'org-shiftleft)
 
   ;; paredit mode
   (evil-define-key nil paredit-mode-map
@@ -868,7 +855,7 @@
     (kbd "M-L") 'paredit-backward-barf-sexp
     (kbd "M-H") 'paredit-forward-barf-sexp)
 
-  (evil-define-key nil cider-repl-mode
+  (evil-define-key nil cider-repl-mode-map
     (kbd "C-k") 'cider-repl-backward-input
     (kbd "C-j") 'cider-repl-forward-input)
 
