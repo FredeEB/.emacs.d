@@ -1,6 +1,3 @@
 [submodule "emacs"]
 	path = emacs
 	url = https://git.savannah.gnu.org/git/emacs.git
-[submodule "ccls"]
-	path = ccls
-	url = https://github.com/MaskRay/ccls
