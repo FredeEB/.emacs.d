@@ -517,13 +517,25 @@
        :config
        (modern-c++-font-lock-global-mode))
      (use-package flycheck-clang-tidy
+       :after flycheck
+       :hook
+       (flycheck-mode . flycheck-clang-tidy-setup)
        :custom
-       (flycheck-clang-tidy-build-path "")
        (flycheck-clang-language-standard "c++2a"))
 
      (use-package disaster)
      (use-package demangle-mode
        :mode ("\\*assembly\\*"))
+
+     ;; buildsystem support
+     (use-package cmake-mode)
+     (use-package helm-ctest)
+
+     (straight-use-package '(semantic-refactor :type git :repo "https://github.com/tuhdo/semantic-refactor"))
+     (add-hook 'c++-mode-hook 'semantic-mode)
+     (evil-set-initial-state 'srefactor-ui-menu-mode 'insert)
+
+
    #+END_SRC
 ** rust
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -739,13 +751,14 @@
 
     ;;treemacs
     "u" 'treemacs
-    "t p" 'treemacs-add-project-to-workspace
-    "t r" 'treemacs-remove-project-from-workspace
+
+    ;;srefactor
+    "t" 'srefactor-refactor-at-point
 
     ;;Git
     "g s" 'magit-status
     "g t" 'git-timemachine
-    "g g" 'global-git-gutter+-mode
+    "g f" 'global-git-gutter+-mode
 
     ;;lsp
     "r o" 'lsp-rename
@@ -770,7 +783,7 @@
     "p a" 'helm-projectile-rg
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
-    "c" 'helm-make-projectile
+    "c" '(lambda () (interactive) (compile "ninja -C $(git rev-parse --show-toplevel)/build"))
 
     ;;engine
     "s c" 'engine/search-cppreference
