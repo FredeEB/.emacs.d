@@ -1,16 +1,23 @@
-* Basics
-** package.el
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (require 'package)
-   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-		       (not (gnutls-available-p))))
-	  (proto (if no-ssl "http" "https")))
-     (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-     (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-     (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")) t)
-     (add-to-list 'package-archives (cons "org" (concat proto "://orgmode.org/elpa/")) t)
-     (package-initialize))
+* introduction
+  This is my config. It does just about everything I need it to do, and /a lot/ more than that too.
+  which is why it's included as a submodule. It has been running rocksolid since forever.
+  also included is ccls for c/c++ which is what I primarily use.
+* this is my personal config (DISCLAIMER)
+  Just to let you know. If you want to use it, or parts of it, be my guest. All of the configuration is in [[https://github.com/FredeEB/.emacs.d/blob/master/config.org][config.org]]. I've been very sparse with comments, but the headings should be pretty descriptive, however if you're looking for something in there, just =<C-f>=, =<C-s>=, =/= or what ever you do.
 
+  It has only been tested with emacs 27.0.50, but might work with previous versions without modification, or it might need a lot of modification.
+
+  Installing all the packages upon first startup is very dependent on an internet connection as well as elpa, melpa and orgmode.org being up (which has caused me trouble before) so if it get's mad about missing dependencies, check if the package archives noted under [[https://github.com/FredeEB/.emacs.d/blob/master/config.org#packageel][package.el]] in config.org are up.
+
+  To use it, just clone this repo to whereever your emacs config is (usually =/home/$(USER)/.emacs.d=) and remember to back up your old one, if you have one. You can then try it with whatever version of Emacs you have installed to see if it works. But as mentioned, it's only been tested with Emacs 27.0.50, meaning you'd have to build that from source, until a binary hits your local software pusher (soure can be found here [[https://git.savannah.gnu.org/git/emacs.git]]).
+
+  Also, I'm /NOT/ responsible for anything that happens to anything that touches these files.
+* basics
+  Setting up the basics early, so if the config breaks further along, I'll still have evil
+** package manager
+  I use straight for managing packages. It's a very painless process to spin up a new machine, just by downloading the repo and starting up emacs.
+  some use-package syntactic suger.
+   #+BEGIN_SRC emacs-lisp :tangle yes
    (defvar bootstrap-version)
    (let ((bootstrap-file
 	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -24,17 +31,19 @@
 	 (eval-print-last-sexp)))
      (load bootstrap-file nil 'nomessage))
 
-   (straight-use-package 'use-package)
-   (setq straight-use-package-by-default t)
-   ;; (unless (package-installed-p 'use-package)
-   ;;   (package-refresh-contents)
-   ;;   (package-install 'use-package))
-
-   ;; (setq use-package-always-defer t
-   ;; 	 use-package-always-ensure t)
+     (straight-use-package 'use-package)
 
    #+END_SRC
+    This allows the use-package syntax while using straight on the backend.
+    The first line should be enough to convert a convetional usepackage config to a straight one.
+   #+begin_src emacs-lisp :tangle yes
+     (setq straight-use-package-by-default t
+	   use-package-always-defer t
+	   use-package-always-ensure t)
+   #+end_src
 ** evil-mode
+   Yes, I also came from [neo]vi[m], so ofc evil is gonna be in here.
+   These are some nice packages that relate to evil, however there are "evil-*" packages more throughout the file
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq evil-want-integration t
 	 evil-want-keybinding nil)
@@ -69,50 +78,6 @@
      (evil-owl-idle-delay 0))
    (evil-owl-mode)
    #+END_SRC
-** git
-   Magit setup.
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package evil-magit
-      :init
-      (evil-magit-init)
-      :custom
-      (magit-repository-directories (expand-file-name "~/git/projects")))
-
-    (use-package forge)
-    (use-package ssh-agency)
-    (use-package orgit)
-
-    (setenv "SSH_ASKPASS" "git-gui--askpass")
-    #+END_SRC
-
-    Tools for more git integration
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package git-timemachine)
-    (use-package git-gutter-fringe+
-      :config
-      (global-git-gutter+-mode)
-      (git-gutter-fr+-minimal))
-    #+END_SRC
-***  Extra sauce!
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (defun get-github-repo-field (user repo field)
-	"fetches USER/REPO from github api and retrieves FIELD"
-	(cdr
-	 (assoc field
-		(with-current-buffer
-		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
-		  (json-read-object)))))
-
-      (defun insert-github-repo-field (user repo field)
-	"Inserts FIELD from api.github.com/USER/REPO"
-	(interactive "sUser: \nsRepo: \nSField: ")
-	(insert
-	 (format "%s" (get-github-repo-field user repo field))))
-
-      (defun org-insert-github-link (user repo)
-	"Inserts a github link at USER/REPO."
-	(interactive "sUser: \nsRepo: ")
-	(org-github-link (format "%s/%s" user repo)))
 ** eshell
    #+begin_src emacs-lisp :tangle yes
      (defmacro with-face (STR &rest PROPS)
@@ -156,11 +121,8 @@
 	   eshell-prompt-function 'esh-prompt-func)
    #+end_src
 
-      (defun org-github-link (repo)
-	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
-    #+END_SRC
 ** misc
-   default settings
+   misc default settings
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq scroll-conservatively 100
 	 scroll-margin 0
@@ -200,30 +162,69 @@
    ;; Electricity!!
    (add-hook 'prog-mode-hook 'electric-pair-mode)
 
-   ;;tmp stuff
-   (defalias 'sesman-linked-sessions 'sesman--linked-sessions)
-
    ;;latex stuff
-   (setq org-latex-listings 'minted
-	 org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
-	 org-latex-pdf-process
-	 '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	   "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-	 org-export-latex-listings 'minted org-src-fontify-natively t)
-
    ;; font
    (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
    (setq font-lock-maximum-decoration 3)
    #+END_SRC
-** shell
-   #+begin_src emacs-lisp :tangle yes
-     (use-package vterm
-       :custom
-       (vterm-shell "zsh")
-       (vterm-max-scrollback 1000000))
+* git
+** magit
+   magit is the best git client in the multiverse. I use the evil variant.
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package evil-magit
+      :init
+      (evil-magit-init)
+      :custom
+      (magit-repository-directories (expand-file-name "~/git/projects")))
+    #+END_SRC
 
-     (add-hook 'vterm-mode-hook 'turn-off-evil-mode)
-   #+end_src
+    As well as some other packages that relate
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package forge)
+    (use-package ssh-agency)
+    (use-package orgit)
+    #+END_SRC
+
+    Tools for more git integration. Git timemachine let's you check the git log in the buffer and is extremely useful
+    git gutter are the plus and minus signs that show you what's added/removed/changed on the left
+    #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package git-timemachine)
+    (use-package git-gutter-fringe+
+      :config
+      (global-git-gutter+-mode)
+      (git-gutter-fr+-minimal))
+    #+END_SRC
+** Extra sauce!
+    these are some extra functions, mostly useful in orgmode tables
+
+    | user    | repo     | stargazers_count |
+    |---------+----------+------------------|
+    | fredeeb | .emacs.d |                4 |
+    #+TBLFM: $3='(get-github-repo-field $1 $2 'stargazers_count)
+#+BEGIN_SRC emacs-lisp :tangle yes
+      (defun get-github-repo-field (user repo field)
+	"fetches USER/REPO from github api and retrieves FIELD"
+	(interactive)
+	(cdr
+	 (assoc field
+		(with-current-buffer
+		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
+		  (json-read-object)))))
+
+      (defun insert-github-repo-field (user repo field)
+	"Inserts FIELD from api.github.com/USER/REPO"
+	(interactive "sUser: \nsRepo: \nSField: ")
+	(insert
+	 (format "%s" (get-github-repo-field user repo field))))
+
+      (defun org-insert-github-link (user repo)
+	"Inserts a github link at USER/REPO."
+	(interactive "sUser: \nsRepo: ")
+	(org-github-link (format "%s/%s" user repo)))
+
+      (defun org-github-link (repo)
+	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
+    #+END_SRC
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
@@ -233,30 +234,31 @@
    (use-package iedit)
    #+END_SRC
 ** help
-#+BEGIN_SRC emacs-lisp :tangle yes
+   a seemingly better alternative to describe-whatever aswell as a very simple way to do anything
+   #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package helpful)
   (use-package howdoi)
    #+END_SRC
-*** engine
-    used to search web resources.
-    #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package engine-mode
-   :config
-   (defengine cppreference
-     "https://en.cppreference.com/mwiki/index.php?search=%s")
-   (defengine google
-     "https://google.com/search?q=%s")
-   (defengine youtube
-     "https://www.youtube.com/results?search_query=%s")
-   (defengine dockerhub
-     "https://hub.docker.com/search?q=%s&type=image")
-   (defengine github
-     "https://github.com/search?q=%s")
-   (defengine rustdoc
-     "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
-   (defengine wikipedia
-     "https://en.wikipedia.org/wiki/%s"))
-    #+END_SRC
+** engine
+   used to search web resources.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package engine-mode
+       :config
+       (defengine cppreference
+	 "https://en.cppreference.com/mwiki/index.php?search=%s")
+       (defengine google
+	 "https://google.com/search?q=%s")
+       (defengine youtube
+	 "https://www.youtube.com/results?search_query=%s")
+       (defengine dockerhub
+	 "https://hub.docker.com/search?q=%s&type=image")
+       (defengine github
+	 "https://github.com/search?q=%s")
+       (defengine rustdoc
+	 "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
+       (defengine wikipedia
+	 "https://en.wikipedia.org/wiki/%s"))
+   #+END_SRC
 ** utilities
    #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package kubernetes)
@@ -264,110 +266,78 @@
    (use-package sudo-edit)
    (use-package treemacs-evil)
    #+END_SRC
-*** docker
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package docker)
-    (use-package dockerfile-mode)
-    (use-package docker-tramp
-      :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
-    #+END_SRC
-*** openwith
-     requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
- #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package openwith
-     :config
-     (openwith-mode t)
-     :custom
-     (openwith-associations
-      '(("\\.pdf\\'" "zathura" (file))
-	("\\.jpg\\'" "sxiv" (file))
-	("\\.svg\\'" "sxiv" (file))
-	("\\.jpeg\\'" "sxiv" (file))
-	("\\.bmp\\'" "sxiv" (file))
-	("\\.flac\\'" "mpv" (file))
-	("\\.mkv\\'" "mpv" (file))
-	("\\.mp3\\'" "mpv" (file))
-	("\\.mp4\\'" "mpv" (file)))))
- #+END_SRC
-* language packs
-** matlab
-   requires [[https://se.mathworks.com/products/matlab.html][matlab]]
+** docker
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package matlab-mode
-     :hook (matlab-shell)
-     :mode ("\\.m\\'" . matlab-mode)
-     :config
-     (matlab-cedet-setup)
-     :custom
-     (matlab-indent-function t)
-     (matlab-shell-command "matlab"))
+   (use-package docker)
+   (use-package dockerfile-mode)
+   (use-package docker-tramp
+     :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
    #+END_SRC
-** csharp
+** openwith
+   requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package csharp-mode)
-   (use-package omnisharp
-     :after company
-     :config
-     (add-hook 'csharp-mode-hook 'omnisharp-mode)
-     (add-to-list 'company-backends 'company-omnisharp))
-   #+END_SRC
-** plant
-    requires [[https://plantuml.com][plantuml]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package plantuml-mode
-    :magic ("@startuml" . plantuml-mode))
-
-  (when (executable-find "plantuml")
-    (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
-	  org-plantuml-jar-path
-	  (replace-regexp-in-string
-	   "bin"
-	   "share/java/plantuml"
-	   (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
-
-  (use-package flycheck-plantuml)
-
-  ;; recompiles plantuml diagrams on save
-  (defun recompile-plantuml ()
-    (add-hook 'after-save-hook
-	      (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
-
-  (add-hook 'plantuml-mode-hook 'recompile-plantuml)
-#+END_SRC
-** others
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yaml-mode)
-   (use-package json-mode)
-   (use-package protobuf-mode)
-
-   ;;scons
-   (push '("SConstruct" . python-mode) auto-mode-alist)
-   (push '("SConscript" . python-mode) auto-mode-alist)
+     (use-package openwith
+       :config
+       (openwith-mode t)
+       :custom
+       (openwith-associations
+	'(("\\.pdf\\'" "zathura" (file))
+	  ("\\.jpg\\'" "sxiv" (file))
+	  ("\\.svg\\'" "sxiv" (file))
+	  ("\\.jpeg\\'" "sxiv" (file))
+	  ("\\.bmp\\'" "sxiv" (file))
+	  ("\\.flac\\'" "mpv" (file))
+	  ("\\.mkv\\'" "mpv" (file))
+	  ("\\.mp3\\'" "mpv" (file))
+	  ("\\.mp4\\'" "mpv" (file)))))
    #+END_SRC
 * org stuff
-** basic
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'org-mode-hook 'visual-line-mode)
+** journals
+  I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
 
-  (org-babel-do-load-languages 'org-babel-load-languages
-   '((python . t)
-     (C . t)
-     (clojure . t)
-     (plantuml . t)
-     (shell . t)
-     (python .t)
-     (makefile . t)
-     (calc . t)
-     (matlab . t)
-     (emacs-lisp . t)
-     (js . t)))
+  Issues with questions or bugs and PR's are welcome, but I only fix/merge things i feel improves my workflow.
 
-  (use-package ox-reveal)
-  (use-package org-mime)
-  (use-package org-ql)
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defvar journal-dir
+       (expand-file-name"~/Dropbox/journals/"))
 
-  (require 'org-tempo)
-  (setq org-todo-keywords
+     (defvar journal
+       (format "%sjournal%s.org"
+	       journal-dir
+	       (format-time-string "%Y%m%d")))
+
+     (setq initial-buffer-choice journal
+	   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
+
+     (defvar org-journal-template
+       (concat
+	"#+TITLE: Journal\n"
+	"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
+	"* TODAY\n"
+	"* NOTES"))
+
+     (when (not (file-exists-p journal))
+       (write-region org-journal-template nil journal))
+
+     (defun find-journal (days-ago)
+       "Find journal from DAYS-AGO"
+       (interactive "p")
+       (if (not current-prefix-arg)
+	   (find-file
+	    journal)
+	 (find-file
+	  (concat
+	   journal-dir
+	   "journal"
+	   (format-time-string
+	    "%Y%m%d"
+	    (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
+	   ".org"))))
+   #+END_SRC
+
+   Setting org todo keyword and agenda templates
+   #+begin_src emacs-lisp :tangle yes
+       (setq org-todo-keywords
 	'((sequence "TODO(t)" "FEEDBACK(f)" "WAITING(w)" "|" "DONE(d)" "NOT FINISHED(n)"))
 	org-columns-default-format
 	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
@@ -376,35 +346,64 @@
            "** TODO %?\n")
           ("n" "Note" entry (file+headline journal "NOTES")
            "** %?\n\n")))
+   #+end_src
+** export
+   settings and packages for exportng to different formats
+   #+begin_src emacs-lisp :tangle yes
+     (use-package ox-reveal)
 
+     (setq org-export-latex-listings 'minted)
+     (setq org-src-fontify-natively t)
 
-  (use-package org-ref)
-  (use-package org-bullets
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+     (setq org-latex-listings 'minted
+	   org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
+	   org-latex-pdf-process
+	   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+	   org-export-latex-listings 'minted org-src-fontify-natively t)
 
-  (use-package polymode)
-  (use-package poly-org
-    :after polymode
-    :mode ("//.org//'"))
+   #+end_src
+** sourceblocks
+   Modes and settings for org source blocks
+   #+begin_src emacs-lisp :tangle yes
+     (use-package ob-async)
 
-  (use-package org-download
-    :config
-    (add-hook 'dired-mode-hook 'org-download-enable))
+     (use-package polymode)
+     (use-package poly-org
+       :after polymode
+       :mode ("//.org//'"))
 
-  (setq org-export-latex-listings 'minted)
-  (setq org-src-fontify-natively t)
+     (org-babel-do-load-languages 'org-babel-load-languages
+				  '((C . t)
+				    (calc . t)
+				    (clojure . t)
+				    (emacs-lisp . t)
+				    (js . t)
+				    (makefile . t)
+				    (matlab . t)
+				    (plantuml . t)
+				    (python . t)
+				    (shell . t)))
+   #+end_src
+** tables
+   Functions for tables
+   #+begin_src emacs-lisp :tangle yes
+     (defmath uconvert (v u)
+       "Convert value V into compatible unit U"
+       (math-convert-units v u))
+   #+end_src
+** misc
+   The basics
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-hook 'org-mode-hook 'visual-line-mode)
 
-  (add-hook 'org-mode-hook
-	    (lambda ()
-	      (openwith-mode nil)
-	      (org-display-inline-images t)))
-
-  (defmath uconvert (v u)
-    "Convert value V into compatible unit U"
-    (math-convert-units v u))
-#+END_SRC
+     (use-package org-ref)
+     (use-package org-bullets
+       :config
+       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+   #+END_SRC
 ** org-extras
+   A set of macros to include Revealjs headers, latex headers, latex meta data and so on
    #+BEGIN_SRC emacs-lisp :tangle yes
      (defun export-and-find ()
        (interactive)
@@ -458,58 +457,25 @@
 	 (forward-line -1)
 	 (insert (concat "#+NAME: " name))))
 #+END_SRC
-** journals
-   setting up daily journals
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defvar journal-dir
-       (expand-file-name "~/Dropbox/journals/"))
-
-     (defvar journal
-       (format "%sjournal%s.org"
-	       journal-dir
-	       (format-time-string "%Y%m%d")))
-
-     (setq initial-buffer-choice journal
-	   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
-
-     (defvar org-journal-template
-       (concat
-	"#+TITLE: Journal\n"
-	"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
-	"* TODAY\n"
-	"* NOTES"))
-
-     (when (not (file-exists-p journal))
-       (write-region org-journal-template nil journal))
-
-     (defun find-journal (days-ago)
-       "Find journal from DAYS-AGO"
-       (interactive "p")
-       (if (not current-prefix-arg)
-	   (find-file
-	    journal)
-	 (find-file
-	  (concat
-	   journal-dir
-	   "journal"
-	   (format-time-string
-	    "%Y%m%d"
-	    (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
-	   ".org"))))
-   #+END_SRC
 * programming
-** company
+** meta
+   company completes anything and it works wonderfully
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package company
        :hook (prog-mode . company-mode)
        :custom
        (company-idle-delay 0)
        (company-minimum-prefix-length 1))
+     (use-package company-posframe)
    #+END_SRC
+
+   Flycheck is for squiggily lines when I can't spell
+   #+begin_src emacs-lisp :tangle yes
+     (use-package flycheck)
+   #+end_src
 ** lisp
+   All the lispy things
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package parinfer)
-     ;; paredit!
      (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
      (add-hook 'lisp-mode-hook 'paredit-mode)
      (add-hook 'clojure-mode-hook 'paredit-mode)
@@ -541,18 +507,12 @@
    (use-package pipenv
      :hook (python-mode . pipenv-mode)
      :custom
-     pipenv-projectile-after-switch-function
-     #'pipenv-projectile-after-switch-extended)
+     (pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
 
    (use-package jedi)
    #+END_SRC
-** elixir
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package elixir-mode)
-     (use-package alchemist
-       :hook (elixir-mode . alchemist-mode))
-   #+END_SRC
 ** c++
+   this is what I use most in this configuration
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package clang-format)
      (use-package modern-cpp-font-lock
@@ -596,83 +556,132 @@
        :config
        (push (expand-file-name "~/go/bin") exec-path))
 
-   (defun go-run ()
-     (interactive)
-     (save-buffer)
-     (let ((buffer "*go*"))
-       (start-process "*go*" buffer "go" "run" (buffer-name))
-       (switch-to-buffer buffer)
-       (view-mode)))
+     (defun go-run ()
+       (interactive)
+       (save-buffer)
+       (let ((buffer "*go*"))
+	 (start-process "*go*" buffer "go" "run" (buffer-name))
+	 (switch-to-buffer buffer)
+	 (view-mode)))
    #+END_SRC
 ** web
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    ;; everything in one package
-    (use-package web-mode
-      :mode
-      ("\\.js\\'" . web-mode)
-      ("\\.ts\\'" . web-mode)
-      ("\\.css\\'" . web-mode)
-      ("\\.jsx\\'" . web-mode)
-      ("\\.tsx\\'" . web-mode)
-      ("\\.html\\'" . web-mode)
-      ("\\.scss\\'" . web-mode))
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     ;; everything in one package
+     (use-package web-mode
+       :mode
+       ("\\.js\\'" . web-mode)
+       ("\\.ts\\'" . web-mode)
+       ("\\.css\\'" . web-mode)
+       ("\\.jsx\\'" . web-mode)
+       ("\\.tsx\\'" . web-mode)
+       ("\\.html\\'" . web-mode)
+       ("\\.scss\\'" . web-mode))
 
-    (use-package npm-mode)
-    (use-package impatient-mode)
-    (use-package lorem-ipsum)
-    (use-package emmet-mode
-      :custom
-      (emmet-expand-jsx-className t))
+     (use-package npm-mode)
+     (use-package impatient-mode)
+     (use-package lorem-ipsum)
+     (use-package emmet-mode
+       :custom
+       (emmet-expand-jsx-className t))
 
-    (use-package restclient)
+     (use-package restclient)
 #+END_SRC
 ** lsp
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package company-lsp)
-  (use-package lsp-mode
-    :config
-    (require 'ccls)
-    (require 'lsp-clients)
-    :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
-    :custom
-    (lsp-prefer-flymake nil))
-  (use-package lsp-ui)
-  (use-package dap-mode)
-
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package company-lsp)
+     (use-package lsp-mode
+       :config
+       (require 'lsp-clients)
+       :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
+       :custom
+       (lsp-prefer-flymake nil))
+     (use-package lsp-ui)
+     (use-package dap-mode)
+   #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yasnippet-snippets)
-   (use-package react-snippets)
+     (use-package yasnippet-snippets)
+     (use-package react-snippets)
 
-   (use-package yasnippet
-     :init
-     (yas-global-mode 1))
+     (use-package yasnippet
+       :init
+       (yas-global-mode 1))
 
-   (use-package auto-yasnippet)
+     (use-package auto-yasnippet)
 
-   ;; make company and yasnippet play nice
-   (defun company-yasnippet-or-completion ()
-     (interactive)
-     (let ((yas-fallback-behavior nil))
-       (unless (yas-expand)
-	 (call-interactively #'company-complete-common))))
+     ;; make company and yasnippet play nice
+     (defun company-yasnippet-or-completion ()
+       (interactive)
+       (let ((yas-fallback-behavior nil))
+	 (unless (yas-expand)
+	   (call-interactively #'company-complete-common))))
 
-   (add-hook 'company-mode-hook
-	     (lambda () (substitute-key-definition
-		    'company-complete-common
-		    'company-yasnippet-or-completion
-		    company-active-map)))
+     (add-hook 'company-mode-hook
+	       (lambda () (substitute-key-definition
+			   'company-complete-common
+			   'company-yasnippet-or-completion
+			   company-active-map)))
    #+END_SRC
-** tags
-   #+begin_src emacs-lisp :tangle yes
-     (use-package ggtags)
-   #+end_src
+** matlab
+   requires [[https://se.mathworks.com/products/matlab.html][matlab]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package matlab-mode
+       :hook (matlab-shell)
+       :mode ("\\.m\\'" . matlab-mode)
+       :config
+       (matlab-cedet-setup)
+       :custom
+     (matlab-indent-function t)
+     (matlab-shell-command "matlab"))
+   #+END_SRC
+** csharp
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package csharp-mode)
+     (use-package omnisharp
+       :after company
+       :config
+       (add-hook 'csharp-mode-hook 'omnisharp-mode)
+       (add-to-list 'company-backends 'company-omnisharp))
+   #+END_SRC
+** plant
+   requires [[https://plantuml.com][plantuml]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package plantuml-mode
+       :magic ("@startuml" . plantuml-mode))
+
+     (when (executable-find "plantuml")
+       (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
+	     org-plantuml-jar-path
+	     (replace-regexp-in-string
+	      "bin"
+	      "share/java/plantuml"
+	      (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
+
+     (use-package flycheck-plantuml)
+
+     ;; recompiles plantuml diagrams on save
+     (defun recompile-plantuml ()
+       (add-hook 'after-save-hook
+		 (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
+
+     (add-hook 'plantuml-mode-hook 'recompile-plantuml)
+   #+END_SRC
+** others
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (use-package yaml-mode)
+   (use-package json-mode)
+   (use-package protobuf-mode)
+   (use-package gnuplot)
+
+   ;;scons
+   (push '("SConstruct" . python-mode) auto-mode-alist)
+   (push '("SConscript" . python-mode) auto-mode-alist)
+   #+END_SRC
 * misc
 ** shell
-   insert result from terminal (try "Q" on the next line)
-   seq 1 255 | xargs printf "%.2x\n" | fmt -w 49
+   insert stdout from terminal (try "Q" on the next line)
+   seq 0 255 | xargs printf "%.2x\n" | fmt -w 49
    #+BEGIN_SRC emacs-lisp :tangle yes
      (defun insert-output-of-executed-line ()
        "executes line at point in default shell and inserts stdout"
@@ -682,8 +691,6 @@
 	 (delete-and-extract-region
 	  (point-at-bol)
 	  (point-at-eol)))))
-
-     (use-package vterm)
    #+END_SRC
 ** nix
  #+begin_SRC emacs-lisp :tangle yes
@@ -700,14 +707,6 @@
 
        (use-package mu4e-alert))
    #+END_SRC
-** media
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package emms)
-   #+END_SRC
-** slack
-   #+begin_src emacs-lisp :tangle yes
-     (use-package slack)
-   #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
@@ -723,7 +722,6 @@
 
  (use-package f3)
  (use-package helm-company)
- (use-package helm-make)
  (use-package helm-projectile)
  (use-package helm-rg)
  (use-package helm-swoop)
@@ -754,7 +752,6 @@
 ** posframe
    #+begin_src emacs-lisp :tangle yes
      (use-package flycheck-posframe)
-     (use-package company-posframe)
    #+end_src
 ** which key
  #+BEGIN_SRC emacs-lisp :tangle yes
@@ -775,8 +772,8 @@
     "a" 'comment-dwim
     "i" 'indent-region
     "h" 'howdoi-query-insert-code-snippet-at-point
-    "g r" 'helm-swoop-from-evil-search
     "g p" 'helm-multi-swoop-projectile
+    "g g" 'helm-grep
 
     ;;buffer
     "j" 'evil-avy-goto-char
@@ -816,8 +813,7 @@
     ;;utilities
     "+" 'calc
     "-" 'mu4e
-    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
-    "'" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell))
+    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell t))
 
     ;;projectile
     "p p" 'helm-projectile
