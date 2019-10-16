@@ -79,6 +79,7 @@
    (evil-owl-mode)
    #+END_SRC
 ** eshell
+   shamelessly stolen from [[http://www.modernemacs.com/post/custom-eshell/][here]]
    #+begin_src emacs-lisp :tangle yes
      (defmacro with-face (STR &rest PROPS)
        "Return STR propertized with PROPS."
@@ -117,6 +118,9 @@
 		  '(:foreground "#f1fa8c"))
 
      (setq esh-sep " | "
+	   esh-section-delim ""
+	   eshell-banner-message ""
+	   eshell-prompt-string ""
 	   eshell-funcs (list esh-dir esh-git)
 	   eshell-prompt-function 'esh-prompt-func)
    #+end_src
