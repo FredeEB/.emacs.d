@@ -470,12 +470,17 @@
        :custom
        (company-idle-delay 0)
        (company-minimum-prefix-length 1))
-     (use-package company-posframe)
+     (use-package company-posframe
+       :config
+       (company-posframe-mode))
    #+END_SRC
 
    Flycheck is for squiggily lines when I can't spell
    #+begin_src emacs-lisp :tangle yes
      (use-package flycheck)
+     (use-package flycheck-posframe
+       :config
+       (flycheck-posframe-mode))
    #+end_src
 ** lisp
    All the lispy things
@@ -729,6 +734,7 @@
  (use-package helm-projectile)
  (use-package helm-rg)
  (use-package helm-swoop)
+ (use-package helm-posframe)
  #+END_SRC
 ** theme
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -755,8 +761,11 @@
    #+END_SRC
 ** posframe
    #+begin_src emacs-lisp :tangle yes
-     (use-package flycheck-posframe)
+     (setq helm-posframe-parameters
+	   '((left-fringe . 5)
+	     (right-fringe . 5)))
    #+end_src
+
 ** which key
  #+BEGIN_SRC emacs-lisp :tangle yes
    (use-package which-key
