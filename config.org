@@ -473,6 +473,10 @@
      (use-package company-posframe
        :config
        (company-posframe-mode))
+
+     (use-package company-fuzzy
+       :config
+       (global-company-fuzzy-mode))
    #+END_SRC
 
    Flycheck is for squiggily lines when I can't spell
