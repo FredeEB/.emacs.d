@@ -799,6 +799,7 @@
     "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
     "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
     "f p" '(lambda () (interactive) (find-file "~/git"))
+    "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
     "f j" 'find-journal
 
     ;;treemacs
@@ -864,6 +865,9 @@
     "e" 'cider-eval-last-sexp
     "k" 'cider-eval-buffer)
 
+  (evil-leader/set-key-for-mode 'dired-mode
+    "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point))))
+
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "e" 'eval-last-sexp
     "k" 'eval-buffer)
@@ -886,11 +890,11 @@
     (kbd "C-k") 'kill-buffer-and-window
     (kbd "C-c c") 'org-capture)
 
-  (evil-define-key 'normal iedit-mode-keymap
+  (evil-define-key 'normal 'iedit-mode-keymap
     (kbd "t") 'iedit-toggle-selection
     (kbd "f") 'iedit-restrict-function)
 
-  (evil-define-key nil go-mode-map
+  (evil-define-key nil 'go-mode-map
     (kbd "C-c C-c") 'go-run)
 
   (evil-define-key 'normal global-map
@@ -902,23 +906,23 @@
     (kbd "S") 'evil-surround-region)
 
   ;; orgmode
-  (evil-define-key 'normal poly-org-mode-map
+  (evil-define-key 'normal 'poly-org-mode-map
     (kbd "U") 'export-and-find
     (kbd "L") 'org-shiftright
     (kbd "H") 'org-shiftleft)
 
   ;; paredit mode
-  (evil-define-key nil paredit-mode-map
+  (evil-define-key nil 'paredit-mode-map
     (kbd "M-l") 'paredit-forward-slurp-sexp
     (kbd "M-h") 'paredit-backward-slurp-sexp
     (kbd "M-L") 'paredit-backward-barf-sexp
     (kbd "M-H") 'paredit-forward-barf-sexp)
 
-  (evil-define-key nil cider-repl-mode-map
+  (evil-define-key nil 'cider-repl-mode-map
     (kbd "C-k") 'cider-repl-backward-input
     (kbd "C-j") 'cider-repl-forward-input)
 
-  (evil-define-key 'normal ggtags-mode-map
+  (evil-define-key 'normal 'ggtags-mode-map
     (kbd "g f") 'ggtags-find-file
     (kbd "g r") 'ggtags-find-reference
     (kbd "g d") 'ggtags-find-definition
