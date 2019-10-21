@@ -36,9 +36,7 @@
     This allows the use-package syntax while using straight on the backend.
     The first line should be enough to convert a convetional usepackage config to a straight one.
    #+begin_src emacs-lisp :tangle yes
-     (setq straight-use-package-by-default t
-	   use-package-always-defer t
-	   use-package-always-ensure t)
+     (setq straight-use-package-by-default t)
    #+end_src
 ** evil-mode
    Yes, I also came from [neo]vi[m], so ofc evil is gonna be in here.
