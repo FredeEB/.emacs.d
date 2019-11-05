@@ -823,6 +823,7 @@
     "p s" 'projectile-add-known-project
     "p c" 'projectile-compile-project
     "c" '(lambda () (interactive) (compile "ninja -C $(git rev-parse --show-toplevel)/build"))
+    "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 
     ;;engine
     "s c" 'engine/search-cppreference
