@@ -126,48 +126,46 @@
 ** misc
    misc default settings
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (setq scroll-conservatively 100
-	 scroll-margin 0
-	 inhibit-startup-message t
-	 initial-scratch-message ""
-	 ring-bell-function 'ignore
-	 tab-width 2
-	 default-directory (expand-file-name "~/")
-	 tramp-default-method "ssh"
-	 large-file-warning-threshold nil
-	 custom-file (expand-file-name "~/.emacs.d/customs.el"))
+     (setq-default scroll-conservatively 100
+	               scroll-margin 0
+	               inhibit-startup-message t
+	               initial-scratch-message ""
+	               ring-bell-function 'ignore
+	               tab-width 4
+	               default-directory (expand-file-name "~/")
+	               tramp-default-method "ssh"
+	               large-file-warning-threshold nil
+	               custom-file (expand-file-name "~/.emacs.d/customs.el")
+                   delete-trailing-lines t
+                   indent-tabs-mode nil)
 
-   ;; sane normal keybinds
-   (global-subword-mode)
-   (defalias 'yes-or-no-p 'y-or-n-p)
-   (tool-bar-mode -1)
-   (menu-bar-mode -1)
-   (scroll-bar-mode -1)
-   (setq standard-indent 2)
-   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+     (global-subword-mode)
+     (defalias 'yes-or-no-p 'y-or-n-p)
+     (defvaralias 'c-basic-offset 'tab-width)
 
-   ;; Load zshrc
-   (setq shell-file-name "bash")
-   (setq shell-command-switch "-c")
+     (tool-bar-mode -1)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-   ;; environments
-   (use-package exec-path-from-shell
-     :config (exec-path-from-shell-initialize))
+     (setq shell-file-name "bash")
+     (setq shell-command-switch "-c")
 
-   ;; make tramp play nice
-   (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+     ;; environments
+     (use-package exec-path-from-shell
+       :config (exec-path-from-shell-initialize))
 
-   ;; File beautification
-   (setq delete-trailing-lines t)
-   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+     ;; make tramp play nice
+     (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
-   ;; Electricity!!
-   (add-hook 'prog-mode-hook 'electric-pair-mode)
+     ;; File beautification
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-   ;;latex stuff
-   ;; font
-   (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
-   (setq font-lock-maximum-decoration 3)
+     ;; Electricity!!
+     (add-hook 'prog-mode-hook 'electric-pair-mode)
+
+     ;; font
+     (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
    #+END_SRC
 * git
 ** magit
