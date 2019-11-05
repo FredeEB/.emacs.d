@@ -43,7 +43,8 @@
    These are some nice packages that relate to evil, however there are "evil-*" packages more throughout the file
    #+BEGIN_SRC emacs-lisp :tangle yes
    (setq evil-want-integration t
-	 evil-want-keybinding nil)
+	     evil-want-keybinding nil
+         evil-want-C-i-jump nil)
 
    (use-package evil-leader
      :init
