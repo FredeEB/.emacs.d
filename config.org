@@ -618,19 +618,6 @@
        (yas-global-mode 1))
 
      (use-package auto-yasnippet)
-
-     ;; make company and yasnippet play nice
-     (defun company-yasnippet-or-completion ()
-       (interactive)
-       (let ((yas-fallback-behavior nil))
-	 (unless (yas-expand)
-	   (call-interactively #'company-complete-common))))
-
-     (add-hook 'company-mode-hook
-	       (lambda () (substitute-key-definition
-			   'company-complete-common
-			   'company-yasnippet-or-completion
-			   company-active-map)))
    #+END_SRC
 ** matlab
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
