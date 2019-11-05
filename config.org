@@ -605,7 +605,12 @@
        :custom
        (lsp-prefer-flymake nil))
      (use-package lsp-ui)
-     (use-package dap-mode)
+     (use-package dap-mode
+       :config
+       (require 'dap-gdb-lldb)
+       ;;download debuggers
+       (when (not (file-exists-p (expand-file-name "./.extension")))
+         (dap-utils-get-vscode-extension "webfreak" "debug")))
    #+END_SRC
 ** yasnippet
    All the snippets! (or atleast most of them)
@@ -807,6 +812,13 @@
     "r i" 'lsp-ui-peek-find-implementation
     "r r" 'lsp-ui-peek-find-references
     "r m" 'lsp-ui-doc
+
+    ;;dap
+    "d r" 'dap-debug-restart
+    "d l" 'dap-debug-last
+    "d f" 'dap-debug-recent
+    "d d" 'dap-debug
+    "d h" 'dap-hydra
 
     ;;Docker
     "g d" 'docker
