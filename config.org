@@ -804,6 +804,8 @@
     "g s" 'magit-status
     "g t" 'git-timemachine
     "g f" 'global-git-gutter+-mode
+	"g g" 'git-gutter+-show-hunk-inline-at-point
+	"g r" 'git-gutter+-revert-hunk
 
     ;;lsp
     "r o" 'lsp-rename
@@ -813,12 +815,13 @@
     "r r" 'lsp-ui-peek-find-references
     "r m" 'lsp-ui-doc
 
-    ;;dap
-    "d r" 'dap-debug-restart
-    "d l" 'dap-debug-last
-    "d f" 'dap-debug-recent
-    "d d" 'dap-debug
-    "d h" 'dap-hydra
+	;;dap
+	"d r" 'dap-debug-restart
+	"d l" 'dap-debug-last
+	"d f" 'dap-debug-recent
+	"d d" 'dap-debug
+	"d t" 'dap-debug-edit-template
+	"d h" 'dap-hydra
 
     ;;Docker
     "g d" 'docker
@@ -853,10 +856,6 @@
     "w k" 'windmove-swap-states-up
     "w l" 'windmove-swap-states-right)
 
-  (setq windmove-wrap-around t)
-  (evil-leader/set-key-for-mode 'org-mode
-    "m s" 'org-kanban/shift)
-
   (evil-leader/set-key-for-mode 'cider-mode
     "r h" 'cljr-helm
     "r r" 'cider-eval-last-sexp
@@ -866,7 +865,8 @@
     "k" 'cider-eval-buffer)
 
   (evil-leader/set-key-for-mode 'dired-mode
-    "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point))))
+    "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
+    "d g" 'dired-git-info-mode)
 
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "e" 'eval-last-sexp
