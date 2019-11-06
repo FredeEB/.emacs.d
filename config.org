@@ -696,7 +696,7 @@
    (use-package yaml-mode)
    (use-package json-mode)
    (use-package protobuf-mode)
-   (use-package gnuplot)
+   ;; (use-package gnuplot)
 
    ;;scons
    (push '("SConstruct" . python-mode) auto-mode-alist)
