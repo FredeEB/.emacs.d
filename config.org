@@ -217,6 +217,10 @@
       (global-git-gutter+-mode)
       (git-gutter-fr+-minimal))
     #+END_SRC
+** dired
+   #+begin_src emacs-lisp :tangle yes
+     (use-package dired-git-info)
+   #+end_src
 ** Extra sauce!
     these are some extra functions, mostly useful in orgmode tables
 
