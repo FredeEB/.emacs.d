@@ -23,9 +23,9 @@
 	 (bootstrap-version 5))
      (unless (file-exists-p bootstrap-file)
        (with-current-buffer
-           (url-retrieve-synchronously
-            "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-            'silent 'inhibit-cookies)
+	   (url-retrieve-synchronously
+	    "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	    'silent 'inhibit-cookies)
 	 (goto-char (point-max))
 	 (eval-print-last-sexp)))
      (load bootstrap-file nil 'nomessage))
@@ -137,11 +137,16 @@
 	               large-file-warning-threshold nil
 	               custom-file (expand-file-name "~/.emacs.d/customs.el")
                    delete-trailing-lines t
-                   indent-tabs-mode nil)
+				   tramp-smb-conf nil
+				   windmove-wrap-around t
+                   indent-tabs-mode t
+				   c-basic-offset 4)
 
-     (global-subword-mode)
+     (defvaralias 'c-basic-offset 'tab-width)
      (defalias 'yes-or-no-p 'y-or-n-p)
      (defvaralias 'c-basic-offset 'tab-width)
+
+     (global-subword-mode)
 
      (tool-bar-mode -1)
      (menu-bar-mode -1)
@@ -166,6 +171,24 @@
 
      ;; font
      (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
+
+     ;; environments
+     (use-package exec-path-from-shell
+	   :config (exec-path-from-shell-initialize))
+
+     ;; make tramp play nice
+     (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
+     ;; File beautification
+     (setq delete-trailing-lines t)
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+     ;; Electricity!!
+     (add-hook 'prog-mode-hook 'electric-pair-mode)
+
+     ;; font
+     (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
+     (setq font-lock-maximum-decoration 3)
    #+END_SRC
 * git
 ** magit
@@ -199,7 +222,7 @@
 
     | user    | repo     | stargazers_count |
     |---------+----------+------------------|
-    | fredeeb | .emacs.d |                4 |
+    | fredeeb | .emacs.d |                5 |
     #+TBLFM: $3='(get-github-repo-field $1 $2 'stargazers_count)
 #+BEGIN_SRC emacs-lisp :tangle yes
       (defun get-github-repo-field (user repo field)
