@@ -391,18 +391,20 @@
    Modes and settings for org source blocks
    #+begin_src emacs-lisp :tangle yes
      (use-package ob-async)
+	 (use-package ob-rust)
 
      (org-babel-do-load-languages 'org-babel-load-languages
 				  '((C . t)
-				    (calc . t)
-				    (clojure . t)
-				    (emacs-lisp . t)
-				    (js . t)
-				    (makefile . t)
-				    (matlab . t)
-				    (plantuml . t)
-				    (python . t)
-				    (shell . t)))
+					(calc . t)
+					(clojure . t)
+					(emacs-lisp . t)
+					(js . t)
+					(makefile . t)
+					(matlab . t)
+					(plantuml . t)
+					(python . t)
+					(rust . t)
+					(shell . t)))
    #+end_src
 ** tables
    Functions for tables
