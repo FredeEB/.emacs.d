@@ -392,11 +392,6 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package ob-async)
 
-     (use-package polymode)
-     (use-package poly-org
-       :after polymode
-       :mode ("//.org//'"))
-
      (org-babel-do-load-languages 'org-babel-load-languages
 				  '((C . t)
 				    (calc . t)
@@ -924,12 +919,6 @@
 
   (evil-define-key 'visual global-map
     (kbd "S") 'evil-surround-region)
-
-  ;; orgmode
-  (evil-define-key 'normal 'poly-org-mode-map
-    (kbd "U") 'export-and-find
-    (kbd "L") 'org-shiftright
-    (kbd "H") 'org-shiftleft)
 
   ;; paredit mode
   (evil-define-key nil 'paredit-mode-map
