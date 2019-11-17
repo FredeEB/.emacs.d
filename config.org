@@ -794,7 +794,6 @@
     "a" 'comment-dwim
     "i" 'indent-region
     "h" 'howdoi-query-insert-code-snippet-at-point
-    "g p" 'helm-multi-swoop-projectile
     "g g" 'helm-grep
 
     ;;buffer
@@ -938,4 +937,6 @@
     (kbd "g r") 'ggtags-find-reference
     (kbd "g d") 'ggtags-find-definition
     (kbd "g t") 'ggtags-find-tag-dwim)
+	(evil-define-key 'normal 'global-map
+	  (kbd "?") 'helm-multi-swoop-projectile)
   #+END_SRC
