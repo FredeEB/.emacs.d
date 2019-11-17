@@ -169,9 +169,6 @@
      ;; Electricity!!
      (add-hook 'prog-mode-hook 'electric-pair-mode)
 
-     ;; font
-     (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
-
      ;; environments
      (use-package exec-path-from-shell
 	   :config (exec-path-from-shell-initialize))
@@ -187,7 +184,7 @@
      (add-hook 'prog-mode-hook 'electric-pair-mode)
 
      ;; font
-     (add-to-list 'default-frame-alist '(font . "Iosevka 11"))
+     (add-to-list 'default-frame-alist '(font . "Iosevka 13"))
      (setq font-lock-maximum-decoration 3)
    #+END_SRC
 * git
