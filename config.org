@@ -300,6 +300,10 @@
    (use-package docker-tramp
      :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
    #+END_SRC
+** lxc
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package helm-lxc)
+   #+end_src
 ** openwith
    requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
    #+BEGIN_SRC emacs-lisp :tangle yes
