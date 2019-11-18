@@ -845,7 +845,7 @@
 	"d f" 'dap-debug-recent
 	"d d" 'dap-debug
 	"d t" 'dap-debug-edit-template
-	"d h" 'dap-hydra
+	"d h" '(lambda () (interactive) (dap-ui-mode t) (dap-hydra))
 
     ;;Docker
     "g d" 'docker
