@@ -567,6 +567,7 @@
      (use-package helm-ctest)
 
      (straight-use-package '(semantic-refactor :type git :repo "https://github.com/tuhdo/semantic-refactor"))
+	 (require 'semantic/db-find)
      (add-hook 'c++-mode-hook 'semantic-mode)
      (evil-set-initial-state 'srefactor-ui-menu-mode 'insert)
 
