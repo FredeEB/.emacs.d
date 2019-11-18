@@ -256,6 +256,9 @@
    (use-package aggressive-indent)
    (use-package avy)
    (use-package iedit)
+   (use-package smart-tabs-mode
+	 :config
+	 (smart-tabs-insinuate 'c 'c++))
    #+END_SRC
 ** help
    a seemingly better alternative to describe-whatever aswell as a very simple way to do anything
