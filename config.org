@@ -210,8 +210,6 @@
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package aggressive-indent)
-   (use-package avy)
    (use-package iedit)
    (use-package smart-tabs-mode
 	 :config
@@ -221,7 +219,6 @@
    a seemingly better alternative to describe-whatever aswell as a very simple way to do anything
    #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package helpful)
-  (use-package howdoi)
    #+END_SRC
 ** engine
    used to search web resources.
@@ -245,8 +242,6 @@
    #+END_SRC
 ** utilities
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package kubernetes)
-   (use-package request)
    (use-package sudo-edit)
    (use-package treemacs-evil)
    #+END_SRC
