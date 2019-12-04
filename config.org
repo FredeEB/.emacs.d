@@ -457,6 +457,35 @@
 	   :config
 	   (flycheck-posframe-mode))
    #+end_src
+** lsp
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package company-lsp
+	   :custom
+	   (company-lsp-cache-candidates 'auto))
+	 (use-package lsp-mode
+	   :config
+	   (require 'lsp-clients)
+	   :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
+	   :commands lsp
+	   :custom
+	   (lsp-prefer-flymake nil))
+
+	 (setq-default lsp-clients-clangd-args nil
+				   lsp-ui-doc-max-height 30
+				   lsp-ui-doc-max-width 120
+				   lsp-ui-doc-use-webkit t
+				   lsp-ui-sideline-code-actions-prefix " "
+				   lsp-ui-sideline-ignore-duplicate t
+				   lsp-ui-sideline-show-hover nil;; really obnoxious
+				   )
+
+	 (use-package lsp-ui)
+	 (use-package dap-mode
+	   :config
+	   (require 'dap-gdb-lldb)
+	   ;;download debuggers
+	   (when (not (file-exists-p (expand-file-name "~/.emacs.d/.extension")))
+		 (dap-utils-get-vscode-extension "webfreak" "debug")))
    #+end_src
 ** lisp
    All the lispy things
@@ -561,23 +590,6 @@
 		 (view-mode)))
    #+end_src
 ** web
-** lsp
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package company-lsp)
-     (use-package lsp-mode
-       :config
-       (require 'lsp-clients)
-       :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
-       :custom
-       (lsp-prefer-flymake nil))
-     (use-package lsp-ui)
-     (use-package dap-mode
-       :config
-       (require 'dap-gdb-lldb)
-       ;;download debuggers
-       (when (not (file-exists-p (expand-file-name "./.extension")))
-         (dap-utils-get-vscode-extension "webfreak" "debug")))
-   #+END_SRC
    #+begin_src emacs-lisp :tangle yes
 	 ;; everything in one package
 	 (use-package web-mode
