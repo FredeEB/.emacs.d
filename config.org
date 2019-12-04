@@ -18,23 +18,22 @@
 ** package manager
   I use straight for managing packages. It's a very painless process to spin up a new machine, just by downloading the repo and starting up emacs.
   some use-package syntactic suger.
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (defvar bootstrap-version)
-   (let ((bootstrap-file
-	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	 (bootstrap-version 5))
-     (unless (file-exists-p bootstrap-file)
-       (with-current-buffer
-	   (url-retrieve-synchronously
-	    "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	    'silent 'inhibit-cookies)
-	 (goto-char (point-max))
-	 (eval-print-last-sexp)))
-     (load bootstrap-file nil 'nomessage))
+   #+begin_src emacs-lisp :tangle yes
+	 (defvar bootstrap-version)
+	 (let ((bootstrap-file
+			(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+		   (bootstrap-version 5))
+	   (unless (file-exists-p bootstrap-file)
+		 (with-current-buffer
+			 (url-retrieve-synchronously
+			  "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+			  'silent 'inhibit-cookies)
+		   (goto-char (point-max))
+		   (eval-print-last-sexp)))
+	   (load bootstrap-file nil 'nomessage))
 
-     (straight-use-package 'use-package)
-
-   #+END_SRC
+	 (straight-use-package 'use-package)
+   #+end_src
     This allows the use-package syntax while using straight on the backend.
     The first line should be enough to convert a convetional usepackage config to a straight one.
    #+begin_src emacs-lisp :tangle yes
@@ -43,57 +42,58 @@
 ** evil-mode
    Yes, I also came from [neo]vi[m], so ofc evil is gonna be in here.
    These are some nice packages that relate to evil, however there are "evil-*" packages more throughout the file
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (setq evil-want-integration t
-	     evil-want-keybinding nil
-         evil-want-C-i-jump nil)
+   #+begin_src emacs-lisp :tangle yes
+	 (setq evil-want-integration t
+		   evil-want-keybinding nil
+		   evil-want-C-i-jump nil)
 
-   (use-package evil-leader
-     :init
-     (global-evil-leader-mode)
-     (evil-leader/set-leader "<SPC>"))
+	 (use-package evil-leader
+	   :init
+	   (global-evil-leader-mode)
+	   (evil-leader/set-leader "<SPC>"))
 
-   (use-package evil-collection
-     :after evil-leader
-     :custom
-     (evil-collection-company-use-tng nil)
-     :init
-     (evil-collection-init))
+	 (use-package evil-collection
+	   :after evil-leader
+	   :custom
+	   (evil-collection-company-use-tng nil)
+	   :init
+	   (evil-collection-init))
 
-   (use-package evil
-     :after evil-collection
-     :config
-     (evil-mode 1))
+	 (use-package evil
+	   :after evil-collection
+	   :config
+	   (evil-mode 1))
 
-   (use-package evil-paredit)
-   (use-package evil-anzu)
-   (use-package evil-surround
-     :config
-     (global-evil-surround-mode))
+	 (use-package evil-paredit)
+	 (use-package evil-anzu)
+	 (use-package evil-surround
+	   :config
+	   (global-evil-surround-mode))
 
-   (use-package evil-owl
-     :custom
-     (evil-owl-display-method 'posframe)
-     (evil-owl-extra-posfram-args '(:width 50 :height 20))
-     (evil-owl-idle-delay 0))
-   (evil-owl-mode)
-   #+END_SRC
+	 (use-package evil-owl
+	   :custom
+	   (evil-owl-display-method 'posframe)
+	   (evil-owl-extra-posfram-args '(:width 50 :height 20))
+	   (evil-owl-idle-delay 0)
+	   :init
+	   (evil-owl-mode))
+
+	 (use-package evil-matchit)
    #+end_src
-
 ** misc
    misc default settings
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq-default scroll-conservatively 100
-	               scroll-margin 0
-	               inhibit-startup-message t
-	               initial-scratch-message ""
-	               ring-bell-function 'ignore
-	               tab-width 4
-	               default-directory (expand-file-name "~/")
-	               tramp-default-method "ssh"
-	               large-file-warning-threshold nil
-	               custom-file (expand-file-name "~/.emacs.d/customs.el")
-                   delete-trailing-lines t
+   #+begin_src emacs-lisp :tangle yes
+	 (setq-default scroll-conservatively 100
+				   scroll-margin 0
+				   inhibit-startup-message t
+				   initial-scratch-message ""
+				   ring-bell-function 'ignore
+				   tab-width 4
+				   default-directory (expand-file-name "~/")
+				   tramp-default-method "ssh"
+				   large-file-warning-threshold nil
+				   custom-file (expand-file-name "~/.emacs.d/customs.el")
+				   delete-trailing-lines t
 				   tramp-smb-conf nil
 				   windmove-wrap-around t
                    indent-tabs-mode t
@@ -143,34 +143,34 @@
      ;; font
      (add-to-list 'default-frame-alist '(font . "Iosevka 13"))
      (setq font-lock-maximum-decoration 3)
-   #+END_SRC
+   #+end_src
 * git
 ** magit
    magit is the best git client in the multiverse. I use the evil variant.
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package evil-magit
-      :init
-      (evil-magit-init)
-      :custom
-      (magit-repository-directories (expand-file-name "~/git/projects")))
-    #+END_SRC
+    #+begin_src emacs-lisp :tangle yes
+	  (use-package evil-magit
+		:init
+		(evil-magit-init)
+		:custom
+		(magit-repository-directories (expand-file-name "~/git/projects")))
+    #+end_src
 
     As well as some other packages that relate
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package forge)
-    (use-package ssh-agency)
-    (use-package orgit)
-    #+END_SRC
+    #+begin_src emacs-lisp :tangle yes
+	  (use-package forge)
+	  (use-package ssh-agency)
+	  (use-package orgit)
+    #+end_src
 
     Tools for more git integration. Git timemachine let's you check the git log in the buffer and is extremely useful
     git gutter are the plus and minus signs that show you what's added/removed/changed on the left
-    #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package git-timemachine)
-    (use-package git-gutter-fringe+
-      :config
-      (global-git-gutter+-mode)
-      (git-gutter-fr+-minimal))
-    #+END_SRC
+    #+begin_src emacs-lisp :tangle yes
+	  (use-package git-timemachine)
+	  (use-package git-gutter-fringe+
+		:config
+		(global-git-gutter+-mode)
+		(git-gutter-fr+-minimal))
+    #+end_src
 ** dired
    #+begin_src emacs-lisp :tangle yes
      (use-package dired-git-info)
@@ -181,40 +181,40 @@
     | user    | repo     | stargazers_count |
     |---------+----------+------------------|
     | fredeeb | .emacs.d |                5 |
-    #+TBLFM: $3='(get-github-repo-field $1 $2 'stargazers_count)
-#+BEGIN_SRC emacs-lisp :tangle yes
-      (defun get-github-repo-field (user repo field)
-	"fetches USER/REPO from github api and retrieves FIELD"
-	(interactive)
-	(cdr
-	 (assoc field
-		(with-current-buffer
-		    (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
-		  (json-read-object)))))
+    #+TBLFM: $3='(get-github-repo-field $1 $2 stargazers_count)
+   #+begin_src emacs-lisp :tangle yes
+	 (defun get-github-repo-field (user repo field)
+	   "fetches USER/REPO from github api and retrieves FIELD"
+	   (interactive)
+	   (cdr
+		(assoc field
+			   (with-current-buffer
+				   (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
+				 (json-read-object)))))
 
-      (defun insert-github-repo-field (user repo field)
-	"Inserts FIELD from api.github.com/USER/REPO"
-	(interactive "sUser: \nsRepo: \nSField: ")
-	(insert
-	 (format "%s" (get-github-repo-field user repo field))))
+	 (defun insert-github-repo-field (user repo field)
+	   "Inserts FIELD from api.github.com/USER/REPO"
+	   (interactive "sUser: \nsRepo: \nSField: ")
+	   (insert
+		(format "%s" (get-github-repo-field user repo field))))
 
-      (defun org-insert-github-link (user repo)
-	"Inserts a github link at USER/REPO."
-	(interactive "sUser: \nsRepo: ")
-	(org-github-link (format "%s/%s" user repo)))
+	 (defun org-insert-github-link (user repo)
+	   "Inserts a github link at USER/REPO."
+	   (interactive "sUser: \nsRepo: ")
+	   (org-github-link (format "%s/%s" user repo)))
 
-      (defun org-github-link (repo)
-	(insert (format "[[https://github.com/%s][%s]]" repo repo)))
-    #+END_SRC
+	 (defun org-github-link (repo)
+	   (insert (format "[[https://github.com/%s][%s]]" repo repo)))
+    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package iedit)
-   (use-package smart-tabs-mode
-	 :config
-	 (smart-tabs-insinuate 'c 'c++))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package iedit)
+	 (use-package smart-tabs-mode
+	   :config
+	   (smart-tabs-insinuate 'c 'c++))
+   #+end_src
 ** help
    a seemingly better alternative to describe-whatever aswell as a very simple way to do anything
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -222,129 +222,128 @@
    #+END_SRC
 ** engine
    used to search web resources.
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package engine-mode
-       :config
-       (defengine cppreference
-	 "https://en.cppreference.com/mwiki/index.php?search=%s")
-       (defengine google
-	 "https://google.com/search?q=%s")
-       (defengine youtube
-	 "https://www.youtube.com/results?search_query=%s")
-       (defengine dockerhub
-	 "https://hub.docker.com/search?q=%s&type=image")
-       (defengine github
-	 "https://github.com/search?q=%s")
-       (defengine rustdoc
-	 "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
-       (defengine wikipedia
-	 "https://en.wikipedia.org/wiki/%s"))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package engine-mode
+	   :config
+	   (defengine cppreference
+		 "https://en.cppreference.com/mwiki/index.php?search=%s")
+	   (defengine google
+		 "https://google.com/search?q=%s")
+	   (defengine youtube
+		 "https://www.youtube.com/results?search_query=%s")
+	   (defengine dockerhub
+		 "https://hub.docker.com/search?q=%s&type=image")
+	   (defengine github
+		 "https://github.com/search?q=%s")
+	   (defengine rustdoc
+		 "https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html?search=%s")
+	   (defengine wikipedia
+		 "https://en.wikipedia.org/wiki/%s"))
+   #+end_src
 ** utilities
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package sudo-edit)
-   (use-package treemacs-evil)
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package sudo-edit)
+	 (use-package treemacs-evil)
+   #+end_src
 ** docker
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package docker)
-   (use-package dockerfile-mode)
-   (use-package docker-tramp
-     :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package docker)
+	 (use-package dockerfile-mode)
+	 (use-package docker-tramp
+	   :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+   #+end_src
 ** lxc
    #+begin_src emacs-lisp :tangle yes
 	 (use-package helm-lxc)
    #+end_src
 ** openwith
    requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package openwith
-       :config
-       (openwith-mode t)
-       :custom
-       (openwith-associations
-	'(("\\.pdf\\'" "zathura" (file))
-	  ("\\.jpg\\'" "sxiv" (file))
-	  ("\\.svg\\'" "sxiv" (file))
-	  ("\\.jpeg\\'" "sxiv" (file))
-	  ("\\.bmp\\'" "sxiv" (file))
-	  ("\\.flac\\'" "mpv" (file))
-	  ("\\.mkv\\'" "mpv" (file))
-	  ("\\.mp3\\'" "mpv" (file))
-	  ("\\.mp4\\'" "mpv" (file)))))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package openwith
+	   :config
+	   (openwith-mode t)
+	   :custom
+	   (openwith-associations
+		'(("\\.pdf\\'" "zathura" (file))
+		  ("\\.jpg\\'" "sxiv" (file))
+		  ("\\.svg\\'" "sxiv" (file))
+		  ("\\.jpeg\\'" "sxiv" (file))
+		  ("\\.bmp\\'" "sxiv" (file))
+		  ("\\.flac\\'" "mpv" (file))
+		  ("\\.mkv\\'" "mpv" (file))
+		  ("\\.mp3\\'" "mpv" (file))
+		  ("\\.mp4\\'" "mpv" (file)))))
+   #+end_src
 * org stuff
 ** journals
   I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
 
   Issues with questions or bugs and PR's are welcome, but I only fix/merge things i feel improves my workflow.
 
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defvar journal-dir
-       (expand-file-name"~/Dropbox/journals/"))
+   #+begin_src emacs-lisp :tangle yes
+	 (defvar journal-dir
+	   (expand-file-name"~/Dropbox/journals/"))
 
-     (defvar journal
-       (format "%sjournal%s.org"
-	       journal-dir
-	       (format-time-string "%Y%m%d")))
+	 (defvar journal
+	   (format "%sjournal%s.org"
+			   journal-dir
+			   (format-time-string "%Y%m%d")))
 
-     (setq initial-buffer-choice journal
-	   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
+	 (setq initial-buffer-choice journal
+		   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
 
-     (defvar org-journal-template
-       (concat
-	"#+TITLE: Journal\n"
-	"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
-	"* TODAY\n"
-	"* NOTES"))
+	 (defvar org-journal-template
+	   (concat
+		"#+TITLE: Journal\n"
+		"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
+		"* TODAY\n"
+		"* NOTES"))
 
-     (when (not (file-exists-p journal))
-       (write-region org-journal-template nil journal))
+	 (when (not (file-exists-p journal))
+	   (write-region org-journal-template nil journal))
 
-     (defun find-journal (days-ago)
-       "Find journal from DAYS-AGO"
-       (interactive "p")
-       (if (not current-prefix-arg)
-	   (find-file
-	    journal)
-	 (find-file
-	  (concat
-	   journal-dir
-	   "journal"
-	   (format-time-string
-	    "%Y%m%d"
-	    (seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
-	   ".org"))))
-   #+END_SRC
+	 (defun find-journal (days-ago)
+	   "Find journal from DAYS-AGO"
+	   (interactive "p")
+	   (if (not current-prefix-arg)
+		   (find-file
+			journal)
+		 (find-file
+		  (concat
+		   journal-dir
+		   "journal"
+		   (format-time-string
+			"%Y%m%d"
+			(seconds-to-time (- (time-to-seconds) (* days-ago 86400))))
+		   ".org"))))
+   #+end_src
 
    Setting org todo keyword and agenda templates
    #+begin_src emacs-lisp :tangle yes
-       (setq org-todo-keywords
-	'((sequence "TODO(t)" "FEEDBACK(f)" "WAITING(w)" "|" "DONE(d)" "NOT FINISHED(n)"))
-	org-columns-default-format
-	"%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
-	org-capture-templates
-	'(("t" "Todo" entry (file+headline journal "TODAY")
-           "** TODO %?\n")
-          ("n" "Note" entry (file+headline journal "NOTES")
-           "** %?\n\n")))
+	 (setq org-todo-keywords
+		   '((sequence "TODO(t)" "FEEDBACK(f)" "WAITING(w)" "|" "DONE(d)" "NOT FINISHED(n)"))
+		   org-columns-default-format
+		   "%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
+		   org-capture-templates
+		   '(("t" "Todo" entry (file+headline journal "TODAY")
+			  "** TODO %?\n")
+			 ("n" "Note" entry (file+headline journal "NOTES")
+			  "** %?\n\n")))
    #+end_src
 ** export
    settings and packages for exportng to different formats
    #+begin_src emacs-lisp :tangle yes
      (use-package ox-reveal)
 
-     (setq org-export-latex-listings 'minted)
-     (setq org-src-fontify-natively t)
+	 (setq org-export-latex-listings 'minted)
+	 (setq org-src-fontify-natively t)
 
-     (setq org-latex-listings 'minted
-	   org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
-	   org-latex-pdf-process
-	   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-	   org-export-latex-listings 'minted org-src-fontify-natively t)
-
+	 (setq org-latex-listings 'minted
+		   org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
+		   org-latex-pdf-process
+		   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+			 "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+		   org-export-latex-listings 'minted org-src-fontify-natively t)
    #+end_src
 ** sourceblocks
    Modes and settings for org source blocks
@@ -352,226 +351,216 @@
      (use-package ob-async)
 	 (use-package ob-rust)
 
-     (org-babel-do-load-languages 'org-babel-load-languages
-				  '((C . t)
-					(calc . t)
-					(clojure . t)
-					(emacs-lisp . t)
-					(js . t)
-					(makefile . t)
-					(matlab . t)
-					(plantuml . t)
-					(python . t)
-					(rust . t)
-					(shell . t)))
+	 (org-babel-do-load-languages 'org-babel-load-languages
+								  '((C . t)
+									(calc . t)
+									(clojure . t)
+									(emacs-lisp . t)
+									(js . t)
+									(makefile . t)
+									(matlab . t)
+									(plantuml . t)
+									(python . t)
+									(rust . t)
+									(shell . t)))
    #+end_src
 ** tables
    Functions for tables
    #+begin_src emacs-lisp :tangle yes
-     (defmath uconvert (v u)
-       "Convert value V into compatible unit U"
-       (math-convert-units v u))
+	 (defmath uconvert (v u)
+	   "Convert value V into compatible unit U"
+	   (math-convert-units v u))
    #+end_src
 ** misc
    The basics
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (add-hook 'org-mode-hook 'visual-line-mode)
 
-     (use-package org-ref)
-     (use-package org-bullets
-       :config
-       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-   #+END_SRC
+	 (use-package org-ref)
+	 (use-package org-bullets
+	   :config
+	   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+   #+end_src
 ** org-extras
    A set of macros to include Revealjs headers, latex headers, latex meta data and so on
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defun export-and-find ()
-       (interactive)
-       (org-latex-export-to-pdf)
-       (when (not (process-status "openwith-process"))
-	 (find-file
-	  (format "%s.pdf" (file-name-base (buffer-name))))))
+   #+begin_src emacs-lisp :tangle yes
+	 (defun export-and-find ()
+	   (interactive)
+	   (org-latex-export-to-pdf)
+	   (when (not (process-status "openwith-process"))
+		 (find-file
+		  (format "%s.pdf" (file-name-base (buffer-name))))))
 
-     (defun org-latex-include-header (packages)
-       "Add a latex header with PACKAGES to the current document."
-       (interactive
-	(list (split-string (read-string "Package(s): "))))
-       (save-excursion
-	 (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
-	     (if (not (search-backward "#+AUTHOR:" nil t))
-		 (goto-char 0)))
-	 (forward-line)
-	 (dolist (package packages)
-	   (insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
+	 (defun org-latex-include-header (packages)
+	   "Add a latex header with PACKAGES to the current document."
+	   (interactive
+		(list (split-string (read-string "Package(s): "))))
+	   (save-excursion
+		 (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
+			 (if (not (search-backward "#+AUTHOR:" nil t))
+				 (goto-char 0)))
+		 (forward-line)
+		 (dolist (package packages)
+		   (insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
 
-     (defun org-latex-insert-meta (title author)
-       "Insert TITLE and AUTHOR headers for latex."
-       (interactive "sTitle: \nsAuthor: ")
-       (save-excursion
-	 (goto-char (point-min))
-	 (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
+	 (defun org-latex-insert-meta (title author)
+	   "Insert TITLE and AUTHOR headers for latex."
+	   (interactive "sTitle: \nsAuthor: ")
+	   (save-excursion
+		 (goto-char (point-min))
+		 (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
 
-     (defun org-reveal-add-root ()
-       "Insert Reveal root tag for org-re-reveal exports"
-       (interactive)
-       (save-excursion
-	 (goto-char (point-min))
-	 (insert
-	  (format
-	   "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
-	   (cdr
-	    (assoc 'version
-		   (with-current-buffer
-		       (url-retrieve-synchronously
-			"https://api.cdnjs.com/libraries/reveal.js")
-		     (goto-char (+ url-http-end-of-headers 1))
-		     (json-read-object))))))))
+	 (defun org-reveal-add-root ()
+	   "Insert Reveal root tag for org-re-reveal exports"
+	   (interactive)
+	   (save-excursion
+		 (goto-char (point-min))
+		 (insert
+		  (format
+		   "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
+		   (cdr
+			(assoc 'version
+				   (with-current-buffer
+					   (url-retrieve-synchronously
+						"https://api.cdnjs.com/libraries/reveal.js")
+					 (goto-char (+ url-http-end-of-headers 1))
+					 (json-read-object))))))))
 
-     (defun org-macros-src-block-add-name (name)
-       "Add a NAME to the current sourceblock."
-       (interactive "sName: ")
-       (save-excursion
-	 (if (not (search-backward "#+BEGIN_SRC" nil t))
-	     (message "Src block not found"))
-	 (newline)
-	 (forward-line -1)
-	 (insert (concat "#+NAME: " name))))
-#+END_SRC
+	 (defun org-macros-src-block-add-name (name)
+	   "Add a NAME to the current sourceblock."
+	   (interactive "sName: ")
+	   (save-excursion
+		 (if (not (search-backward "#+begin_src" nil t))
+			 (message "Src block not found"))
+		 (newline)
+		 (forward-line -1)
+		 (insert (concat "#+NAME: " name))))
+#+end_src
 * programming
 ** meta
    company completes anything and it works wonderfully
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package company
-       :hook (prog-mode . company-mode)
-       :custom
-       (company-idle-delay 0)
-       (company-minimum-prefix-length 1))
-     (use-package company-posframe
-       :config
-       (company-posframe-mode))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package company
+	   :hook (prog-mode . company-mode)
+	   :custom
+	   (company-idle-delay 0)
+	   (company-minimum-prefix-length 1))
+	 (use-package company-posframe
+	   :config
+	   (company-posframe-mode))
+   #+end_src
 
    Flycheck is for squiggily lines when I can't spell
    #+begin_src emacs-lisp :tangle yes
-     (use-package flycheck)
-     (use-package flycheck-posframe
-       :config
-       (flycheck-posframe-mode))
+	 (use-package flycheck)
+	 (use-package flycheck-posframe
+	   :config
+	   (flycheck-posframe-mode))
+   #+end_src
    #+end_src
 ** lisp
    All the lispy things
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-     (add-hook 'lisp-mode-hook 'paredit-mode)
-     (add-hook 'clojure-mode-hook 'paredit-mode)
-     (add-hook 'clojurescript-mode-hook 'paredit-mode)
+   #+begin_src emacs-lisp :tangle yes
+	 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+	 (add-hook 'lisp-mode-hook 'paredit-mode)
+	 (add-hook 'clojure-mode-hook 'paredit-mode)
+	 (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
-     ;; elisp
-     (use-package elsa)
-     (use-package eros
-       :hook (eros-mode . emacs-lisp-mode))
+	 ;; elisp
+	 (use-package elsa)
+	 (use-package eros
+	   :hook (eros-mode . emacs-lisp-mode))
 
-     ;; clojure
-     (use-package clojure-mode)
-     (use-package cider
-       :custom
-       (cider-lein-parameters "repl :headless :host localhost")
-       :hook (cider-enlighten-mode . cider-mode))
+	 ;; clojure
+	 (use-package clojure-mode)
+	 (use-package cider
+	   :custom
+	   (cider-lein-parameters "repl :headless :host localhost")
+	   :hook (cider-enlighten-mode . cider-mode))
 
-     (setq nrepl-use-ssh-fallback-for-remote-hosts t)
+	 (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 
-     (use-package flycheck-clojure)
-     (use-package helm-clojuredocs)
-     (use-package cljr-helm)
+	 (use-package flycheck-clojure)
+	 (use-package helm-clojuredocs)
+	 (use-package cljr-helm)
 
-     ;; racket
-     (use-package racket-mode)
-   #+END_SRC
+	 ;; racket
+	 (use-package racket-mode)
+   #+end_src
 ** python
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package pipenv
-     :hook (python-mode . pipenv-mode)
-     :custom
-     (pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package pipenv
+	   :hook (python-mode . pipenv-mode)
+	   :custom
+	   (pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
 
-   (use-package jedi)
-   #+END_SRC
+	 (use-package jedi)
+
+	 (lsp-register-client
+	  (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
+					   :major-modes '(python-mode)
+					   :remote? t
+					   :server-id 'pyls-remote))
+   #+end_src
 ** c++
    this is what I use most in this configuration
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package clang-format)
-     (use-package modern-cpp-font-lock
-       :config
-       (modern-c++-font-lock-global-mode))
-     (use-package flycheck-clang-tidy
-       :after flycheck
-       :hook
-       (flycheck-mode . flycheck-clang-tidy-setup)
-       :custom
-       (flycheck-clang-language-standard "c++2a"))
+   #+begin_src emacs-lisp :tangle yes
+	 (c-set-offset 'substatement-open 0)
+	 (c-set-offset 'innamespace 0)
+	 (c-set-offset 'brace-list-open 0)
+	 (setq c-basic-offset 4)
 
-     (use-package disaster)
-     (use-package demangle-mode
-       :mode ("\\*assembly\\*"))
+	 (use-package clang-format)
+	 (use-package modern-cpp-font-lock
+	   :config
+	   (modern-c++-font-lock-global-mode))
+	 (use-package flycheck-clang-tidy
+	   :after flycheck
+	   :hook
+	   (flycheck-mode . flycheck-clang-tidy-setup)
+	   :custom
+	   (flycheck-clang-language-standard "c++17"))
 
-     ;; buildsystem support
-     (use-package cmake-mode)
-     (use-package helm-ctest)
+	 (use-package disaster)
+	 (use-package demangle-mode
+	   :mode ("\\*assembly\\*"))
 
-     (straight-use-package '(semantic-refactor :type git :repo "https://github.com/tuhdo/semantic-refactor"))
-	 (require 'semantic/db-find)
-     (add-hook 'c++-mode-hook 'semantic-mode)
-     (evil-set-initial-state 'srefactor-ui-menu-mode 'insert)
-
-
-   #+END_SRC
+	 ;; buildsystem support
+	 (use-package cmake-mode)
+	 (use-package helm-ctest)
+   #+end_src
 ** rust
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package cargo
-       :hook (rust-mode . cargo-minor-mode))
-     (use-package toml-mode)
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package cargo
+	   :hook (rust-mode . cargo-minor-mode))
+	 (use-package toml-mode)
+
+	 (lsp-register-client
+	  (make-lsp-client :new-connection (lsp-tramp-connection "rls")
+					   :major-modes '(rust-mode)
+					   :remote? t
+					   :server-id 'rls-remote))
+   #+end_src
 ** haskell
    #+begin_src emacs-lisp :tangle yes
      (use-package haskell-mode)
      (use-package lsp-haskell)
    #+end_src
 ** go
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package go-mode
-       :config
-       (push (expand-file-name "~/go/bin") exec-path))
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package go-mode
+	   :config
+	   (push (expand-file-name "~/go/bin") exec-path))
 
-     (defun go-run ()
-       (interactive)
-       (save-buffer)
-       (let ((buffer "*go*"))
-	 (start-process "*go*" buffer "go" "run" (buffer-name))
-	 (switch-to-buffer buffer)
-	 (view-mode)))
-   #+END_SRC
+	 (defun go-run ()
+	   (interactive)
+	   (save-buffer)
+	   (let ((buffer "*go*"))
+		 (start-process "*go*" buffer "go" "run" (buffer-name))
+		 (switch-to-buffer buffer)
+		 (view-mode)))
+   #+end_src
 ** web
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; everything in one package
-     (use-package web-mode
-       :mode
-       ("\\.js\\'" . web-mode)
-       ("\\.ts\\'" . web-mode)
-       ("\\.css\\'" . web-mode)
-       ("\\.jsx\\'" . web-mode)
-       ("\\.tsx\\'" . web-mode)
-       ("\\.html\\'" . web-mode)
-       ("\\.scss\\'" . web-mode))
-
-     (use-package npm-mode)
-     (use-package impatient-mode)
-     (use-package lorem-ipsum)
-     (use-package emmet-mode
-       :custom
-       (emmet-expand-jsx-className t))
-
-     (use-package restclient)
-#+END_SRC
 ** lsp
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package company-lsp)
@@ -589,102 +578,123 @@
        (when (not (file-exists-p (expand-file-name "./.extension")))
          (dap-utils-get-vscode-extension "webfreak" "debug")))
    #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 ;; everything in one package
+	 (use-package web-mode
+	   :mode
+	   ("\\.js\\'" . web-mode)
+	   ("\\.ts\\'" . web-mode)
+	   ("\\.css\\'" . web-mode)
+	   ("\\.jsx\\'" . web-mode)
+	   ("\\.tsx\\'" . web-mode)
+	   ("\\.html\\'" . web-mode)
+	   ("\\.scss\\'" . web-mode))
+
+	 (use-package npm-mode)
+	 (use-package impatient-mode)
+	 (use-package lorem-ipsum)
+	 (use-package emmet-mode
+	   :custom
+	   (emmet-expand-jsx-className t))
+
+	 (use-package restclient)
+#+end_src
 ** yasnippet
    All the snippets! (or atleast most of them)
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package yasnippet-snippets)
-     (use-package react-snippets)
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package yasnippet-snippets)
+	 (use-package react-snippets)
 
-     (use-package yasnippet
-       :init
-       (yas-global-mode 1))
+	 (use-package yasnippet
+	   :init
+	   (yas-global-mode 1))
 
-     (use-package auto-yasnippet)
-   #+END_SRC
+	 (use-package auto-yasnippet)
+   #+end_src
 ** matlab
    requires [[https://se.mathworks.com/products/matlab.html][matlab]]
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package matlab-mode
-       :hook (matlab-shell)
-       :mode ("\\.m\\'" . matlab-mode)
-       :config
-       (matlab-cedet-setup)
-       :custom
-     (matlab-indent-function t)
-     (matlab-shell-command "matlab"))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package matlab-mode
+	   :hook (matlab-shell)
+	   :mode ("\\.m\\'" . matlab-mode)
+	   :config
+	   (matlab-cedet-setup)
+	   :custom
+	   (matlab-indent-function t)
+	   (matlab-shell-command "matlab"))
+   #+end_src
 ** csharp
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package csharp-mode)
-     (use-package omnisharp
-       :after company
-       :config
-       (add-hook 'csharp-mode-hook 'omnisharp-mode)
-       (add-to-list 'company-backends 'company-omnisharp))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package csharp-mode)
+	 (use-package omnisharp
+	   :after company
+	   :config
+	   (add-hook 'csharp-mode-hook 'omnisharp-mode)
+	   (add-to-list 'company-backends 'company-omnisharp))
+   #+end_src
 ** plant
    requires [[https://plantuml.com][plantuml]]
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package plantuml-mode
-       :magic ("@startuml" . plantuml-mode))
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package plantuml-mode
+	   :magic ("@startuml" . plantuml-mode))
 
-     (when (executable-find "plantuml")
-       (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
-	     org-plantuml-jar-path
-	     (replace-regexp-in-string
-	      "bin"
-	      "share/java/plantuml"
-	      (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
+	 (when (executable-find "plantuml")
+	   (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
+			 org-plantuml-jar-path
+			 (replace-regexp-in-string
+			  "bin"
+			  "share/java/plantuml"
+			  (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
 
-     (use-package flycheck-plantuml)
+	 (use-package flycheck-plantuml)
 
-     ;; recompiles plantuml diagrams on save
-     (defun recompile-plantuml ()
-       (add-hook 'after-save-hook
-		 (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
+	 ;; recompiles plantuml diagrams on save
+	 (defun recompile-plantuml ()
+	   (add-hook 'after-save-hook
+				 (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
 
-     (add-hook 'plantuml-mode-hook 'recompile-plantuml)
-   #+END_SRC
+	 (add-hook 'plantuml-mode-hook 'recompile-plantuml)
+   #+end_src
 ** others
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package yaml-mode)
-   (use-package json-mode)
-   (use-package protobuf-mode)
-   ;; (use-package gnuplot)
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package yaml-mode)
+	 (use-package json-mode)
+	 (use-package protobuf-mode)
+	 ;; (use-package gnuplot)
 
-   ;;scons
-   (push '("SConstruct" . python-mode) auto-mode-alist)
-   (push '("SConscript" . python-mode) auto-mode-alist)
-   #+END_SRC
+	 ;;scons
+	 (push '("SConstruct" . python-mode) auto-mode-alist)
+	 (push '("SConscript" . python-mode) auto-mode-alist)
+   #+end_src
 * misc
 ** shell
    insert stdout from terminal (try "Q" on the next line)
    seq 0 255 | xargs printf "%.2x\n" | fmt -w 49
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defun insert-output-of-executed-line ()
-       "executes line at point in default shell and inserts stdout"
-       (interactive)
-       (insert
-	(shell-command-to-string
-	 (delete-and-extract-region
-	  (point-at-bol)
-	  (point-at-eol)))))
-   #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (defun insert-output-of-executed-line ()
+	   "executes line at point in default shell and inserts stdout"
+	   (interactive)
+	   (insert
+		(shell-command-to-string
+		 (delete-and-extract-region
+		  (point-at-bol)
+		  (point-at-eol)))))
+   #+end_src
 ** nix
- #+begin_SRC emacs-lisp :tangle yes
- (use-package nix-mode)
- (use-package nix-buffer)
- (use-package helm-nixos-options)
- (use-package company-nixos-options)
- #+END_SRC
+   #+begin_SRC emacs-lisp :tangle yes
+	 (use-package nix-mode)
+	 (use-package nix-buffer)
+	 (use-package helm-nixos-options)
+	 (use-package company-nixos-options)
+   #+end_src
 ** mail
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
        (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
        (require 'mu4e)
 
        (use-package mu4e-alert))
-   #+END_SRC
+   #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
@@ -692,211 +702,204 @@
    #+end_src
 * ui
 ** helm
- #+BEGIN_SRC emacs-lisp :tangle yes
- (use-package helm
-   :init
-   (require 'helm-config)
-   (helm-mode))
-
- (use-package f3)
- (use-package helm-company)
- (use-package helm-projectile)
- (use-package helm-rg)
- (use-package helm-swoop)
- (use-package helm-posframe)
- #+END_SRC
-** theme
-   #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package doom-themes
-     :init
-     (load-theme 'doom-dracula t))
-
-   (use-package doom-modeline
-     :hook (after-init . doom-modeline-init)
-     :custom
-     (doom-modeline-buffer-file-name-style 'relative-from-project)
-     (doom-modeline-height 35)
-     (doom-modeline-bar-width 4)
-     (doom-modeline-icon t)
-     (doom-modeline-major-mode-icon t)
-     (doom-modeline-major-mode-color-icon nil)
-     (doom-modeline-segment--mu4e t))
-
-   (use-package solaire-mode
-     :config
-     (solaire-global-mode))
-
-   (use-package rainbow-delimiters)
-   #+END_SRC
-** posframe
    #+begin_src emacs-lisp :tangle yes
-     (setq helm-posframe-parameters
-	   '((left-fringe . 5)
-	     (right-fringe . 5)))
+	 (use-package helm
+	   :init
+	   (require 'helm-config)
+	   (helm-mode))
+
+	 (use-package f3)
+	 (use-package helm-company)
+	 (use-package helm-projectile)
+	 (use-package helm-rg)
+	 (use-package helm-swoop)
+	 (use-package helm-posframe)
    #+end_src
+** theme
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package doom-themes
+	   :init
+	   (load-theme 'doom-dracula t))
 
+	 (use-package doom-modeline
+	   :hook (after-init . doom-modeline-init)
+	   :custom
+	   (doom-modeline-buffer-file-name-style 'relative-from-project)
+	   (doom-modeline-height 35)
+	   (doom-modeline-bar-width 4)
+	   (doom-modeline-icon t)
+	   (doom-modeline-major-mode-icon t)
+	   (doom-modeline-major-mode-color-icon nil)
+	   (doom-modeline-segment--mu4e t))
+
+	 (use-package solaire-mode
+	   :config
+	   (solaire-global-mode))
+
+	 (use-package rainbow-delimiters)
+   #+end_src
 ** which key
- #+BEGIN_SRC emacs-lisp :tangle yes
-   (use-package which-key
-     :init
-     (which-key-mode))
- #+END_SRC
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package which-key
+	   :init
+	   (which-key-mode))
+   #+end_src
 * hotkeys
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Leader keys
-  (evil-leader/set-key
-    ;;buffers & windows
-    "b" 'helm-buffers-list
-    "o" 'other-window
-    "q" 'kill-buffer-and-window
+  #+begin_src emacs-lisp :tangle yes
+	;; Leader keys
+	(evil-leader/set-key
+	  ;;buffers & windows
+	  "b" 'helm-buffers-list
+	  "o" 'other-window
+	  "q" 'kill-buffer-and-window
 
-    ;;misc
-    "a" 'comment-dwim
-    "i" 'indent-region
-    "h" 'howdoi-query-insert-code-snippet-at-point
-    "g g" 'helm-grep
+	  ;;misc
+	  "a" 'comment-dwim
+	  "i" 'indent-region
+	  "h" 'howdoi-query-insert-code-snippet-at-point
+	  "g g" 'helm-grep
 
-    ;;buffer
-    "j" 'evil-avy-goto-char
-    "e" 'ediff-buffers
+	  ;;buffer
+	  "j" 'evil-avy-goto-char
+	  "e" 'ediff-buffers
 
-    ;;files
-    "f f" 'f3
-    "f d" 'dired-jump
-    "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
-    "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
-    "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-    "f p" '(lambda () (interactive) (find-file "~/git"))
-    "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
-    "f j" 'find-journal
+	  ;;files
+	  "f f" 'f3
+	  "f d" 'dired-jump
+	  "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
+	  "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
+	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
+	  "f p" '(lambda () (interactive) (find-file "~/git"))
+	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
+	  "f j" 'find-journal
 
-    ;;treemacs
-    "u" 'treemacs
+	  ;;treemacs
+	  "u" 'treemacs
 
-    ;;srefactor
-    "t" 'srefactor-refactor-at-point
+	  ;;srefactor
+	  "t" 'srefactor-refactor-at-point
 
-    ;;Git
-    "g s" 'magit-status
-    "g t" 'git-timemachine
-    "g f" 'global-git-gutter+-mode
-	"g g" 'git-gutter+-show-hunk-inline-at-point
-	"g r" 'git-gutter+-revert-hunk
+	  ;;Git
+	  "g s" 'magit-status
+	  "g t" 'git-timemachine
+	  "g f" 'global-git-gutter+-mode
+	  "g g" 'git-gutter+-show-hunk-inline-at-point
+	  "g r" 'git-gutter+-revert-hunk
 
-    ;;lsp
-    "r o" 'lsp-rename
-    "r e" 'lsp-execute-code-action
-    "r d" 'lsp-ui-peek-find-definitions
-    "r i" 'lsp-ui-peek-find-implementation
-    "r r" 'lsp-ui-peek-find-references
-    "r m" 'lsp-ui-doc
+	  ;;lsp
+	  "r o" 'lsp-rename
+	  "r e" 'lsp-execute-code-action
+	  "r d" 'lsp-ui-peek-find-definitions
+	  "r i" 'lsp-ui-peek-find-implementation
+	  "r r" 'lsp-ui-peek-find-references
+	  "r m" 'lsp-ui-doc
 
-	;;dap
-	"d r" 'dap-debug-restart
-	"d l" 'dap-debug-last
-	"d f" 'dap-debug-recent
-	"d d" 'dap-debug
-	"d t" 'dap-debug-edit-template
-	"d h" '(lambda () (interactive) (dap-ui-mode t) (dap-hydra))
+	  ;;dap
+	  "d r" 'dap-debug-restart
+	  "d l" 'dap-debug-last
+	  "d f" 'dap-debug-recent
+	  "d d" 'dap-debug
+	  "d t" 'dap-debug-edit-template
+	  "d h" '(lambda () (interactive) (dap-ui-mode t) (dap-hydra))
 
-    ;;Docker
-    "g d" 'docker
+	  ;;Docker
+	  "g d" 'docker
 
-    ;;utilities
-    "+" 'calc
-    "-" 'mu4e
-    "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell t))
+	  ;;utilities
+	  "+" 'calc
+	  "-" 'mu4e
+	  "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell t))
 
-    ;;projectile
-    "p p" 'helm-projectile
-    "p f" 'helm-projectile-find-file-dwim
-    "p a" 'helm-projectile-rg
-    "p s" 'projectile-add-known-project
-    "p c" 'projectile-compile-project
-    "c" '(lambda () (interactive) (compile "ninja -C $(git rev-parse --show-toplevel)/build"))
-    "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
+	  ;;projectile
+	  "p p" 'helm-projectile
+	  "p f" 'helm-projectile-find-file-dwim
+	  "p a" 'helm-projectile-rg
+	  "p s" 'projectile-add-known-project
+	  "p c" 'projectile-compile-project
+	  "c" '(lambda () (interactive) (compile "cmake --build $(git rev-parse --show-toplevel)/build -j8"))
+	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 
-    ;;engine
-    "s c" 'engine/search-cppreference
-    "s y" 'engine/search-youtube
-    "s d" 'engine/search-dockerhub
-    "s r" 'engine/search-rustdoc
-    "s w" 'engine/search-wikipedia
-    "s g i" 'engine/search-github
-    "s g o" 'engine/search-google
+	  ;;engine
+	  "s c" 'engine/search-cppreference
+	  "s y" 'engine/search-youtube
+	  "s d" 'engine/search-dockerhub
+	  "s r" 'engine/search-rustdoc
+	  "s w" 'engine/search-wikipedia
+	  "s g i" 'engine/search-github
+	  "s g o" 'engine/search-google
 
-    ;; window management
-    "w w" 'tear-off-window
-    "w h" 'windmove-swap-states-left
-    "w j" 'windmove-swap-states-down
-    "w k" 'windmove-swap-states-up
-    "w l" 'windmove-swap-states-right)
+	  ;; window management
+	  "w w" 'tear-off-window
+	  "w h" 'windmove-swap-states-left
+	  "w j" 'windmove-swap-states-down
+	  "w k" 'windmove-swap-states-up
+	  "w l" 'windmove-swap-states-right)
 
-  (evil-leader/set-key-for-mode 'cider-mode
-    "r h" 'cljr-helm
-    "r r" 'cider-eval-last-sexp
-    "r k" 'cider-eval-buffer
-    "r d" 'helm-clojuredocs
-    "e" 'cider-eval-last-sexp
-    "k" 'cider-eval-buffer)
+	(evil-leader/set-key-for-mode 'cider-mode
+	  "r h" 'cljr-helm
+	  "r r" 'cider-eval-last-sexp
+	  "r k" 'cider-eval-buffer
+	  "r d" 'helm-clojuredocs
+	  "e" 'cider-eval-last-sexp
+	  "k" 'cider-eval-buffer)
 
-  (evil-leader/set-key-for-mode 'dired-mode
-    "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
-    "d g" 'dired-git-info-mode)
+	(evil-leader/set-key-for-mode 'dired-mode
+	  "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
+	  "d g" 'dired-git-info-mode
+	  "Y" 'dired-copy-filename-as-kill nil)
 
-  (evil-leader/set-key-for-mode 'emacs-lisp-mode
-    "e" 'eval-last-sexp
-    "k" 'eval-buffer)
+	(evil-leader/set-key-for-mode 'emacs-lisp-mode
+	  "e" 'eval-last-sexp
+	  "k" 'eval-buffer)
 
-  (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
-  ;;global state
-  (evil-define-key nil global-map
-    (kbd "C-x C-f") 'helm-find-files
-    (kbd "C-x C-b") 'helm-buffers-list
-    (kbd "M-x") 'helm-M-x
-    (kbd "M-p") 'emmet-expand-yas
-    (kbd "C-S-c") 'aya-create
-    (kbd "C-S-e") 'aya-expand
-    (kbd "C-s") 'save-buffer
-    (kbd "C-h f") 'helpful-function
-    (kbd "C-h v") 'helpful-variable
-    (kbd "C-h k") 'helpful-key
-    (kbd "C-c l") 'org-store-link
-    (kbd "C-c a") 'org-todo-list
-    (kbd "C-k") 'kill-buffer-and-window
-    (kbd "C-c c") 'org-capture)
+	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+	;;global state
+	(evil-define-key nil global-map
+	  (kbd "C-x C-f") 'helm-find-files
+	  (kbd "C-x C-b") 'helm-buffers-list
+	  (kbd "M-x") 'helm-M-x
+	  (kbd "M-p") 'emmet-expand-yas
+	  (kbd "C-S-c") 'aya-create
+	  (kbd "C-S-e") 'aya-expand
+	  (kbd "C-s") 'save-buffer
+	  (kbd "C-h f") 'helpful-function
+	  (kbd "C-h v") 'helpful-variable
+	  (kbd "C-h k") 'helpful-key
+	  (kbd "C-c l") 'org-store-link
+	  (kbd "C-c a") 'org-todo-list
+	  (kbd "C-k") 'kill-buffer-and-window
+	  (kbd "C-c c") 'org-capture)
 
-  (evil-define-key 'normal 'iedit-mode-keymap
-    (kbd "t") 'iedit-toggle-selection
-    (kbd "f") 'iedit-restrict-function)
+	(evil-define-key 'normal iedit-mode-keymap
+	  (kbd "t") 'iedit-toggle-selection
+	  (kbd "f") 'iedit-restrict-function)
 
-  (evil-define-key nil 'go-mode-map
-    (kbd "C-c C-c") 'go-run)
+	(evil-define-key 'normal dired-mode-map
+	  (kbd "Y") '(lambda () (interactive) (dired-copy-filename-as-kill 0))
+	  (kbd "y") 'dired-copy-filename-as-kill)
 
-  (evil-define-key 'normal global-map
-    (kbd "'") 'evil-goto-mark
-    (kbd "´") 'evil-goto-mark-line
-    (kbd "Q") 'insert-output-of-executed-line)
+	(evil-define-key nil go-mode-map
+	  (kbd "C-c C-c") 'go-run)
 
-  (evil-define-key 'visual global-map
-    (kbd "S") 'evil-surround-region)
+	(evil-define-key 'normal global-map
+	  (kbd "'") 'evil-goto-mark
+	  (kbd "´") 'evil-goto-mark-line
+	  (kbd "Q") 'insert-output-of-executed-line)
 
-  ;; paredit mode
-  (evil-define-key nil 'paredit-mode-map
-    (kbd "M-l") 'paredit-forward-slurp-sexp
-    (kbd "M-h") 'paredit-backward-slurp-sexp
-    (kbd "M-L") 'paredit-backward-barf-sexp
-    (kbd "M-H") 'paredit-forward-barf-sexp)
+	(evil-define-key 'visual global-map
+	  (kbd "S") 'evil-surround-region)
 
-  (evil-define-key nil 'cider-repl-mode-map
-    (kbd "C-k") 'cider-repl-backward-input
-    (kbd "C-j") 'cider-repl-forward-input)
+	;; paredit mode
+	(evil-define-key nil paredit-mode-map
+	  (kbd "M-l") 'paredit-forward-slurp-sexp
+	  (kbd "M-h") 'paredit-backward-slurp-sexp
+	  (kbd "M-L") 'paredit-backward-barf-sexp
+	  (kbd "M-H") 'paredit-forward-barf-sexp)
 
-  (evil-define-key 'normal 'ggtags-mode-map
-    (kbd "g f") 'ggtags-find-file
-    (kbd "g r") 'ggtags-find-reference
-    (kbd "g d") 'ggtags-find-definition
-    (kbd "g t") 'ggtags-find-tag-dwim)
-	(evil-define-key 'normal 'global-map
+	(evil-define-key nil cider-repl-mode-map
+	  (kbd "C-k") 'cider-repl-backward-input
+	  (kbd "C-j") 'cider-repl-forward-input)
+
+	(evil-define-key 'normal global-map
 	  (kbd "?") 'helm-multi-swoop-projectile)
-  #+END_SRC
+  #+end_src
