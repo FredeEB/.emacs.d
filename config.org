@@ -13,6 +13,8 @@
   Also, I'm /NOT/ responsible for anything that happens to anything that touches these files.
 * basics
   Setting up the basics early, so if the config breaks further along, I'll still have evil
+  also, setting some code block properties that help.
+  #+PROPERTY: header-args :results silent
 ** package manager
   I use straight for managing packages. It's a very painless process to spin up a new machine, just by downloading the repo and starting up emacs.
   some use-package syntactic suger.
