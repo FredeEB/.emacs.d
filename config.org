@@ -483,9 +483,10 @@
 	 (use-package dap-mode
 	   :config
 	   (require 'dap-gdb-lldb)
-	   ;;download debuggers
-	   (when (not (file-exists-p (expand-file-name "~/.emacs.d/.extension")))
-		 (dap-utils-get-vscode-extension "webfreak" "debug")))
+	   ;;download debuggers, REQUIRES unzip
+	   (when (not (file-exists-p dap-utils-extension-path))
+		 (dap-utils-get-vscode-extension
+		  "webfreak" "debug")))
    #+end_src
 ** lisp
    All the lispy things
