@@ -516,6 +516,10 @@
 
 	 ;; racket
 	 (use-package racket-mode)
+
+	 (use-package slime
+	   :custom
+	   (inferior-lisp-program "sbcl"))
    #+end_src
 ** python
    #+begin_src emacs-lisp :tangle yes
