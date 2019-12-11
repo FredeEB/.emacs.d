@@ -562,6 +562,9 @@
 	 ;; buildsystem support
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
+	 (use-package helm-make
+	   :custom
+	   (helm-make-build-dir "build"))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
@@ -833,7 +836,7 @@
 	  "p a" 'helm-projectile-rg
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
-	  "c" '(lambda () (interactive) (compile "cmake --build $(git rev-parse --show-toplevel)/build -j8"))
+	  "c" 'helm-make-projectile
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 
 	  ;;engine
