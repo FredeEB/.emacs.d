@@ -144,6 +144,21 @@
      (add-to-list 'default-frame-alist '(font . "Iosevka 13"))
      (setq font-lock-maximum-decoration 3)
    #+end_src
+** helm
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package helm
+	   :after async
+	   :init
+	   (require 'helm-config)
+	   (helm-mode))
+
+	 (use-package f3)
+	 (use-package helm-company)
+	 (use-package helm-projectile)
+	 (use-package helm-rg)
+	 (use-package helm-swoop)
+	 (use-package helm-posframe)
+   #+end_src
 * git
 ** magit
    magit is the best git client in the multiverse. I use the evil variant.
@@ -721,20 +736,6 @@
      (add-hook 'calc-mode-hook 'calctex-mode)
    #+end_src
 * ui
-** helm
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package helm
-	   :init
-	   (require 'helm-config)
-	   (helm-mode))
-
-	 (use-package f3)
-	 (use-package helm-company)
-	 (use-package helm-projectile)
-	 (use-package helm-rg)
-	 (use-package helm-swoop)
-	 (use-package helm-posframe)
-   #+end_src
 ** theme
    #+begin_src emacs-lisp :tangle yes
 	 (use-package doom-themes
