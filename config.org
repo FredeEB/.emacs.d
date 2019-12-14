@@ -574,6 +574,8 @@
 	 (use-package demangle-mode
 	   :mode ("\\*assembly\\*"))
 
+	 (use-package rmsbolt)
+
 	 ;; buildsystem support
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
