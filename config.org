@@ -365,6 +365,7 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package ob-async)
 	 (use-package ob-rust)
+	 (require 'org-tempo)
 
 	 (org-babel-do-load-languages 'org-babel-load-languages
 								  '((C . t)
@@ -391,7 +392,6 @@
    #+begin_src emacs-lisp :tangle yes
      (add-hook 'org-mode-hook 'visual-line-mode)
 
-	 (use-package org-ref)
 	 (use-package org-bullets
 	   :config
 	   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
