@@ -147,7 +147,6 @@
 ** helm
    #+begin_src emacs-lisp :tangle yes
 	 (use-package helm
-	   :after async
 	   :init
 	   (require 'helm-config)
 	   (helm-mode))
