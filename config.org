@@ -581,6 +581,15 @@
 	 (use-package rmsbolt)
 
 	 ;; buildsystem support
+	 (use-package rtags
+	   :custom
+	   (rtags-process-flags "-j16"))
+	 (use-package flycheck-rtags)
+	 (use-package company-rtags)
+	 (use-package helm-rtags)
+	 (use-package cmake-ide
+	   :custom
+	   (cmake-compile-command "ninja"))
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
 	 (use-package helm-make
