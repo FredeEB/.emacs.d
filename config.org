@@ -166,7 +166,12 @@
 		:init
 		(evil-magit-init)
 		:custom
-		(magit-repository-directories (expand-file-name "~/git/projects")))
+		(magit-repository-directories (expand-file-name "~/git/projects"))
+		(magit-module-sections-nested nil))
+
+	  (magit-add-section-hook 'magit-status-sections-hook
+							  'magit-insert-modules
+							  'magit-insert-unpulled-from-upstream)
     #+end_src
 
     As well as some other packages that relate
