@@ -907,6 +907,16 @@
 	  (kbd "C-k") 'kill-buffer-and-window
 	  (kbd "C-c c") 'org-capture)
 
+	(evil-define-key nil org-mode-map
+	  (kbd "M-H") 'org-shiftleft
+	  (kbd "M-J") 'org-shiftdown
+	  (kbd "M-K") 'org-shiftup
+	  (kbd "M-L") 'org-shiftright
+	  (kbd "M-h") 'org-metaleft
+	  (kbd "M-j") 'org-metadown
+	  (kbd "M-k") 'org-metaup
+	  (kbd "M-l") 'org-metaright)
+
 	(evil-define-key 'normal iedit-mode-keymap
 	  (kbd "t") 'iedit-toggle-selection
 	  (kbd "f") 'iedit-restrict-function)
