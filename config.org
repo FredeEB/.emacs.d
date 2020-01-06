@@ -821,6 +821,7 @@
 	  "g f" 'global-git-gutter+-mode
 	  "g g" 'git-gutter+-show-hunk-inline-at-point
 	  "g r" 'git-gutter+-revert-hunk
+	  "g m" 'magit-blame-addition
 
 	  ;;lsp
 	  "r o" 'lsp-rename
