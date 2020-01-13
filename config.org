@@ -246,6 +246,8 @@
 	   :config
 	   (defengine cppreference
 		 "https://en.cppreference.com/mwiki/index.php?search=%s")
+	   (defengine cmake
+		 "https://cmake.org/cmake/help/latest/search.html?q=%s&check_keywords=yes&area=default")
 	   (defengine google
 		 "https://google.com/search?q=%s")
 	   (defengine youtube
@@ -858,6 +860,7 @@
 
 	  ;;engine
 	  "s c" 'engine/search-cppreference
+	  "s b" 'engine/search-cmake
 	  "s y" 'engine/search-youtube
 	  "s d" 'engine/search-dockerhub
 	  "s r" 'engine/search-rustdoc
