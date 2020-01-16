@@ -597,6 +597,12 @@
 	 (use-package helm-make
 	   :custom
 	   (helm-make-build-dir "build"))
+
+	 (lsp-register-client
+	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
+					   :major-modes '(c++-mode)
+					   :remote? t
+					   :server-id 'clangd-remote))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
