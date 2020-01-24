@@ -265,6 +265,7 @@
    #+begin_src emacs-lisp :tangle yes
 	 (use-package sudo-edit)
 	 (use-package treemacs-evil)
+	 (use-package kubernetes)
    #+end_src
 ** docker
    #+begin_src emacs-lisp :tangle yes
@@ -830,6 +831,9 @@
 	  "g g" 'git-gutter+-show-hunk-inline-at-point
 	  "g r" 'git-gutter+-revert-hunk
 	  "g m" 'magit-blame-addition
+
+	  ;;Kubernetes
+	  "g k" 'kubernetes-overview
 
 	  ;;lsp
 	  "r o" 'lsp-rename
