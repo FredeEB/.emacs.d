@@ -816,6 +816,7 @@
 	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
 	  "f p" '(lambda () (interactive) (find-file "~/git"))
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
+	  "f u" '(lambda () (interactive) (find-file "~/uni"))
 	  "f j" 'find-journal
 
 	  ;;treemacs
