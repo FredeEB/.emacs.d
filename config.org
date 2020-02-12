@@ -296,6 +296,11 @@
 		  ("\\.mp3\\'" "mpv" (file))
 		  ("\\.mp4\\'" "mpv" (file)))))
    #+end_src
+** vterm
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package vterm-toggle
+	   :custom (vterm-shell "zsh"))
+   #+end_src
 * org stuff
 ** journals
   I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
