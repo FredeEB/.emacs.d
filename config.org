@@ -498,7 +498,7 @@
 	 (use-package lsp-mode
 	   :config
 	   (require 'lsp-clients)
-	   :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
+	   ;; :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
 	   :commands lsp
 	   :custom
 	   (lsp-prefer-flymake nil))
@@ -520,6 +520,11 @@
 	   (when (not (file-exists-p dap-utils-extension-path))
 		 (dap-utils-get-vscode-extension
 		  "webfreak" "debug")))
+   #+end_src
+** eglot
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package eglot
+	   :hook ((c++-mode c-mode rust-mode go-mode python-mode) . eglot))
    #+end_src
 ** lisp
    All the lispy things
