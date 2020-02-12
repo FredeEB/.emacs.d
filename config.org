@@ -357,6 +357,11 @@
 			 ("n" "Note" entry (file+headline journal "NOTES")
 			  "** %?\n\n")))
    #+end_src
+** jupyter
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package ein
+	   :custom (ein:output-area-inlined-images t))
+   #+end_src
 ** export
    settings and packages for exportng to different formats
    #+begin_src emacs-lisp :tangle yes
@@ -384,6 +389,7 @@
 									(calc . t)
 									(clojure . t)
 									(emacs-lisp . t)
+									(ein . t)
 									(js . t)
 									(makefile . t)
 									(matlab . t)
