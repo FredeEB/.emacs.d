@@ -608,7 +608,8 @@
 	 (use-package helm-rtags)
 	 (use-package cmake-ide
 	   :custom
-	   (cmake-ide-compile-command "ninja"))
+	   (cmake-ide-compile-command "ninja")
+	   (cmake-ide-build-dir "build"))
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
 	 (use-package helm-make
