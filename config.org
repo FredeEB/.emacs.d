@@ -885,6 +885,9 @@
 	  "p c" 'projectile-compile-project
 	  "c" '(lambda () (interactive) (helm-make-projectile 8))
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
+	  "v d" '(lambda () (interactive) (find-file "./Dockerfile"))
+	  "v c" '(lambda () (interactive) (find-file "./docker-compose.yml"))
+	  "v p" '(lambda () (interactive) (find-file "./Pipfile"))
 
 	  ;;engine
 	  "s c" 'engine/search-cppreference
