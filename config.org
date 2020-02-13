@@ -702,11 +702,6 @@
 ** csharp
    #+begin_src emacs-lisp :tangle yes
 	 (use-package csharp-mode)
-	 (use-package omnisharp
-	   :after company
-	   :config
-	   (add-hook 'csharp-mode-hook 'omnisharp-mode)
-	   (add-to-list 'company-backends 'company-omnisharp))
    #+end_src
 ** plant
    requires [[https://plantuml.com][plantuml]]
