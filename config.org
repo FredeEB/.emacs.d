@@ -524,7 +524,8 @@
 ** eglot
    #+begin_src emacs-lisp :tangle yes
 	 (use-package eglot
-	   :hook ((c++-mode c-mode rust-mode go-mode python-mode) . eglot))
+	   :hook ((c++-mode c-mode rust-mode go-mode python-mode) . eglot)
+	   :config (push '((c++-mode c-mode) "clangd") eglot-server-programs))
    #+end_src
 ** lisp
    All the lispy things
@@ -849,13 +850,10 @@
 	  ;;Kubernetes
 	  "g k" 'kubernetes-overview
 
-	  ;;lsp
-	  "r o" 'lsp-rename
-	  "r e" 'lsp-execute-code-action
-	  "r d" 'lsp-ui-peek-find-definitions
-	  "r i" 'lsp-ui-peek-find-implementation
-	  "r r" 'lsp-ui-peek-find-references
-	  "r m" 'lsp-ui-doc
+	  ;;eglot
+	  "r o" 'eglot-rename
+	  "r e" 'eglot-code-actions
+	  "r d" 'eglot-find-declaration
 
 	  ;;dap
 	  "d r" 'dap-debug-restart
