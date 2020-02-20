@@ -868,7 +868,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<RET>" 'vterm
+	  "<RET>" 'vterm-toggle-cd
 
 	  ;;projectile
 	  "p p" 'helm-projectile
