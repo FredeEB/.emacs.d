@@ -684,8 +684,8 @@
    #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
-     (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
-     (add-hook 'calc-mode-hook 'calctex-mode)
+	 (use-package calctex
+	   :hook (calc-mode . calctex-mode))
    #+end_src
 * ui
 ** theme
