@@ -367,7 +367,6 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package ox-reveal)
 
-	 (setq org-export-latex-listings 'minted)
 	 (setq org-src-fontify-natively t)
 
 	 (setq org-latex-listings 'minted
