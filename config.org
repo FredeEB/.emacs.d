@@ -489,37 +489,6 @@
 	   :config
 	   (flycheck-posframe-mode))
    #+end_src
-** lsp
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package company-lsp
-	   :custom
-	   (company-lsp-cache-candidates 'auto))
-	 (use-package lsp-mode
-	   :config
-	   (require 'lsp-clients)
-	   ;; :hook ((c-mode c++-mode rust-mode go-mode python-mode) . lsp)
-	   :commands lsp
-	   :custom
-	   (lsp-prefer-flymake nil))
-
-	 (setq-default lsp-clients-clangd-args nil
-				   lsp-ui-doc-max-height 30
-				   lsp-ui-doc-max-width 120
-				   lsp-ui-doc-use-webkit t
-				   lsp-ui-sideline-code-actions-prefix " "
-				   lsp-ui-sideline-ignore-duplicate t
-				   lsp-ui-sideline-show-hover nil;; really obnoxious
-				   )
-
-	 (use-package lsp-ui)
-	 (use-package dap-mode
-	   :config
-	   (require 'dap-gdb-lldb)
-	   ;;download debuggers, REQUIRES unzip
-	   (when (not (file-exists-p dap-utils-extension-path))
-		 (dap-utils-get-vscode-extension
-		  "webfreak" "debug")))
-   #+end_src
 ** eglot
    #+begin_src emacs-lisp :tangle yes
 	 (use-package eglot
@@ -567,12 +536,6 @@
 	   (pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
 
 	 (use-package jedi)
-
-	 (lsp-register-client
-	  (make-lsp-client :new-connection (lsp-tramp-connection "pyls")
-					   :major-modes '(python-mode)
-					   :remote? t
-					   :server-id 'pyls-remote))
    #+end_src
 ** c++
    this is what I use most in this configuration
@@ -615,29 +578,16 @@
 	 (use-package helm-make
 	   :custom
 	   (helm-make-build-dir "build"))
-
-	 (lsp-register-client
-	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
-					   :major-modes '(c++-mode)
-					   :remote? t
-					   :server-id 'clangd-remote))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
 	 (use-package cargo
 	   :hook (rust-mode . cargo-minor-mode))
 	 (use-package toml-mode)
-
-	 (lsp-register-client
-	  (make-lsp-client :new-connection (lsp-tramp-connection "rls")
-					   :major-modes '(rust-mode)
-					   :remote? t
-					   :server-id 'rls-remote))
    #+end_src
 ** haskell
    #+begin_src emacs-lisp :tangle yes
      (use-package haskell-mode)
-     (use-package lsp-haskell)
    #+end_src
 ** go
    #+begin_src emacs-lisp :tangle yes
