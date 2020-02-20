@@ -693,14 +693,6 @@
 	 (use-package helm-nixos-options)
 	 (use-package company-nixos-options)
    #+end_src
-** mail
-   #+begin_src emacs-lisp :tangle yes
-     (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
-       (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-       (require 'mu4e)
-
-       (use-package mu4e-alert))
-   #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
@@ -721,8 +713,7 @@
 	   (doom-modeline-bar-width 4)
 	   (doom-modeline-icon t)
 	   (doom-modeline-major-mode-icon t)
-	   (doom-modeline-major-mode-color-icon nil)
-	   (doom-modeline-segment--mu4e t))
+	   (doom-modeline-major-mode-color-icon nil))
 
 	 (use-package solaire-mode
 	   :config
