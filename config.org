@@ -875,5 +875,5 @@
 	  (kbd "C-j") 'cider-repl-forward-input)
 
 	(evil-define-key 'normal global-map
-	  (kbd "?") 'helm-multi-swoop-projectile)
+	  (kbd "U") 'helm-multi-swoop-projectile)
   #+end_src
