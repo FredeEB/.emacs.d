@@ -286,7 +286,7 @@
 	   (openwith-mode t)
 	   :custom
 	   (openwith-associations
-		'(("\\.pdf\\'" "zathura" (file))
+		'(("\\.pdf\\'" "evince" (file))
 		  ("\\.jpg\\'" "sxiv" (file))
 		  ("\\.svg\\'" "sxiv" (file))
 		  ("\\.jpeg\\'" "sxiv" (file))
