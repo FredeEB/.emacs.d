@@ -686,13 +686,6 @@
 		  (point-at-bol)
 		  (point-at-eol)))))
    #+end_src
-** nix
-   #+begin_SRC emacs-lisp :tangle yes
-	 (use-package nix-mode)
-	 (use-package nix-buffer)
-	 (use-package helm-nixos-options)
-	 (use-package company-nixos-options)
-   #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
