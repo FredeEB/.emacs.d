@@ -728,8 +728,6 @@
 	  ;;misc
 	  "a" 'comment-dwim
 	  "i" 'indent-region
-	  "h" 'howdoi-query-insert-code-snippet-at-point
-	  "g g" 'helm-grep
 
 	  ;;buffer
 	  "j" 'evil-avy-goto-char
@@ -745,12 +743,6 @@
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
 	  "f u" '(lambda () (interactive) (find-file "~/uni"))
 	  "f j" 'find-journal
-
-	  ;;treemacs
-	  "u" 'treemacs
-
-	  ;;srefactor
-	  "t" 'srefactor-refactor-at-point
 
 	  ;;Git
 	  "g s" 'magit-status
@@ -867,8 +859,6 @@
 	  (kbd "C-c C-c") 'go-run)
 
 	(evil-define-key 'normal global-map
-	  (kbd "'") 'evil-goto-mark
-	  (kbd "´") 'evil-goto-mark-line
 	  (kbd "Q") 'insert-output-of-executed-line)
 
 	(evil-define-key 'visual global-map
