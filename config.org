@@ -234,11 +234,6 @@
 	   :config
 	   (smart-tabs-insinuate 'c 'c++))
    #+end_src
-** help
-   a seemingly better alternative to describe-whatever aswell as a very simple way to do anything
-   #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package helpful)
-   #+END_SRC
 ** engine
    used to search web resources.
    #+begin_src emacs-lisp :tangle yes
@@ -865,9 +860,6 @@
 	  (kbd "C-S-c") 'aya-create
 	  (kbd "C-S-e") 'aya-expand
 	  (kbd "C-s") 'save-buffer
-	  (kbd "C-h f") 'helpful-function
-	  (kbd "C-h v") 'helpful-variable
-	  (kbd "C-h k") 'helpful-key
 	  (kbd "C-c l") 'org-store-link
 	  (kbd "C-c a") 'org-todo-list
 	  (kbd "C-k") 'kill-buffer-and-window
