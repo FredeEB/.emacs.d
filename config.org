@@ -259,7 +259,6 @@
 ** utilities
    #+begin_src emacs-lisp :tangle yes
 	 (use-package sudo-edit)
-	 (use-package treemacs-evil)
 	 (use-package kubernetes)
    #+end_src
 ** docker
