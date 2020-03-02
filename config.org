@@ -303,7 +303,7 @@
 
    #+begin_src emacs-lisp :tangle yes
 	 (defvar journal-dir
-	   (expand-file-name"~/Dropbox/journals/"))
+	   (expand-file-name"~/journals/"))
 
 	 (defvar journal
 	   (format "%sjournal%s.org"
