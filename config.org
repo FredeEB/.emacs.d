@@ -259,7 +259,8 @@
 ** utilities
    #+begin_src emacs-lisp :tangle yes
 	 (use-package sudo-edit)
-	 (use-package kubernetes)
+	 (use-package kubernetes-evil
+	   :commands (kubernetes-overview))
    #+end_src
 ** docker
    #+begin_src emacs-lisp :tangle yes
