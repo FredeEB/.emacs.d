@@ -759,6 +759,8 @@
 	  "r o" 'eglot-rename
 	  "r e" 'eglot-code-actions
 	  "r d" 'eglot-find-declaration
+	  "r i" 'xref-find-definition
+	  "r r" 'xref-find-references
 
 	  ;;dap
 	  "d r" 'dap-debug-restart
