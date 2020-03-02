@@ -776,7 +776,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<RET>" 'vterm-toggle-cd
+	  "<RET>" 'vterm
 
 	  ;;projectile
 	  "p p" 'helm-projectile
