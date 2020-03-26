@@ -603,6 +603,7 @@
 	   ("\\.scss\\'" . web-mode)
 	   ("\\.cshtml\\'" . web-mode))
 
+	 (use-package dart-mode)
 	 (use-package npm-mode)
 	 (use-package impatient-mode)
 	 (use-package lorem-ipsum)
