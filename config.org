@@ -295,7 +295,7 @@
    #+end_src
 ** vterm
    #+begin_src emacs-lisp :tangle yes
-	 (use-package vterm-toggle
+	 (use-package vterm
 	   :custom (vterm-shell "zsh"))
    #+end_src
 * org stuff
