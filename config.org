@@ -690,6 +690,11 @@
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
      (add-hook 'calc-mode-hook 'calctex-mode)
    #+end_src
+** functions
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package evil-avy
+	   :config (evil-avy-mode))
+   #+end_src
 * ui
 ** theme
    #+begin_src emacs-lisp :tangle yes
