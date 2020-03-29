@@ -793,7 +793,10 @@
 	  "p a" 'helm-projectile-rg
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
-	  "c" '(lambda () (interactive) (helm-make-projectile 8))
+	  "c" '(lambda (different-target) (interactive "p")
+			 (when-let ((root (vc-root-dir)))
+			   (call-process "cmake" nil nil nil "-S" root "-B" (concat root "/build") "-GNinja"))
+			 (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 	  "v d" '(lambda () (interactive) (find-file "./Dockerfile"))
 	  "v c" '(lambda () (interactive) (find-file "./docker-compose.yml"))
