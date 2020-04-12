@@ -625,6 +625,7 @@
 	   (emmet-expand-jsx-className t))
 
 	 (use-package restclient)
+	 (use-package ob-restclient)
 #+end_src
 ** yasnippet
    All the snippets! (or atleast most of them)
