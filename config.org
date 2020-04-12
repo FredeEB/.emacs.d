@@ -799,7 +799,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (eshell t))
+	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
 
 	  ;;projectile
 	  "p p" 'helm-projectile
