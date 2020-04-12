@@ -298,6 +298,18 @@
 	 (use-package vterm
 	   :custom (vterm-shell "zsh"))
    #+end_src
+** compilation
+   #+begin_src emacs-lisp :tangle yes
+	 (require 'ansi-color)
+	 (defun colorize-compilation ()
+	   "Colorize from `compilation-filter-start' to `point'."
+	   (let ((inhibit-read-only t))
+		 (ansi-color-apply-on-region
+		  compilation-filter-start (point))))
+
+	 (add-hook 'compilation-filter-hook
+			   #'colorize-compilation)
+   #+end_src
 * org stuff
 ** journals
   I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
