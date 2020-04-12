@@ -370,6 +370,7 @@
    #+begin_src emacs-lisp :tangle yes
 	 (use-package ein
 	   :custom (ein:output-area-inlined-images t))
+	 (use-package elpy)
    #+end_src
 ** export
    settings and packages for exportng to different formats
