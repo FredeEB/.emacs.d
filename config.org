@@ -210,7 +210,6 @@
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
    #+begin_src emacs-lisp :tangle yes
-	 (use-package iedit)
 	 (use-package smart-tabs-mode
 	   :config
 	   (smart-tabs-insinuate 'c 'c++))
