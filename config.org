@@ -746,6 +746,14 @@
 	   :init
 	   (which-key-mode))
    #+end_src
+** treemacs
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package treemacs-evil)
+   #+end_src
+** focus
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package focus)
+   #+end_src
 * hotkeys
   #+begin_src emacs-lisp :tangle yes
 	;; Leader keys
@@ -764,7 +772,7 @@
 	  "e" 'ediff-buffers
 
 	  ;;files
-	  "f f" 'f3
+	  "f f" 'treemacs
 	  "f d" 'dired-jump
 	  "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
 	  "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
