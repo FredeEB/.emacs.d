@@ -493,12 +493,7 @@
 	   (company-posframe-mode))
    #+end_src
 
-   Flycheck is for squiggily lines when I can't spell
    #+begin_src emacs-lisp :tangle yes
-	 (use-package flycheck)
-	 (use-package flycheck-posframe
-	   :config
-	   (flycheck-posframe-mode))
    #+end_src
 ** eglot
    #+begin_src emacs-lisp :tangle yes
