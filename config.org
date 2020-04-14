@@ -78,6 +78,7 @@
 	   :init
 	   (evil-owl-mode))
 
+	 (use-package evil-numbers)
 	 (use-package evil-matchit)
    #+end_src
 ** misc
