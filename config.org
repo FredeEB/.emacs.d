@@ -576,6 +576,15 @@
 	 (use-package helm-make
 	   :custom
 	   (helm-make-build-dir "build"))
+
+	 (defun compile-all-the-things ()
+	   (interactive)
+	   (if-let* ((root (vc-root-dir))
+				 (cmake (concat root "/CMakeLists.txt"))
+				 (build (concat root "/build")))
+		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
+		 (message "Not in a repository"))
+	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
@@ -806,10 +815,7 @@
 	  "p a" 'helm-projectile-rg
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
-	  "c" '(lambda (different-target) (interactive "p")
-			 (when-let ((root (vc-root-dir)))
-			   (call-process "cmake" nil nil nil "-S" root "-B" (concat root "/build") "-GNinja"))
-			 (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
+	  "c" 'compile-all-the-things
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 	  "v d" '(lambda () (interactive) (find-file "./Dockerfile"))
 	  "v c" '(lambda () (interactive) (find-file "./docker-compose.yml"))
