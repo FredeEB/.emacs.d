@@ -493,7 +493,10 @@
 	   (company-posframe-mode))
    #+end_src
 
+   Debugging, for when my code doesn't work
    #+begin_src emacs-lisp :tangle yes
+	 (use-package realgud)
+	 (use-package realgud-lldb)
    #+end_src
 ** eglot
    #+begin_src emacs-lisp :tangle yes
