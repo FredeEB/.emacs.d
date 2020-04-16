@@ -311,6 +311,16 @@
 
 	 (add-hook 'compilation-filter-hook
 			   #'colorize-compilation)
+
+	 ;; C++
+	 (defun compile-all-the-things ()
+	   (interactive)
+	   (if-let* ((root (vc-root-dir))
+				 (cmake (concat root "/CMakeLists.txt"))
+				 (build (concat root "/build")))
+		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
+		 (message "Not in a repository"))
+	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
 * org stuff
 ** journals
@@ -577,15 +587,6 @@
 	 (use-package helm-make
 	   :custom
 	   (helm-make-build-dir "build"))
-
-	 (defun compile-all-the-things ()
-	   (interactive)
-	   (if-let* ((root (vc-root-dir))
-				 (cmake (concat root "/CMakeLists.txt"))
-				 (build (concat root "/build")))
-		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
-		 (message "Not in a repository"))
-	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
