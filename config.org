@@ -289,6 +289,7 @@
 		  ("\\.svg\\'" "sxiv" (file))
 		  ("\\.jpeg\\'" "sxiv" (file))
 		  ("\\.bmp\\'" "sxiv" (file))
+		  ("\\.png\\'" "sxiv" (file))
 		  ("\\.flac\\'" "mpv" (file))
 		  ("\\.mkv\\'" "mpv" (file))
 		  ("\\.mp3\\'" "mpv" (file))
