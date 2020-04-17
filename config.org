@@ -144,6 +144,12 @@
      ;; font
      (add-to-list 'default-frame-alist '(font . "Iosevka 13"))
      (setq font-lock-maximum-decoration 3)
+	 (defun esp-init ()
+	   (interactive)
+	   (let* ((adf-path (concat (vc-root-dir) "esp-adf/"))
+			  (idf-path (concat adf-path "esp-idf")))
+		 (setenv "IDF_PATH" idf-path)
+		 (setenv "ADF_PATH" adf-path)))
    #+end_src
 ** helm
    #+begin_src emacs-lisp :tangle yes
