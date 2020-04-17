@@ -201,37 +201,6 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package dired-git-info)
    #+end_src
-** Extra sauce!
-    these are some extra functions, mostly useful in orgmode tables
-
-    | user    | repo     | stargazers_count |
-    |---------+----------+------------------|
-    | fredeeb | .emacs.d |                5 |
-    #+TBLFM: $3='(get-github-repo-field $1 $2 stargazers_count)
-   #+begin_src emacs-lisp :tangle yes
-	 (defun get-github-repo-field (user repo field)
-	   "fetches USER/REPO from github api and retrieves FIELD"
-	   (interactive)
-	   (cdr
-		(assoc field
-			   (with-current-buffer
-				   (url-retrieve-synchronously (format "https://api.github.com/repos/%s/%s" user repo))
-				 (json-read-object)))))
-
-	 (defun insert-github-repo-field (user repo field)
-	   "Inserts FIELD from api.github.com/USER/REPO"
-	   (interactive "sUser: \nsRepo: \nSField: ")
-	   (insert
-		(format "%s" (get-github-repo-field user repo field))))
-
-	 (defun org-insert-github-link (user repo)
-	   "Inserts a github link at USER/REPO."
-	   (interactive "sUser: \nsRepo: ")
-	   (org-github-link (format "%s/%s" user repo)))
-
-	 (defun org-github-link (repo)
-	   (insert (format "[[https://github.com/%s][%s]]" repo repo)))
-    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** editing
