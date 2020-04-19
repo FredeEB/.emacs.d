@@ -1,6 +1,6 @@
 * introduction
   This is my config. It does just about everything I need it to do, and /a lot/ more than that too.
-  I run emacs 27 which is why it's included as a submodule. It has been running rocksolid since forever.
+  I run emacs 28 which is why it's included as a submodule. It has been running rocksolid since forever.
 * this is my personal config (DISCLAIMER)
   Just to let you know. If you want to use it, or parts of it, be my guest. All of the configuration is in [[https://github.com/FredeEB/.emacs.d/blob/master/config.org][config.org]]. I've been very sparse with comments, but the headings should be pretty descriptive, however if you're looking for something in there, just =<C-f>=, =<C-s>=, =/= or what ever you do.
 
