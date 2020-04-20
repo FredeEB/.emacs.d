@@ -163,7 +163,10 @@
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
 	 (use-package helm-swoop)
-	 (use-package helm-posframe)
+	 (use-package helm-posframe
+	   :config (helm-posframe-enable)
+	   :custom
+	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
    #+end_src
 * git
 ** magit
