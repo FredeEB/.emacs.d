@@ -524,6 +524,12 @@
 	   ;;download debuggers, REQUIRES unzip
 	   (dap-gdb-lldb-setup)
 	   (dap-go-setup))
+
+	 (defun clang-ide ()
+	   (interactive)
+	   (treemacs)
+	   (lsp-treemacs-symbols)
+	   (lsp-treemacs-errors-list))
    #+end_src
 ** lisp
    All the lispy things
@@ -877,6 +883,9 @@
 	(evil-leader/set-key-for-mode 'emacs-lisp-mode
 	  "e" 'eval-last-sexp
 	  "k" 'eval-buffer)
+
+	(evil-leader/set-key-for-mode 'c++-mode
+	  "u" 'clang-ide)
 
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
