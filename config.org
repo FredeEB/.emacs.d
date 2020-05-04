@@ -411,6 +411,12 @@
 	   :config
 	   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
    #+end_src
+** flyspell
+   #+begin_src emacs-lisp :tangle yes
+	 (add-hook 'org-mode-hook 'flyspell-mode)
+
+	 (use-package helm-flyspell)
+   #+end_src
 ** org-extras
    A set of macros to include Revealjs headers, latex headers, latex meta data and so on
    #+begin_src emacs-lisp :tangle yes
@@ -789,6 +795,9 @@
 
 	  ;;Docker
 	  "g d" 'docker
+
+	  ;;ispell
+	  "z" 'helm-flyspell-correct
 
 	  ;;utilities
 	  "+" 'calc
