@@ -345,7 +345,7 @@
    Setting org todo keyword and agenda templates
    #+begin_src emacs-lisp :tangle yes
 	 (setq org-todo-keywords
-		   '((sequence "TODO(t)" "FEEDBACK(f)" "WAITING(w)" "|" "DONE(d)" "NOT FINISHED(n)"))
+		   '((sequence "TODO(t)" "DOING(p)" "|" "DONE(d)" "|" "NOT FINISHED(n)"))
 		   org-columns-default-format
 		   "%25ITEM %TODO %DEADLINE %EFFORT %TAGS"
 		   org-capture-templates
