@@ -273,7 +273,7 @@
    #+end_src
 ** vterm
    #+begin_src emacs-lisp :tangle yes
-	 (use-package vterm
+	 (use-package vterm-toggle
 	   :custom (vterm-shell "zsh"))
    #+end_src
 ** compilation
@@ -793,7 +793,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
+	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm-toggle-cd))
 
 	  ;;projectile
 	  "p p" 'helm-projectile
