@@ -480,10 +480,19 @@
 	   :hook (prog-mode . company-mode)
 	   :custom
 	   (company-idle-delay 0)
-	   (company-minimum-prefix-length 1))
-	 (use-package company-posframe
-	   :config
-	   (company-posframe-mode))
+	   (company-minimum-prefix-length 1)
+	   (company-tooltip-align-annotations t)
+	   (company-tooltip-limit 14)
+	   (company-idle-delay 0)
+	   (company-echo-delay (if (display-graphic-p) nil 0))
+	   (company-minimum-prefix-length 2)
+	   (company-require-match 'never)
+	   (company-global-modes '(not erc-mode message-mode help-mode gud-mode eshell-mode shell-mode))
+	   (company-backends '(company-capf)))
+
+	  (use-package company-posframe
+			 :config
+			 (company-posframe-mode))
    #+end_src
 
    Debugging, for when my code doesn't work
