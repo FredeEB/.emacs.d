@@ -724,7 +724,7 @@
 ** functions
    #+begin_src emacs-lisp :tangle yes
 	 (use-package evil-avy
-	   :config (evil-avy-mode))
+	   :mode (prog-mode . evil-avy-mode))
    #+end_src
 * ui
 ** theme
