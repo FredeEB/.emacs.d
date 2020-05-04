@@ -586,11 +586,8 @@
 	   :custom
 	   (flycheck-clang-language-standard "c++17"))
 
-	 (use-package disaster)
-	 (use-package demangle-mode
-	   :mode ("\\*assembly\\*"))
-
-	 (use-package rmsbolt)
+	 (use-package rmsbolt
+	   :mode ((c++-mode c-mode go-mode rust-mode) . rmsbolt-mode))
 
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
