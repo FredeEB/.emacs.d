@@ -500,11 +500,30 @@
 	 (use-package realgud)
 	 (use-package realgud-lldb)
    #+end_src
-** eglot
+** lsp
    #+begin_src emacs-lisp :tangle yes
-	 (use-package eglot
-	   :hook ((c++-mode c-mode rust-mode go-mode python-mode) . eglot)
-	   :config (push '((c++-mode c-mode) "clangd") eglot-server-programs))
+	 (use-package lsp-mode
+	   :hook
+	   ((c++-mode c-mode rust-mode go-mode) . lsp)
+	   :custom
+	   (lsp-diagnostic-package :flymake)
+	   (lsp-prefer-capf t)
+	   (read-process-output-max (* 1024 1024))
+	   (lsp-rust-server 'rust-analyzer))
+	 (use-package lsp-ui
+	   :custom
+	   (lsp-ui-doc-max-width 80)
+	   (lsp-ui-doc-position 'top))
+	 (use-package helm-lsp)
+	 (use-package dap-mode)
+	 (use-package lsp-treemacs)
+	 (use-package dap-mode
+	   :config
+	   (require 'dap-gdb-lldb)
+	   (require 'dap-go)
+	   ;;download debuggers, REQUIRES unzip
+	   (dap-gdb-lldb-setup)
+	   (dap-go-setup))
    #+end_src
 ** lisp
    All the lispy things
@@ -787,12 +806,12 @@
 	  ;;Kubernetes
 	  "g k" 'kubernetes-overview
 
-	  ;;eglot
-	  "r o" 'eglot-rename
-	  "r e" 'eglot-code-actions
-	  "r d" 'eglot-find-declaration
-	  "r i" 'xref-find-definition
-	  "r r" 'xref-find-references
+	  ;;lsp
+	  "r d" 'lsp-ui-find-definition
+	  "r e" 'lsp-execute-code-action
+	  "r o" 'lsp-rename
+	  "r r" 'lsp-find-references
+	  "r s" 'helm-lsp-workspace-symbol
 
 	  ;;dap
 	  "d r" 'dap-debug-restart
