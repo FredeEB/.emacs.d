@@ -146,8 +146,11 @@
      (setq font-lock-maximum-decoration 3)
 	 (defun esp-init ()
 	   (interactive)
-	   (let* ((adf-path (concat (vc-root-dir) "esp-adf/"))
+	   (let* ((root (vc-root-dir))
+			  (idf-tools (concat root "tools"))
+			  (adf-path (concat root "esp-adf/"))
 			  (idf-path (concat adf-path "esp-idf")))
+		 (setenv "IDF_TOOLS_PATH" idf-tools)
 		 (setenv "IDF_PATH" idf-path)
 		 (setenv "ADF_PATH" adf-path)))
    #+end_src
