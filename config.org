@@ -662,17 +662,10 @@
 
 	 (use-package auto-yasnippet)
    #+end_src
-** matlab
-   requires [[https://se.mathworks.com/products/matlab.html][matlab]]
+** octave
    #+begin_src emacs-lisp :tangle yes
-	 (use-package matlab-mode
-	   :hook (matlab-shell)
-	   :mode ("\\.m\\'" . matlab-mode)
-	   :config
-	   (matlab-cedet-setup)
-	   :custom
-	   (matlab-indent-function t)
-	   (matlab-shell-command "matlab"))
+	 (use-package octave
+	   :mode ("\\.m\\'" . octave-mode))
    #+end_src
 ** csharp
    #+begin_src emacs-lisp :tangle yes
