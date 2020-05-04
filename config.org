@@ -403,7 +403,7 @@
 	   (math-convert-units v u))
    #+end_src
 ** misc
-   The basics
+   pretty things
    #+begin_src emacs-lisp :tangle yes
      (add-hook 'org-mode-hook 'visual-line-mode)
 
