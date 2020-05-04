@@ -801,6 +801,9 @@
 	  "f h" '(lambda () (interactive) (find-file "~"))
 	  "f j" 'find-journal
 
+	  ;;config reload
+	  "f r" '(lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory)))
+
 	  ;;Git
 	  "g s" 'magit-status
 	  "g t" 'git-timemachine
