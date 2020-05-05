@@ -630,10 +630,12 @@
 	   ("\\.css\\'" . web-mode)
 	   ("\\.jsx\\'" . web-mode)
 	   ("\\.tsx\\'" . web-mode)
+	   ("\\.hbs\\'" . web-mode)
 	   ("\\.html\\'" . web-mode)
 	   ("\\.scss\\'" . web-mode)
 	   ("\\.cshtml\\'" . web-mode))
 
+	 (use-package ember-mode)
 	 (use-package dart-mode)
 	 (use-package npm-mode)
 	 (use-package impatient-mode)
