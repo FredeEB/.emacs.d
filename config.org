@@ -262,6 +262,7 @@
 		  ("\\.png\\'" "sxiv" (file))
 		  ("\\.flac\\'" "mpv" (file))
 		  ("\\.mkv\\'" "mpv" (file))
+		  ("\\.wav\\'" "mpv" (file))
 		  ("\\.mp3\\'" "mpv" (file))
 		  ("\\.mp4\\'" "mpv" (file)))))
    #+end_src
