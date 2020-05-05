@@ -4,11 +4,9 @@
 * this is my personal config (DISCLAIMER)
   Just to let you know. If you want to use it, or parts of it, be my guest. All of the configuration is in [[https://github.com/FredeEB/.emacs.d/blob/master/config.org][config.org]]. I've been very sparse with comments, but the headings should be pretty descriptive, however if you're looking for something in there, just =<C-f>=, =<C-s>=, =/= or what ever you do.
 
-  It has only been tested with emacs 27.0.50, but might work with previous versions without modification, or it might need a lot of modification.
+  I'm running this config for work with emacs 28.0.50, and thus I cannot guarentee but might work with previous versions without modification, or it might not.
 
-  Installing all the packages upon first startup is very dependent on an internet connection as well as elpa, melpa and orgmode.org being up (which has caused me trouble before) so if it get's mad about missing dependencies, check if the package archives noted under [[https://github.com/FredeEB/.emacs.d/blob/master/config.org#packageel][package.el]] in config.org are up.
-
-  To use it, just clone this repo to whereever your emacs config is (usually =/home/$(USER)/.emacs.d=) and remember to back up your old one, if you have one. You can then try it with whatever version of Emacs you have installed to see if it works. But as mentioned, it's only been tested with Emacs 27.0.50, meaning you'd have to build that from source, until a binary hits your local software pusher (soure can be found here [[https://git.savannah.gnu.org/git/emacs.git]]).
+  To use it, just clone this repo to whereever your emacs config is (usually =/home/$(USER)/.emacs.d=) and remember to back up your old one, if you have one. You can then try it with whatever version of Emacs you have installed to see if it works. But as mentioned, it's only been tested with Emacs 28.0.50, meaning you'd have to either build it from source, or fetch a binary from your local software pusher (soure can be found here [[https://git.savannah.gnu.org/git/emacs.git]]).
 
   Also, I'm /NOT/ responsible for anything that happens to anything that touches these files.
 * basics
