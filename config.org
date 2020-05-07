@@ -293,6 +293,10 @@
 		 (message "Not in a repository"))
 	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
+** ranger
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package ranger)
+   #+end_src
 * org stuff
 ** journals
   I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
@@ -790,6 +794,7 @@
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
 	  "f u" '(lambda () (interactive) (find-file "~/uni"))
 	  "f h" '(lambda () (interactive) (find-file "~"))
+	  "f d" 'ranger
 	  "f j" 'find-journal
 
 	  ;;config reload
