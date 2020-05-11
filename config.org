@@ -789,10 +789,10 @@
 	  "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
 	  "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
 	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-	  "f p" '(lambda () (interactive) (find-file "~/git"))
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
-	  "f u" '(lambda () (interactive) (find-file "~/uni"))
-	  "f h" '(lambda () (interactive) (find-file "~"))
+	  "f p" '(lambda () (interactive) (ranger (expand-file-name "~/git/")))
+	  "f u" '(lambda () (interactive) (ranger (expand-file-name "~/uni/")))
+	  "f h" '(lambda () (interactive) (ranger (expand-file-name "~/")))
 	  "f d" 'ranger
 	  "f j" 'find-journal
 
