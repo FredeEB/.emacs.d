@@ -787,7 +787,7 @@
 	  "f f" 'treemacs
 	  "f d" 'dired-jump
 	  "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
-	  "f i" '(lambda () (interactive) (find-file "~/.i3/config"))
+	  "f i" '(lambda () (interactive) (find-file "~/.config/i3/config"))
 	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
 	  "f p" '(lambda () (interactive) (ranger (expand-file-name "~/git/")))
