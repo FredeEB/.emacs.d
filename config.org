@@ -494,9 +494,11 @@
 	   (company-global-modes '(not erc-mode message-mode help-mode gud-mode eshell-mode shell-mode))
 	   (company-backends '(company-capf)))
 
-	  (use-package company-posframe
-			 :config
-			 (company-posframe-mode))
+	 (use-package company-posframe
+	   :config
+	   (company-posframe-mode)
+	   :custom
+	   (company-posframe-quickhelp-delay nil))
    #+end_src
 
    Debugging, for when my code doesn't work
