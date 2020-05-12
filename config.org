@@ -295,7 +295,11 @@
    #+end_src
 ** ranger
    #+begin_src emacs-lisp :tangle yes
-	 (use-package ranger)
+	 (use-package ranger
+	   :custom
+	   (ranger-cleanup-eagerly t)
+	   (ranger-cleanup-on-disable t)
+	   (ranger-show-hidden t))
    #+end_src
 * org stuff
 ** journals
@@ -913,6 +917,12 @@
 	(evil-define-key 'normal iedit-mode-keymap
 	  (kbd "t") 'iedit-toggle-selection
 	  (kbd "f") 'iedit-restrict-function)
+
+	(evil-define-key nil ranger-mode-map
+	  (kbd "d d") '(lambda ()
+					 (interactive)
+					 (ranger-to-dired)
+					 (delete-other-windows)))
 
 	(evil-define-key 'normal dired-mode-map
 	  (kbd "Y") '(lambda () (interactive) (dired-copy-filename-as-kill 0))
