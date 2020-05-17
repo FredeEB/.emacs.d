@@ -166,6 +166,29 @@
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
    #+end_src
+** elfeed
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package elfeed
+	   :custom
+	   (elfeed-feeds
+		'(
+		  ;;dev.to
+		  "http://dev.to/feed"
+
+		  ;;reddit
+		  "http://reddit.com/r/clojure/.rss"
+		  "http://reddit.com/r/cpp/.rss"
+		  "http://reddit.com/r/emacs/.rss"
+		  "http://reddit.com/r/golang/.rss"
+		  "http://reddit.com/r/rust/.rss"
+
+		  ;;hackernews
+		  "https://news.ycombinator.com/rss"
+
+		  ;;other blogs
+		  "https://cestlaz.github.io/rss.xml"
+		  )))
+   #+end_src
 * git
 ** magit
    magit is the best git client in the multiverse. I use the evil variant.
@@ -813,6 +836,9 @@
 
 	  ;;Kubernetes
 	  "g k" 'kubernetes-overview
+
+	  ;;elfeed
+	  "n" 'elfeed
 
 	  ;;lsp
 	  "r d" 'lsp-ui-peek-find-definitions
