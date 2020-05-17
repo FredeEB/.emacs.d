@@ -158,8 +158,6 @@
 	   :init
 	   (require 'helm-config)
 	   (helm-mode))
-
-	 (use-package f3)
 	 (use-package helm-company)
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
