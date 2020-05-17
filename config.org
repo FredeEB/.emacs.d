@@ -815,10 +815,10 @@
 	  "g k" 'kubernetes-overview
 
 	  ;;lsp
-	  "r d" 'lsp-ui-find-definition
+	  "r d" 'lsp-ui-peek-find-definitions
 	  "r e" 'lsp-execute-code-action
 	  "r o" 'lsp-rename
-	  "r r" 'lsp-find-references
+	  "r r" 'lsp-ui-peek-find-references
 	  "r s" 'helm-lsp-workspace-symbol
 
 	  ;;dap
