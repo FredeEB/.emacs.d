@@ -140,7 +140,7 @@
      (add-hook 'prog-mode-hook 'electric-pair-mode)
 
      ;; font
-     (add-to-list 'default-frame-alist '(font . "Iosevka 13"))
+     (add-to-list 'default-frame-alist '(font . "Victor Mono Nerd Font 13"))
      (setq font-lock-maximum-decoration 3)
 	 (defun esp-init ()
 	   (interactive)
