@@ -945,10 +945,7 @@
 	  (kbd "f") 'iedit-restrict-function)
 
 	(evil-define-key nil ranger-mode-map
-	  (kbd "d d") '(lambda ()
-					 (interactive)
-					 (ranger-to-dired)
-					 (delete-other-windows)))
+	  (kbd "d d") 'ranger-to-dired)
 
 	(evil-define-key 'normal dired-mode-map
 	  (kbd "Y") '(lambda () (interactive) (dired-copy-filename-as-kill 0))
