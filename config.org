@@ -840,6 +840,8 @@
 	  ;;elfeed
 	  "n" 'elfeed
 
+	  "m" 'helm-mini
+
 	  ;;lsp
 	  "r d" 'lsp-ui-peek-find-definitions
 	  "r e" 'lsp-execute-code-action
