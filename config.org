@@ -1,14 +1,14 @@
 * introduction
   This is my config. It does just about everything I need it to do, and /a lot/ more than that too.
   I run emacs 28 which is why it's included as a submodule. It has been running rocksolid since forever.
-* this is my personal config (DISCLAIMER)
-  Just to let you know. If you want to use it, or parts of it, be my guest. All of the configuration is in [[https://github.com/FredeEB/.emacs.d/blob/master/config.org][config.org]]. I've been very sparse with comments, but the headings should be pretty descriptive, however if you're looking for something in there, just =<C-f>=, =<C-s>=, =/= or what ever you do.
+** this is my personal config (DISCLAIMER)
+   Just to let you know. If you want to use it, or parts of it, be my guest. All of the configuration is in [[https://github.com/FredeEB/.emacs.d/blob/master/config.org][config.org]]. I've been very sparse with comments, but the headings should be pretty descriptive, however if you're looking for something in there, just =<C-f>=, =<C-s>=, =/= or what ever you do.
 
-  I'm running this config for work with emacs 28.0.50, and thus I cannot guarentee but might work with previous versions without modification, or it might not.
+   I'm running this config for work with emacs 28.0.50, and thus I cannot guarentee but might work with previous versions without modification, or it might not.
 
-  To use it, just clone this repo to whereever your emacs config is (usually =/home/$(USER)/.emacs.d=) and remember to back up your old one, if you have one. You can then try it with whatever version of Emacs you have installed to see if it works. But as mentioned, it's only been tested with Emacs 28.0.50, meaning you'd have to either build it from source, or fetch a binary from your local software pusher (soure can be found here [[https://git.savannah.gnu.org/git/emacs.git]]).
+   To use it, just clone this repo to whereever your emacs config is (usually =/home/$(USER)/.emacs.d=) and remember to back up your old one, if you have one. You can then try it with whatever version of Emacs you have installed to see if it works. But as mentioned, it's only been tested with Emacs 28.0.50, meaning you'd have to either build it from source, or fetch a binary from your local software pusher (soure can be found here [[https://git.savannah.gnu.org/git/emacs.git]]).
 
-  Also, I'm /NOT/ responsible for anything that happens to anything that touches these files.
+   Also, I'm /NOT/ responsible for anything that happens to anything that touches these files.
 * basics
   Setting up the basics early, so if the config breaks further along, I'll still have evil
   also, setting some code block properties that help.
