@@ -294,6 +294,9 @@
    #+end_src
 ** compilation
    #+begin_src emacs-lisp :tangle yes
+	 (setq compilation-scroll-output t
+		   compilation-window-height 20)
+
 	 (require 'ansi-color)
 	 (defun colorize-compilation ()
 	   "Colorize from `compilation-filter-start' to `point'."
