@@ -255,10 +255,7 @@
    #+end_src
 ** kubernetes
    #+begin_src emacs-lisp :tangle yes
-	 (use-package kubernetes
-	   :commands (kubernetes-overview))
-	 (use-package kubernetes-evil
-	   :after kubernetes)
+	 (use-package kubel-evil)
    #+end_src
 ** docker
    #+begin_src emacs-lisp :tangle yes
@@ -838,7 +835,7 @@
 	  "g m" 'magit-blame-addition
 
 	  ;;Kubernetes
-	  "g k" 'kubernetes-overview
+	  "g k" 'kubel
 
 	  ;;elfeed
 	  "n" 'elfeed
