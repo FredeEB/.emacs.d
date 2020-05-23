@@ -432,7 +432,15 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package ob-async)
 	 (use-package ob-rust)
+	 (use-package ob-sagemath
+	   :custom (org-babel-default-header-args:sage '((:session . t)
+													 (:results . "output")))
+	   )
 	 (require 'org-tempo)
+	 (setq org-confirm-babel-evaluate nil
+		   org-startup-with-inline-images t
+		   org-startup-with-latex-preview t
+		   org-export-babel-evaluate nil)
 
 	 (org-babel-do-load-languages 'org-babel-load-languages
 								  '((C . t)
@@ -446,7 +454,8 @@
 									(plantuml . t)
 									(python . t)
 									(rust . t)
-									(shell . t)))
+									(shell . t)
+									(sagemath . t)))
    #+end_src
 ** tables
    Functions for tables
