@@ -141,6 +141,9 @@
 
      ;; font
      (add-to-list 'default-frame-alist '(font . "Victor Mono Nerd Font 13"))
+   #+end_src
+   Ligatures are nice ways of displaying operators
+   #+begin_src emacs-lisp :tangle yes
      (setq font-lock-maximum-decoration 3)
 	 (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
 					(35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
