@@ -606,10 +606,10 @@
 ** lisp
    All the lispy things
    #+begin_src emacs-lisp :tangle yes
-	 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-	 (add-hook 'lisp-mode-hook 'paredit-mode)
-	 (add-hook 'clojure-mode-hook 'paredit-mode)
-	 (add-hook 'clojurescript-mode-hook 'paredit-mode)
+	 (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+	 (add-hook 'lisp-mode-hook 'evil-paredit-mode)
+	 (add-hook 'clojure-mode-hook 'evil-paredit-mode)
+	 (add-hook 'clojurescript-mode-hook 'evil-paredit-mode)
 
 	 ;; elisp
 	 (use-package elsa)
