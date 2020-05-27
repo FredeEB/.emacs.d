@@ -198,6 +198,9 @@
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
 	 (use-package helm-swoop)
+	 (use-package helm-system-packages
+	   :custom
+	   (helm-system-packages-pacman-confirm-p nil))
 	 (use-package helm-posframe
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
@@ -909,6 +912,7 @@
 	  "z" 'helm-flyspell-correct
 
 	  ;;utilities
+	  "y" 'helm-system-packages
 	  "+" 'calc
 	  "-" 'mu4e
 	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm-toggle-cd))
