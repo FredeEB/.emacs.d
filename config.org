@@ -810,7 +810,8 @@
 	   (custom-set-faces
 		'(button ((t (:inherit link :foreground "#ffb86c" :underline nil))))
 		'(font-lock-comment-face ((t (:foreground "#6272a4" :slant italic))))
-		'(font-lock-preprocessor-face ((t (:inherit nil :foreground "#bd93f9"))))))
+		'(font-lock-preprocessor-face ((t (:inherit nil :foreground "#bd93f9"))))
+		'(variable-pitch ((t (:family "Fira Sans"))))))
 
 	 (use-package doom-modeline
 	   :hook (after-init . doom-modeline-init)
