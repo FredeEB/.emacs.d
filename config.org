@@ -364,7 +364,7 @@
    #+end_src
 * org stuff
 ** journals
-  I've created a personal [[file:config.org::*journals][journaling system]] that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
+   I've created a personal journal system that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
 
   Issues with questions or bugs and PR's are welcome, but I only fix/merge things i feel improves my workflow.
 
