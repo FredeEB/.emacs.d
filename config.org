@@ -345,7 +345,7 @@
 			   #'colorize-compilation)
 
 	 ;; C++
-	 (defun compile-all-the-things (arg)
+	 (defun compile-c++-things (arg)
 	   (interactive "p")
 	   (if-let* ((root (vc-root-dir))
 				 (cmake (concat root "/CMakeLists.txt"))
@@ -925,7 +925,6 @@
 	  "p a" 'helm-projectile-rg
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
-	  "c" 'compile-all-the-things
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 	  "v d" '(lambda () (interactive) (find-file "./Dockerfile"))
 	  "v c" '(lambda () (interactive) (find-file "./docker-compose.yml"))
@@ -966,7 +965,8 @@
 	  "k" 'eval-buffer)
 
 	(evil-leader/set-key-for-mode 'c++-mode
-	  "u" 'clang-ide)
+	  "u" 'clang-ide
+	  "c" 'compile-c++-things)
 
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
