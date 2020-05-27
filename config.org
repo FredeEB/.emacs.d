@@ -220,6 +220,7 @@
 		  "http://reddit.com/r/emacs/.rss"
 		  "http://reddit.com/r/golang/.rss"
 		  "http://reddit.com/r/rust/.rss"
+		  "http://reddit.com/r/bindingofisaac/.rss"
 
 		  ;;hackernews
 		  "https://news.ycombinator.com/rss"
