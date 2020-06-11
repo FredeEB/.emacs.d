@@ -354,14 +354,6 @@
 		 (message "Not in a repository"))
 	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
-** ranger
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package ranger
-	   :custom
-	   (ranger-cleanup-eagerly t)
-	   (ranger-cleanup-on-disable t)
-	   (ranger-show-hidden t))
-   #+end_src
 * org stuff
 ** journals
    I've created a personal journal system that creates a new journal entry in =journal-dir= every day. This file is the default target for org agenda entries created with =M-x org-capture t= and =M-x org-capture n= for TODO items under TODAY and miscellaneous notes under the NOTES header, respectively.
@@ -867,10 +859,10 @@
 	  "f i" '(lambda () (interactive) (find-file "~/.config/i3/config"))
 	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
 	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
-	  "f p" '(lambda () (interactive) (ranger (expand-file-name "~/git/")))
-	  "f u" '(lambda () (interactive) (ranger (expand-file-name "~/uni/")))
-	  "f h" '(lambda () (interactive) (ranger (expand-file-name "~/")))
-	  "f d" 'ranger
+	  "f p" '(lambda () (interactive) (find-file (expand-file-name "~/git/")))
+	  "f u" '(lambda () (interactive) (find-file (expand-file-name "~/uni/")))
+	  "f h" '(lambda () (interactive) (find-file (expand-file-name "~/")))
+	  "f d" 'dired-jump
 	  "f j" 'find-journal
 
 	  ;;config reload
@@ -996,9 +988,6 @@
 	(evil-define-key 'normal iedit-mode-keymap
 	  (kbd "t") 'iedit-toggle-selection
 	  (kbd "f") 'iedit-restrict-function)
-
-	(evil-define-key nil ranger-mode-map
-	  (kbd "d d") 'ranger-to-dired)
 
 	(evil-define-key 'normal dired-mode-map
 	  (kbd "Y") '(lambda () (interactive) (dired-copy-filename-as-kill 0))
