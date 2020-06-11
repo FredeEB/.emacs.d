@@ -593,6 +593,12 @@
 	   (dap-gdb-lldb-setup)
 	   (dap-go-setup))
 
+	 (lsp-register-client
+	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
+					   :major-modes '(c/c++-mode)
+					   :remote? t
+					   :server-id 'clangd-remote))
+
 	 (defun clang-ide ()
 	   (interactive)
 	   (treemacs)
