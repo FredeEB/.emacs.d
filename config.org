@@ -572,7 +572,7 @@
    #+begin_src emacs-lisp :tangle yes
 	 (use-package lsp-mode
 	   :hook
-	   ((c++-mode c-mode rust-mode go-mode csharp-mode) . lsp)
+	   ((c++-mode c-mode rust-mode go-mode csharp-mode python-mode cmake-mode) . lsp)
 	   :custom
 	   (lsp-diagnostic-package :flymake)
 	   (lsp-prefer-capf t)
