@@ -918,7 +918,7 @@
 	  "y" 'helm-system-packages
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm-toggle-cd))
+	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
 
 	  ;;projectile
 	  "p p" 'helm-projectile
