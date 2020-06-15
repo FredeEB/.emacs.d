@@ -905,6 +905,9 @@
 	  "d t" 'dap-debug-edit-template
 	  "d h" '(lambda () (interactive) (dap-ui-mode t) (dap-hydra))
 
+	  ;;compile
+	  "c" 'helm-make-projectile
+
 	  ;;Docker
 	  "g d" 'docker
 
