@@ -910,6 +910,7 @@
 
 	  ;;Docker
 	  "g d" 'docker
+	  "g c" 'docker-compose
 
 	  ;;ispell
 	  "z" 'helm-flyspell-correct
