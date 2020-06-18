@@ -263,7 +263,12 @@
     #+end_src
 ** dired
    #+begin_src emacs-lisp :tangle yes
-     (use-package dired-git-info)
+	 (use-package dired-git-info)
+
+	 (defun dired-run-at-point ()
+	   (interactive)
+	   (let ((process (dired-file-name-at-point)))
+		 (async-start-process (file-name-base process) process '(lambda (arg)))))
    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
@@ -967,6 +972,7 @@
 	(evil-leader/set-key-for-mode 'dired-mode
 	  "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
 	  "d g" 'dired-git-info-mode
+	  "d e" 'dired-run-at-point
 	  "Y" 'dired-copy-filename-as-kill nil)
 
 	(evil-leader/set-key-for-mode 'emacs-lisp-mode
