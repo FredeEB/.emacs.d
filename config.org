@@ -570,6 +570,10 @@
 	   (company-posframe-mode)
 	   :custom
 	   (company-posframe-quickhelp-delay nil))
+
+	 (use-package company-tabnine
+	   :config
+	   (push 'company-tabnine company-backends))
    #+end_src
 
    Debugging, for when my code doesn't work
