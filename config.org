@@ -548,7 +548,7 @@
 		 (insert (concat "#+NAME: " name))))
 #+end_src
 * programming
-** meta
+** company
    company completes anything and it works wonderfully
    #+begin_src emacs-lisp :tangle yes
 	 (use-package company
@@ -571,7 +571,10 @@
 	   (company-posframe-mode)
 	   :custom
 	   (company-posframe-quickhelp-delay nil))
+   #+end_src
 
+   Tabnine for wizardlike ML enabled autocompletion
+   #+begin_src emacs-lisp :tangle yes
 	 (use-package company-tabnine
 	   :config
 	   (push 'company-tabnine company-backends))
