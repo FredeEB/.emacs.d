@@ -305,7 +305,7 @@
 	   :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
    #+end_src
 ** openwith
-   requires zathura for pdf reading. sxiv for image viewing (not all formats are tested).
+   requires zathura for pdf reading. feh for image viewing (not all formats are tested).
    #+begin_src emacs-lisp :tangle yes
 	 (use-package openwith
 	   :config
@@ -313,11 +313,11 @@
 	   :custom
 	   (openwith-associations
 		'(("\\.pdf\\'" "evince" (file))
-		  ("\\.jpg\\'" "sxiv" (file))
-		  ("\\.svg\\'" "sxiv" (file))
-		  ("\\.jpeg\\'" "sxiv" (file))
-		  ("\\.bmp\\'" "sxiv" (file))
-		  ("\\.png\\'" "sxiv" (file))
+		  ("\\.jpg\\'" "feh" (file))
+		  ("\\.svg\\'" "feh" (file))
+		  ("\\.jpeg\\'" "feh" (file))
+		  ("\\.bmp\\'" "feh" (file))
+		  ("\\.png\\'" "feh" (file))
 		  ("\\.flac\\'" "mpv" (file))
 		  ("\\.mkv\\'" "mpv" (file))
 		  ("\\.wav\\'" "mpv" (file))
