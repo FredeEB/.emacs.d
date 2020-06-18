@@ -849,13 +849,17 @@
 	  "b" 'helm-buffers-list
 	  "o" 'other-window
 	  "q" 'kill-buffer-and-window
+	  "h" 'windmove-left
+	  "j" 'windmove-down
+	  "k" 'windmove-up
+	  "l" 'windmove-right
 
 	  ;;misc
 	  "a" 'comment-dwim
 	  "i" 'indent-region
 
 	  ;;buffer
-	  "j" 'evil-avy-goto-char
+	  "<SPC>" 'evil-avy-goto-char
 	  "e" 'ediff-buffers
 
 	  ;;files
@@ -954,8 +958,7 @@
 	  "r r" 'cider-eval-last-sexp
 	  "r k" 'cider-eval-buffer
 	  "r d" 'helm-clojuredocs
-	  "e" 'cider-eval-last-sexp
-	  "k" 'cider-eval-buffer)
+	  "e" 'cider-eval-last-sexp)
 
 	(evil-leader/set-key-for-mode 'dired-mode
 	  "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
