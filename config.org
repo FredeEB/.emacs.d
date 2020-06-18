@@ -345,14 +345,17 @@
 			   #'colorize-compilation)
 
 	 ;; C++
-	 (defun compile-c++-things (arg)
-	   (interactive "p")
+	 (defun compile-c++-things ()
+	   (interactive)
 	   (if-let* ((root (vc-root-dir))
-				 (cmake (concat root "/CMakeLists.txt"))
 				 (build (concat root "/build")))
-		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
-		 (message "Not in a repository"))
-	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
+		   (async-start-process
+			"Configure" "cmake"
+			'(lambda (arg)
+			   (kill-buffer (process-buffer arg))
+			   (helm-make-projectile (-> (process-lines "nproc") first string-to-number)))
+			"-S" root "-B" build "-GNinja")
+		 (message "Not in a repository")))
    #+end_src
 * org stuff
 ** journals
