@@ -553,6 +553,7 @@
 	   (company-echo-delay (if (display-graphic-p) nil 0))
 	   (company-minimum-prefix-length 2)
 	   (company-require-match 'never)
+	   (company-show-numbers t)
 	   (company-global-modes '(not erc-mode message-mode help-mode gud-mode eshell-mode shell-mode))
 	   (company-backends '(company-capf)))
 
@@ -973,6 +974,9 @@
 	  "u" 'clang-ide
 	  "c" 'compile-c++-things)
 
+	(evil-leader/set-key-for-mode 'cmake-mode
+	  "c" 'compile-c++-things)
+
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
 	(evil-define-key nil global-map
@@ -997,6 +1001,10 @@
 	  (kbd "M-j") 'org-metadown
 	  (kbd "M-k") 'org-metaup
 	  (kbd "M-l") 'org-metaright)
+
+	(evil-define-key 'normal compilation-mode-map
+	  (kbd "C-n") 'compilation-next-error
+	  (kbd "C-p") 'compilation-previous-error)
 
 	(evil-define-key 'normal iedit-mode-keymap
 	  (kbd "t") 'iedit-toggle-selection
