@@ -62,7 +62,6 @@
 	   :config
 	   (evil-mode 1))
 
-	 (use-package evil-paredit)
 	 (use-package evil-anzu)
 	 (use-package evil-surround
 	   :config
@@ -625,10 +624,14 @@
 ** lisp
    All the lispy things
    #+begin_src emacs-lisp :tangle yes
-	 (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
-	 (add-hook 'lisp-mode-hook 'evil-paredit-mode)
-	 (add-hook 'clojure-mode-hook 'evil-paredit-mode)
-	 (add-hook 'clojurescript-mode-hook 'evil-paredit-mode)
+	 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+	 (add-hook 'lisp-mode-hook 'paredit-mode)
+	 (add-hook 'clojure-mode-hook 'paredit-mode)
+	 (add-hook 'clojurescript-mode-hook 'paredit-mode)
+
+	 (use-package evil-paredit
+	   :hook
+	   ((emacs-lisp-mode-hook lisp-mode-hook clojure-mode-hook clojurescript-mode-hook) . evil-paredit-mode))
 
 	 ;; elisp
 	 (use-package elsa)
