@@ -874,7 +874,7 @@
 	;; Leader keys
 	(evil-leader/set-key
 	  ;;buffers & windows
-	  "b" 'helm-buffers-list
+	  "b" 'helm-mini
 	  "o" 'other-window
 	  "q" 'kill-buffer-and-window
 	  "h" 'windmove-left
