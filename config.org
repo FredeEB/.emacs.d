@@ -313,6 +313,8 @@
    #+begin_src emacs-lisp :tangle yes
 	 (use-package docker)
 	 (use-package dockerfile-mode)
+	 (use-package docker-compose-mode
+	   :mode ("docker-compose.yml\\'" . docker-compose-mode))
 	 (use-package docker-tramp
 	   :config (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
    #+end_src
@@ -559,7 +561,7 @@
    company completes anything and it works wonderfully
    #+begin_src emacs-lisp :tangle yes
 	 (use-package company
-	   :hook (prog-mode . company-mode)
+	   :hook ((prog-mode docker-compose-mode) . company-mode)
 	   :custom
 	   (company-idle-delay 0)
 	   (company-minimum-prefix-length 1)
