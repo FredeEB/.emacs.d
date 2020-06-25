@@ -589,12 +589,6 @@
 	   (push 'company-tabnine company-backends))
    #+end_src
 
-   Debugging, for when my code doesn't work
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package realgud)
-	 (use-package realgud-lldb)
-   #+end_src
-
    Completion by number
    #+begin_src emacs-lisp :tangle yes
 	 (let ((map company-active-map))
