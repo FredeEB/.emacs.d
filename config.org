@@ -566,7 +566,7 @@
 	   (company-idle-delay 0)
 	   (company-minimum-prefix-length 1)
 	   (company-tooltip-align-annotations t)
-	   (company-tooltip-limit 14)
+	   (company-tooltip-limit 10)
 	   (company-idle-delay 0)
 	   (company-echo-delay (if (display-graphic-p) nil 0))
 	   (company-minimum-prefix-length 2)
