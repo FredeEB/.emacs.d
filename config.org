@@ -592,6 +592,29 @@
 	 (use-package realgud)
 	 (use-package realgud-lldb)
    #+end_src
+
+   Completion by number
+   #+begin_src emacs-lisp :tangle yes
+	 (let ((map company-active-map))
+	   (mapc
+		(lambda (x)
+		  (define-key map (format "%d" x) 'or-a-company-number))
+		(number-sequence 0 9))
+	   (define-key map " " (lambda ()
+							 (interactive)
+							 (company-abort)
+							 (self-insert-command 1)))
+	   (define-key map (kbd "<return>") nil))
+
+	 (defun or-a-company-number ()
+	   (interactive)
+	   (let* ((k (this-command-keys))
+			  (re (concat "^" company-prefix k)))
+		 (if (cl-find-if (lambda (s) (string-match re s))
+						 company-candidates)
+			 (self-insert-command 1)
+		   (company-complete-number (string-to-number k)))))
+   #+end_src
 ** lsp
    #+begin_src emacs-lisp :tangle yes
 	 (use-package lsp-mode
