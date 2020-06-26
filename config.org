@@ -365,14 +365,9 @@
 	   (interactive)
 	   (if-let* ((root (vc-root-dir))
 				 (build (concat root "/build")))
-		   (progn (async-start-process
-				   "Configure" "cmake"
-				   `(lambda (arg)
-					  (kill-buffer (process-buffer arg))
-					  (call-process "ln" nil nil nil "-s" (concat ,build "/compile_commands.json") (concat ,root "/compile_commands.json"))
-					  (helm-make-projectile (-> (process-lines "nproc") first string-to-number)))
-				   "-S" root "-B" build "-GNinja" "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"))
-		 (message "Not in a repository")))
+		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
+		 (message "Not in a repository"))
+	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
 * org stuff
 ** journals
