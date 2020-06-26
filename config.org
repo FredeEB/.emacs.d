@@ -359,6 +359,8 @@
 			   #'colorize-compilation)
 
 	 ;; C++
+	 ;; set ctest to output on failure
+	 (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
 	 (defun compile-c++-things ()
 	   (interactive)
 	   (if-let* ((root (vc-root-dir))
