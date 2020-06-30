@@ -844,6 +844,13 @@
 		  (point-at-bol)
 		  (point-at-eol)))))
    #+end_src
+   pop-shell for temporary shells
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package shell-pop
+	   :custom
+	   (shell-pop-shell-type '("terminal" "*Terminal*" (lambda nil (eshell))))
+	   (shell-pop-window-position "bottom"))
+   #+end_src
 ** calctex
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
@@ -1046,7 +1053,8 @@
 	  (kbd "C-c l") 'org-store-link
 	  (kbd "C-c a") 'org-todo-list
 	  (kbd "C-k") 'kill-buffer-and-window
-	  (kbd "C-c c") 'org-capture)
+	  (kbd "C-c c") 'org-capture
+	  (kbd "C-;") 'shell-pop)
 
 	(evil-define-key nil org-mode-map
 	  (kbd "M-H") 'org-shiftleft
