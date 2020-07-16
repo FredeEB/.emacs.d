@@ -299,7 +299,8 @@
 ** docker
    #+begin_src emacs-lisp :tangle yes
 	 (use-package docker)
-	 (use-package dockerfile-mode)
+	 (straight-use-package '(dockerfile-mode :type git :repo "https://github.com/fredeeb/dockerfile-mode"))
+	 (setq dockerfile-use-buildkit t)
 	 (use-package docker-compose-mode
 	   :mode ("docker-compose.yml\\'" . docker-compose-mode))
 	 (use-package docker-tramp
