@@ -174,19 +174,6 @@
 		 (set-char-table-range composition-function-table (car char-regexp)
 							   `([,(cdr char-regexp) 0 font-shape-gstring]))))
    #+end_src
-** temporary functions
-   This is a section for functions that are useful at the moment for projects I'm working on, Meaning that this section is going to change depending on the current work I do
-   #+begin_src emacs-lisp :tangle yes
-	 (defun esp-init ()
-	   (interactive)
-	   (let* ((root (vc-root-dir))
-			  (idf-tools (concat root "tools"))
-			  (adf-path (concat root "esp-adf/"))
-			  (idf-path (concat root "esp-idf")))
-		 (setenv "IDF_TOOLS_PATH" idf-tools)
-		 (setenv "IDF_PATH" idf-path)
-		 (setenv "ADF_PATH" adf-path)))
-   #+end_src
 ** helm
    #+begin_src emacs-lisp :tangle yes
 	 (use-package helm
