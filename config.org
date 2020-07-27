@@ -924,6 +924,7 @@
 	  "f h" '(lambda () (interactive) (find-file (expand-file-name "~/")))
 	  "f d" 'dired-jump
 	  "f j" 'find-journal
+	  "f n" '(lambda () (interactive) (find-file (concat (vc-root-dir) "notes.org")))
 
 	  ;;config reload
 	  "f r" '(lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory)))
