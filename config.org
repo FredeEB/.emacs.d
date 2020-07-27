@@ -950,6 +950,7 @@
 	  "r o" 'lsp-rename
 	  "r r" 'lsp-ui-peek-find-references
 	  "r s" 'helm-lsp-workspace-symbol
+	  "r l" 'lsp-treemacs-errors-list
 
 	  ;;dap
 	  "d r" 'dap-debug-restart
