@@ -611,15 +611,14 @@
 	   (lsp-ui-doc-max-width 80)
 	   (lsp-ui-doc-position 'top))
 	 (use-package helm-lsp)
-	 (use-package dap-mode)
 	 (use-package lsp-treemacs)
 	 (use-package dap-mode
 	   :config
 	   (require 'dap-gdb-lldb)
 	   (require 'dap-go)
 	   ;;download debuggers, REQUIRES unzip
-	   (dap-gdb-lldb-setup)
-	   (dap-go-setup))
+	   (dap-gdb-lldb-setup t)
+	   (dap-go-setup t))
 
 	 (lsp-register-client
 	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
