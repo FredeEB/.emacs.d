@@ -617,8 +617,9 @@
 	   (require 'dap-gdb-lldb)
 	   (require 'dap-go)
 	   ;;download debuggers, REQUIRES unzip
-	   (dap-gdb-lldb-setup t)
-	   (dap-go-setup t))
+	   (when (not (file-exists-p (expand-file-name ".extension" user-emacs-directory)))
+		 (dap-gdb-lldb-setup t)
+		 (dap-go-setup t)))
 
 	 (lsp-register-client
 	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
