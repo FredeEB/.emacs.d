@@ -915,16 +915,14 @@
 	  ;;files
 	  "f f" 'treemacs
 	  "f d" 'dired-jump
-	  "f e" '(lambda () (interactive) (find-file "~/.emacs.d/config.org"))
-	  "f i" '(lambda () (interactive) (find-file "~/.config/i3/config"))
-	  "f z" '(lambda () (interactive) (find-file "~/.zshrc"))
-	  "f t" '(lambda () (interactive) (find-file "~/git/tools.org"))
+	  "f e" '(lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory)))
+	  "f z" '(lambda () (interactive) (find-file (expand-file-name "~/.zshrc")))
 	  "f p" '(lambda () (interactive) (find-file (expand-file-name "~/git/")))
 	  "f u" '(lambda () (interactive) (find-file (expand-file-name "~/uni/")))
 	  "f h" '(lambda () (interactive) (find-file (expand-file-name "~/")))
+	  "f n" '(lambda () (interactive) (find-file (expand-file-name "notes.org" (vc-root-dir))))
 	  "f d" 'dired-jump
 	  "f j" 'find-journal
-	  "f n" '(lambda () (interactive) (find-file (concat (vc-root-dir) "notes.org")))
 
 	  ;;config reload
 	  "f r" '(lambda () (interactive) (load-file (expand-file-name "init.el" user-emacs-directory)))
