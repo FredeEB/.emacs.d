@@ -191,6 +191,7 @@
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
    #+end_src
+* utils
 ** elfeed
    #+begin_src emacs-lisp :tangle yes
 	 (use-package elfeed
@@ -223,6 +224,18 @@
 
        (use-package mu4e-alert))
    #+END_SRC
+** dashboard
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package dashboard
+	   :config
+	   (dashboard-setup-startup-hook)
+	   :custom
+	   ;; set initial buffer for emacsclient
+	   (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+	   (dashboard-banner-logo-title "")
+	   (dashboard-startup-banner (expand-file-name "banner.png" user-emacs-directory))
+	   (dashboard-center-content t))
+   #+end_src
 * git
 ** magit
    magit is the best git client in the multiverse. I use the evil variant.
@@ -319,7 +332,6 @@
 		  ("\\.svg\\'" "feh" (file))
 		  ("\\.jpeg\\'" "feh" (file))
 		  ("\\.bmp\\'" "feh" (file))
-		  ("\\.png\\'" "feh" (file))
 		  ("\\.flac\\'" "mpv" (file))
 		  ("\\.mkv\\'" "mpv" (file))
 		  ("\\.wav\\'" "mpv" (file))
@@ -372,18 +384,12 @@
 			   journal-dir
 			   (format-time-string "%Y%m%d")))
 
-	 (setq initial-buffer-choice journal
-		   org-agenda-files (directory-files journal-dir t "^journal[0-9]+\.org$"))
-
 	 (defvar org-journal-template
 	   (concat
 		"#+TITLE: Journal\n"
 		"#+DATE: " (format-time-string "%A %d/%m/%Y\n")
 		"* TODAY\n"
 		"* NOTES"))
-
-	 (when (not (file-exists-p journal))
-	   (write-region org-journal-template nil journal))
 
 	 (defun find-journal (days-ago)
 	   "Find journal from DAYS-AGO"
