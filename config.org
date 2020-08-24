@@ -96,56 +96,61 @@
 				   default-directory (expand-file-name "~/")
 				   tramp-default-method "ssh"
 				   large-file-warning-threshold nil
-				   custom-file (expand-file-name "~/.emacs.d/customs.el")
+				   custom-file (expand-file-name "customs.el" user-emacs-directory)
 				   delete-trailing-lines t
 				   tramp-smb-conf nil
 				   windmove-wrap-around t
-                   indent-tabs-mode t
+				   indent-tabs-mode t
 				   c-basic-offset 4)
 
-     (defvaralias 'c-basic-offset 'tab-width)
-     (defalias 'yes-or-no-p 'y-or-n-p)
-     (defvaralias 'c-basic-offset 'tab-width)
+	 (defvaralias 'c-basic-offset 'tab-width)
+	 (defalias 'yes-or-no-p 'y-or-n-p)
+	 (defvaralias 'c-basic-offset 'tab-width)
 
-     (global-subword-mode)
+	 (global-subword-mode)
 
-     (tool-bar-mode -1)
-     (menu-bar-mode -1)
-     (scroll-bar-mode -1)
-     (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+	 (tool-bar-mode -1)
+	 (menu-bar-mode -1)
+	 (scroll-bar-mode -1)
+	 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-     (setq shell-file-name "bash")
-     (setq shell-command-switch "-c")
+	 (setq shell-file-name "bash")
+	 (setq shell-command-switch "-c")
 
-     ;; environments
-     (use-package exec-path-from-shell
-       :config (exec-path-from-shell-initialize))
+	 (setq auto-save-visited-file-name t)
 
-     ;; make tramp play nice
-     (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+	 ;; Autorevert buffers
+	 (global-auto-revert-mode)
 
-     ;; File beautification
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-     ;; Electricity!!
-     (add-hook 'prog-mode-hook 'electric-pair-mode)
-
-     ;; environments
-     (use-package exec-path-from-shell
+	 ;; environments
+	 (use-package exec-path-from-shell
 	   :config (exec-path-from-shell-initialize))
 
-     ;; make tramp play nice
-     (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+	 ;; make tramp play nice
+	 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
-     ;; File beautification
-     (setq delete-trailing-lines t)
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+	 ;; File beautification
+	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-     ;; Electricity!!
-     (add-hook 'prog-mode-hook 'electric-pair-mode)
+	 ;; Electricity!!
+	 (add-hook 'prog-mode-hook 'electric-pair-mode)
 
-     ;; font
-     (add-to-list 'default-frame-alist '(font . "Victor Mono Nerd Font 13"))
+	 ;; environments
+	 (use-package exec-path-from-shell
+	   :config (exec-path-from-shell-initialize))
+
+	 ;; make tramp play nice
+	 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
+	 ;; File beautification
+	 (setq delete-trailing-lines t)
+	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+	 ;; Electricity!!
+	 (add-hook 'prog-mode-hook 'electric-pair-mode)
+
+	 ;; font
+	 (add-to-list 'default-frame-alist '(font . "Victor Mono Nerd Font 13"))
    #+end_src
    Ligatures are nice ways of displaying operators
    #+begin_src emacs-lisp :tangle yes
