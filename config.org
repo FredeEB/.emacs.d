@@ -363,7 +363,10 @@
 ** vterm
    #+begin_src emacs-lisp :tangle yes
 	 (use-package vterm-toggle
-	   :custom (vterm-shell "zsh"))
+	   :custom
+	   (vterm-shell "zsh")
+	   :config
+	   (evil-set-initial-state 'vterm-mode 'emacs))
    #+end_src
 ** compilation
    #+begin_src emacs-lisp :tangle yes
