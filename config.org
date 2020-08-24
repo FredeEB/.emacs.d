@@ -295,6 +295,12 @@
    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
+** iedit
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package evil-iedit-state)
+	 ;; temp fix for cleanup
+	 (defalias 'iedit-cleanup 'iedit-lib-cleanup)
+   #+end_src
 ** engine
    used to search web resources.
    #+begin_src emacs-lisp :tangle yes
@@ -965,6 +971,8 @@
 	  ;;elfeed
 	  "n" 'elfeed
 
+	  ;;iedit
+	  "m" 'iedit-mode
 
 	  ;;lsp
 	  "r d" 'lsp-ui-peek-find-definitions
@@ -1078,10 +1086,6 @@
 	(evil-define-key 'normal compilation-mode-map
 	  (kbd "C-n") 'compilation-next-error
 	  (kbd "C-p") 'compilation-previous-error)
-
-	(evil-define-key 'normal iedit-mode-keymap
-	  (kbd "t") 'iedit-toggle-selection
-	  (kbd "f") 'iedit-restrict-function)
 
 	(evil-define-key 'normal dired-mode-map
 	  (kbd "Y") '(lambda () (interactive) (dired-copy-filename-as-kill 0))
