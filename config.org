@@ -903,8 +903,12 @@
 	   (doom-modeline-major-mode-icon t)
 	   (doom-modeline-major-mode-color-icon nil))
 
+	 (use-package hide-mode-line
+	   :hook
+	   ((eshell-mode vterm-mode shell-mode term-mode treemacs-mode) . hide-mode-line-mode))
+
 	 (use-package solaire-mode
-	   :config
+	   :init
 	   (solaire-global-mode))
 
 	 (use-package rainbow-delimiters)
