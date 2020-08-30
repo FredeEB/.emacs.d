@@ -301,6 +301,11 @@
 	 ;; temp fix for cleanup
 	 (defalias 'iedit-cleanup 'iedit-lib-cleanup)
    #+end_src
+** grugru
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package grugru
+	   :config (grugru-default-setup))
+   #+end_src
 ** engine
    used to search web resources.
    #+begin_src emacs-lisp :tangle yes
@@ -1079,7 +1084,8 @@
 	  (kbd "C-c a") 'org-todo-list
 	  (kbd "C-k") 'kill-buffer-and-window
 	  (kbd "C-c c") 'org-capture
-	  (kbd "C-;") 'shell-pop)
+	  (kbd "C-;") 'shell-pop
+	  (kbd "C-'") 'grugru)
 
 	(evil-define-key nil org-mode-map
 	  (kbd "M-H") 'org-shiftleft
