@@ -452,8 +452,12 @@
 ** jupyter
    #+begin_src emacs-lisp :tangle yes
 	 (use-package ein
-	   :custom (ein:output-area-inlined-images t))
+	   :custom (ein:output-area-inlined-images t)
+	   :init
+	   (require 'ein))
+
 	 (use-package elpy)
+	 (use-package jupyter)
    #+end_src
 ** export
    settings and packages for exportng to different formats
@@ -491,6 +495,7 @@
 									(emacs-lisp . t)
 									(ein . t)
 									(js . t)
+									(jupyter . t)
 									(makefile . t)
 									(matlab . t)
 									(plantuml . t)
