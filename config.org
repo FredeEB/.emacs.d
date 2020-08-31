@@ -150,7 +150,7 @@
 	 (add-hook 'prog-mode-hook 'electric-pair-mode)
 
 	 ;; font
-	 (add-to-list 'default-frame-alist '(font . "Victor Mono Nerd Font 13"))
+	 (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 15"))
    #+end_src
    Ligatures are nice ways of displaying operators
    #+begin_src emacs-lisp :tangle yes
