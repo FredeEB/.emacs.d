@@ -195,9 +195,7 @@
 	   :custom
 	   (helm-mini-default-sources
 		'(helm-source-buffers-list
-		  helm-source-bookmarks
-		  helm-source-buffer-not-found
-		  helm-source-bookmark-set)))
+		  helm-source-buffer-not-found)))
 	 (use-package helm-company)
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
