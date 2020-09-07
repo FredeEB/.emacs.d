@@ -835,12 +835,12 @@
 	   :magic ("@startuml" . plantuml-mode))
 
 	 (when (executable-find "plantuml")
-	   (setq plantuml-jar-path (expand-file-name (executable-find "plantuml"))
-			 org-plantuml-jar-path
-			 (replace-regexp-in-string
-			  "bin"
-			  "share/java/plantuml"
-			  (format "%s%s" (expand-file-name (executable-find "plantuml")) ".jar"))))
+	   (let ((executable (executable-find "plantuml")))
+		 (setq plantuml-jar-path
+			   (replace-regexp-in-string
+				"bin"
+				"share/java/plantuml"
+				(format "%s%s" executable ".jar")))))
 
 	 (use-package flycheck-plantuml)
 
