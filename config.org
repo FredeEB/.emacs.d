@@ -93,6 +93,7 @@
 				   initial-scratch-message ""
 				   ring-bell-function 'ignore
 				   tab-width 4
+				   create-lock-files nil
 				   default-directory (expand-file-name "~/")
 				   tramp-default-method "ssh"
 				   large-file-warning-threshold nil
