@@ -727,7 +727,6 @@
 	 (c-set-offset 'brace-list-open 0)
 	 (setq c-basic-offset 4)
 
-	 (use-package clang-format)
 	 (setq lsp-clients-clangd-args
 		   '("-j=8"
 			 "--all-scopes-completion"
@@ -737,6 +736,8 @@
 			 "--cross-file-rename"
 			 "--suggest-missing-includes"))
 
+	 (use-package clang-format
+	   :hook (before-save . clang-format-buffer))
 	 (use-package modern-cpp-font-lock
 	   :config
 	   (modern-c++-font-lock-global-mode))
