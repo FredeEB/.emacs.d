@@ -965,7 +965,7 @@
 	  "i" 'indent-region
 
 	  ;;buffer
-	  "<SPC>" 'evil-avy-goto-char
+	  "<SPC>" 'evil-avy-goto-char-timer
 	  "e" 'ediff-buffers
 
 	  ;;files
