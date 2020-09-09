@@ -600,6 +600,9 @@
 	   (company-global-modes '(not erc-mode message-mode help-mode gud-mode eshell-mode shell-mode))
 	   (company-backends '(company-capf)))
 
+	 (use-package company-box
+	   :hook (company-mode . company-box-mode))
+
 	 (use-package company-posframe
 	   :config
 	   (company-posframe-mode)
