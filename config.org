@@ -733,7 +733,7 @@
 			 "--suggest-missing-includes"))
 
 	 (use-package clang-format
-	   :hook (before-save . clang-format-buffer))
+	   :hook (before-save . lsp-format-buffer))
 	 (use-package modern-cpp-font-lock
 	   :config
 	   (modern-c++-font-lock-global-mode))
