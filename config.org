@@ -610,13 +610,6 @@
 	   (company-posframe-quickhelp-delay nil))
    #+end_src
 
-   # Tabnine for wizardlike ML enabled autocompletion
-   # #+begin_src emacs-lisp :tangle yes
-   # 	 (use-package company-tabnine
-   # 	   :config
-   # 	   (push 'company-tabnine company-backends))
-   # #+end_src
-
    Completion by number
    #+begin_src emacs-lisp :tangle yes
 	 (let ((map company-active-map))
