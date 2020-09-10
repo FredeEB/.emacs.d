@@ -393,8 +393,9 @@
 	 (defun compile-c++-things ()
 	   (interactive)
 	   (if-let* ((root (vc-root-dir))
+				 (cmake (concat root "/CMakeLists.txt"))
 				 (build (concat root "/build")))
-		   (call-process "cmake" nil nil nil "-S" root "-B" build "-GNinja")
+		   (call-process "cmake" nil nil nil "-S" root "-B" build)
 		 (message "Not in a repository"))
 	   (helm-make-projectile (string-to-number (first (process-lines "nproc")))))
    #+end_src
