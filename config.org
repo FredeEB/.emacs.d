@@ -638,6 +638,7 @@
 	 (use-package lsp-mode
 	   :hook
 	   ((c++-mode c-mode rust-mode go-mode csharp-mode python-mode cmake-mode) . lsp)
+	   (before-save . lsp-format-buffer)
 	   :custom
 	   (lsp-diagnostic-package :flymake)
 	   (lsp-prefer-capf t)
@@ -733,8 +734,6 @@
 			 "--cross-file-rename"
 			 "--suggest-missing-includes"))
 
-	 (use-package clang-format
-	   :hook (before-save . lsp-format-buffer))
 	 (use-package modern-cpp-font-lock
 	   :config
 	   (modern-c++-font-lock-global-mode))
@@ -744,9 +743,6 @@
 	   (flycheck-mode . flycheck-clang-tidy-setup)
 	   :custom
 	   (flycheck-clang-language-standard "c++17"))
-
-	 (use-package rmsbolt
-	   :mode ((c++-mode c-mode go-mode rust-mode) . rmsbolt-mode))
 
 	 (use-package cmake-mode)
 	 (use-package helm-ctest)
