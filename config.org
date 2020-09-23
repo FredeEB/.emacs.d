@@ -1027,7 +1027,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<return>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
+	  "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
 
 	  ;;projectile
 	  "p p" 'helm-projectile
