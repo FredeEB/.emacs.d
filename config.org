@@ -190,6 +190,7 @@
 	 (use-package counsel
 	   :init (ivy-mode)
 	   :custom (ivy-height 30))
+	 (use-package counsel-projectile)
 	 (use-package ivy-posframe
 	   :init (ivy-posframe-mode)
 	   :custom (ivy-posframe-border-width 5))
@@ -982,7 +983,7 @@
 	  "g s" 'magit-status
 	  "g t" 'git-timemachine
 	  "g f" 'global-git-gutter+-mode
-	  "g g" 'git-gutter+-show-hunk-inline-at-point
+	  "g g" 'counsel-projectile-git-grep
 	  "g r" 'git-gutter+-revert-hunk
 	  "g m" 'magit-blame-addition
 
