@@ -784,18 +784,6 @@
    #+end_src
 ** web
    #+begin_src emacs-lisp :tangle yes
-	 ;; everything in one package
-	 (use-package web-mode
-	   :mode
-	   ("\\.js\\'" . web-mode)
-	   ("\\.ts\\'" . web-mode)
-	   ("\\.css\\'" . web-mode)
-	   ("\\.jsx\\'" . web-mode)
-	   ("\\.tsx\\'" . web-mode)
-	   ("\\.html\\'" . web-mode)
-	   ("\\.scss\\'" . web-mode)
-	   ("\\.cshtml\\'" . web-mode))
-
 	 (use-package npm-mode)
 	 (use-package impatient-mode)
 	 (use-package lorem-ipsum)
