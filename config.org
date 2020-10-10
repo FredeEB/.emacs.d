@@ -292,7 +292,9 @@
     #+end_src
 ** dired
    #+begin_src emacs-lisp :tangle yes
-	 (use-package dired-git-info)
+	 (use-package dired-git-info
+	   :custom (dgi-auto-hide-details-p nil)
+	   :hook (dired-after-readin-hook . dired-git-info-auto-enable))
 
 	 (defun dired-run-at-point ()
 	   (interactive)
