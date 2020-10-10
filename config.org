@@ -1026,6 +1026,8 @@
 	  "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
 
 	  ;;projectile
+	  "p p" 'counsel-projectile
+	  "p f" 'counsel-projectile-find-file-dwim
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
@@ -1066,11 +1068,7 @@
 	  "k" 'eval-buffer)
 
 	(evil-leader/set-key-for-mode 'c++-mode
-	  "u" 'clang-ide
-	  "c" 'compile-c++-things)
-
-	(evil-leader/set-key-for-mode 'cmake-mode
-	  "c" 'compile-c++-things)
+	  "u" 'clang-ide)
 
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
