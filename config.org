@@ -320,6 +320,7 @@
    used to search web resources.
    #+begin_src emacs-lisp :tangle yes
 	 (use-package engine-mode
+	   :straight (:branch "main")
 	   :config
 	   (defengine cppreference
 		 "https://en.cppreference.com/mwiki/index.php?search=%s")
