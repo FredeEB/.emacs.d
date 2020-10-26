@@ -380,6 +380,17 @@
 	   (vterm-shell "zsh")
 	   :config
 	   (evil-set-initial-state 'vterm-mode 'emacs))
+
+	 (defun alacritty-or-vterm (vterm)
+	   (interactive "P")
+	   (if (or vterm
+			   (not (executable-find "alacritty")))
+		   (progn
+			 (split-window-sensibly) (other-window 1) (vterm))
+		 (progn
+		   (setenv "SHELL" "/usr/bin/zsh")
+		   (async-start-process "term" "alacritty" nil)
+		   (setenv "SHELL" "/bin/bash"))))
    #+end_src
 ** compilation
    #+begin_src emacs-lisp :tangle yes
@@ -1018,7 +1029,7 @@
 	  ;;utilities
 	  "+" 'calc
 	  "-" 'mu4e
-	  "<RET>" '(lambda () (interactive) (split-window-sensibly) (other-window 1) (vterm))
+	  "<RET>" 'alacritty-or-vterm
 
 	  ;;projectile
 	  "p p" 'counsel-projectile
