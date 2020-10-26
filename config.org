@@ -126,9 +126,6 @@
 	 (use-package exec-path-from-shell
 	   :config (exec-path-from-shell-initialize))
 
-	 ;; make tramp play nice
-	 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
-
 	 ;; File beautification
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
