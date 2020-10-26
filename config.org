@@ -860,11 +860,6 @@
 	 ;; (use-package gnuplot)
    #+end_src
 * misc
-** popwin
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package popwin
-	   :init (popwin-mode t))
-   #+end_src
 ** shell
    insert stdout from terminal (try "Q" on the next line)
    seq 0 255 | xargs printf "%.2x\n" | fmt -w 49
