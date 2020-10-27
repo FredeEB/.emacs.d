@@ -979,6 +979,7 @@
 	  ;;buffer
 	  "<SPC>" 'evil-avy-goto-char-timer
 	  "e" 'ediff-buffers
+	  "u" 'calc-embedded
 
 	  ;;files
 	  "f f" 'treemacs
