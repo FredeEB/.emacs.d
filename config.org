@@ -941,8 +941,6 @@
 	 (use-package solaire-mode
 	   :init
 	   (solaire-global-mode))
-
-	 (use-package rainbow-delimiters)
    #+end_src
 ** which key
    #+begin_src emacs-lisp :tangle yes
