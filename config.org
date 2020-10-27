@@ -954,10 +954,6 @@
    #+begin_src emacs-lisp :tangle yes
 	 (use-package treemacs-evil)
    #+end_src
-** focus
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package focus)
-   #+end_src
 * hotkeys
   #+begin_src emacs-lisp :tangle yes
 	;; Leader keys
