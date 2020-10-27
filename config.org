@@ -84,6 +84,52 @@
 	 (use-package evil-numbers)
 	 (use-package evil-matchit)
    #+end_src
+** eshell
+   shamelessly stolen from [[http://www.modernemacs.com/post/custom-eshell/][here]]
+   #+begin_src emacs-lisp :tangle yes
+	 (defmacro with-face (STR &rest PROPS)
+	   "Return STR propertized with PROPS."
+	   `(propertize ,STR 'face (list ,@PROPS)))
+
+	 (defmacro esh-section (NAME ICON FORM &rest PROPS)
+	   "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
+	   `(setq ,NAME
+			  (lambda () (when ,FORM
+			   (-> ,ICON
+				   (concat esh-section-delim ,FORM)
+				   (with-face ,@PROPS))))))
+
+	 (defun esh-acc (acc x)
+	   "Accumulator for evaluating and concatenating esh-sections."
+	   (--if-let (funcall x)
+	   (if (s-blank? acc)
+			   it
+			 (concat acc esh-sep it))
+	 acc))
+
+	 (defun esh-prompt-func ()
+	   "Build `eshell-prompt-function'"
+	   (concat (-reduce-from 'esh-acc "" eshell-funcs)
+			   "\n"
+			   eshell-prompt-string))
+
+	 (esh-section esh-dir
+		  ""
+		  (concat "[" (eshell/pwd) "]")
+		  '(:foreground "#50fa7b"))
+
+	 (esh-section esh-git
+		  ""
+		  (magit-get-current-branch)
+		  '(:foreground "#f1fa8c"))
+
+	 (setq esh-sep " | "
+		   esh-section-delim ""
+		   eshell-banner-message ""
+		   eshell-prompt-string ""
+		   eshell-funcs (list esh-dir esh-git)
+		   eshell-prompt-function 'esh-prompt-func)
+   #+end_src
 ** misc
    misc default settings
    #+begin_src emacs-lisp :tangle yes
