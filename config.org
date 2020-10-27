@@ -894,7 +894,9 @@
 		  (point-at-bol)
 		  (point-at-eol)))))
    #+end_src
-   pop-shell for temporary shells
+
+   shell-pop for temporary shells
+
    #+begin_src emacs-lisp :tangle yes
 	 (use-package shell-pop
 	   :custom
@@ -902,17 +904,20 @@
 	   (shell-pop-window-position "bottom"))
    #+end_src
 ** COMMENT calctex
+   Calctex is really cool for calc mode, although it's currently broken
    #+begin_src emacs-lisp :tangle yes
      (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
      (add-hook 'calc-mode-hook 'calctex-mode)
    #+end_src
 ** avy
+   Avy makes jumping to visible places very fast
    #+begin_src emacs-lisp :tangle yes
 	 (use-package evil-avy
 	   :mode (prog-mode . evil-avy-mode))
    #+end_src
 * ui
 ** theme
+   The theme is a custom version of doom dracula
    #+begin_src emacs-lisp :tangle yes
 	 (use-package doom-themes
 	   :init
@@ -923,7 +928,11 @@
 		'(font-lock-comment-face ((t (:foreground "#6272a4" :slant italic))))
 		'(font-lock-preprocessor-face ((t (:inherit nil :foreground "#bd93f9"))))
 		'(variable-pitch ((t (:family "Fira Sans"))))))
+   #+end_src
 
+   I also use doom-modeline cause it looks damn good
+
+   #+begin_src emacs-lisp :tangle yes
 	 (use-package doom-modeline
 	   :hook (after-init . doom-modeline-init)
 	   :custom
@@ -933,22 +942,32 @@
 	   (doom-modeline-icon t)
 	   (doom-modeline-major-mode-icon t)
 	   (doom-modeline-major-mode-color-icon nil))
+   #+end_src
 
+   ... Most of the time
+
+   #+begin_src emacs-lisp :tangle yes
 	 (use-package hide-mode-line
 	   :hook
 	   ((eshell-mode vterm-mode shell-mode term-mode treemacs-mode) . hide-mode-line-mode))
+   #+end_src
+   
+   Solaire mode is awesome for introducing a few extra shades of gray
 
+   #+begin_src emacs-lisp :tangle yes
 	 (use-package solaire-mode
 	   :init
 	   (solaire-global-mode))
    #+end_src
 ** which key
+   Whichkey is for when I can't remember the keys I'm supposed to press
    #+begin_src emacs-lisp :tangle yes
 	 (use-package which-key
 	   :init
 	   (which-key-mode))
    #+end_src
 ** treemacs
+   Treemacs makes emacs look like vscode... Not really, but it adds a filebrowser and some very nifty LSP integrations
    #+begin_src emacs-lisp :tangle yes
 	 (use-package treemacs-evil)
    #+end_src
