@@ -706,7 +706,7 @@
 	   ((c++-mode c-mode rust-mode go-mode csharp-mode python-mode cmake-mode) . lsp)
 	   (before-save . lsp-format-buffer)
 	   :custom
-	   (lsp-diagnostic-package :flymake)
+	   (lsp-diagnostic-package :flycheck)
 	   (lsp-prefer-capf t)
 	   (read-process-output-max (* 1024 1024))
 	   (lsp-rust-server 'rust-analyzer))
