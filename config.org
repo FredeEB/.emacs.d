@@ -717,7 +717,7 @@
 	 (use-package helm-lsp)
 	 (use-package lsp-treemacs)
 	 (use-package dap-mode
-	   :config
+	   :init
 	   (require 'dap-gdb-lldb)
 	   (require 'dap-go)
 	   ;;download debuggers, REQUIRES unzip
