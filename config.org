@@ -182,7 +182,12 @@
 		 (set-char-table-range composition-function-table (car char-regexp)
 							   `([,(cdr char-regexp) 0 font-shape-gstring]))))
    #+end_src
-** ivy
+** COMMENT selectrum
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package selectrum
+	   :init (selectrum-mode +1))
+   #+end_src
+** COMMENT ivy
    #+begin_src emacs-lisp :tangle yes
 	 (use-package counsel
 	   :init (ivy-mode)
@@ -192,7 +197,7 @@
 	   :init (ivy-posframe-mode)
 	   :custom (ivy-posframe-border-width 5))
    #+end_src
-** COMMENT helm
+** helm
    #+begin_src emacs-lisp :tangle yes
 	 (use-package helm
 	   :init
@@ -953,7 +958,7 @@
 	;; Leader keys
 	(evil-leader/set-key
 	  ;;buffers & windows
-	  "b" 'switch-to-buffer
+	  "b" 'helm-buffers-list
 	  "y" 'helm-show-kill-ring
 	  "o" 'other-window
 	  "q" 'kill-buffer-and-window
@@ -1020,7 +1025,7 @@
 	  "d h" '(lambda () (interactive) (dap-ui-mode t) (dap-hydra))
 
 	  ;;compile
-	  "c" 'counsel-compile
+	  "c" 'helm-make-projectile
 
 	  ;;Docker
 	  "g d" 'docker
@@ -1032,8 +1037,8 @@
 	  "<RET>" 'alacritty-or-vterm
 
 	  ;;projectile
-	  "p p" 'counsel-projectile
-	  "p f" 'counsel-projectile-find-file-dwim
+	  "p p" 'helm-projectile
+	  "p f" 'helm-projectile-find-file-dwim
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
@@ -1079,9 +1084,9 @@
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
 	(evil-define-key nil global-map
-	  (kbd "C-x C-f") 'find-file
-	  (kbd "C-x C-b") 'switch-to-buffer
-	  (kbd "M-x") 'execute-extended-command
+	  (kbd "C-x C-f") 'helm-find-files
+	  (kbd "C-x C-b") 'helm-buffers-list
+	  (kbd "M-x") 'helm-M-x
 	  (kbd "M-p") 'emmet-expand-yas
 	  (kbd "C-S-c") 'aya-create
 	  (kbd "C-S-e") 'aya-expand
@@ -1132,5 +1137,5 @@
 	  (kbd "C-j") 'cider-repl-forward-input)
 
 	(evil-define-key 'normal global-map
-	  (kbd "U") 'swiper)
+	  (kbd "U") 'helm-multi-swoop-projectile)
   #+end_src
