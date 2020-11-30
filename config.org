@@ -690,6 +690,11 @@
 					   :remote? t
 					   :server-id 'clangd-remote
 					   :multi-root t))
+	 (lsp-register-client
+	  (make-lsp-client :new-connection (lsp-tramp-connection "nimlsp")
+					   :major-modes '(nim-mode)
+					   :server-id 'nimlsp
+					   :multi-root t))
 
 	 (defun clang-ide ()
 	   (interactive)
