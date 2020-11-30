@@ -672,7 +672,7 @@
 	 (use-package lsp-ui
 	   :custom
 	   (lsp-ui-doc-max-width 80)
-	   (lsp-ui-doc-position 'top))
+	   (lsp-ui-doc-position 'at-point))
 	 (use-package helm-lsp)
 	 (use-package lsp-treemacs)
 	 (use-package dap-mode
