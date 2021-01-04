@@ -182,6 +182,7 @@
 	 (use-package helm-posframe
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
+  (straight-use-package '(helm-fzf :type git :repo "https://github.com/ibmandura/helm-fzf"))
    #+end_src
 * utils
 ** elfeed
