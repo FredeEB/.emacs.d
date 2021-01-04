@@ -760,6 +760,12 @@
    #+begin_src emacs-lisp :tangle yes
      (use-package haskell-mode)
    #+end_src
+** lua
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package lua-mode
+	   :mode ("\\.lua\\'")
+	   :hook (lua-mode . lsp))
+   #+end_src
 ** go
    #+begin_src emacs-lisp :tangle yes
 	 (use-package go-mode
