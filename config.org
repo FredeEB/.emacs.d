@@ -893,6 +893,14 @@
 	 (use-package evil-avy
 	   :mode (prog-mode . evil-avy-mode))
    #+end_src
+** polymode
+   #+begin_src emacs-lisp :tangle yes
+	 (use-package polymode)
+	 (use-package poly-markdown
+	   :hook (markdown-mode . poly-markdown-mode))
+	 (use-package poly-org
+	   :hook (org-mode . poly-org-mode))
+   #+end_src
 * ui
 ** theme
    The theme is a custom version of doom dracula
