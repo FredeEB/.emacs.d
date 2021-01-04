@@ -1081,6 +1081,7 @@
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
 	(evil-define-key nil global-map
+	  (kbd "M-r") 'recompile
 	  (kbd "C-x C-f") 'helm-find-files
 	  (kbd "C-x C-b") 'helm-buffers-list
 	  (kbd "M-x") 'helm-M-x
