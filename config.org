@@ -484,7 +484,6 @@
 									(calc . t)
 									(clojure . t)
 									(emacs-lisp . t)
-									(ein . t)
 									(js . t)
 									(makefile . t)
 									(plantuml . t)
@@ -931,7 +930,7 @@
 	   :hook
 	   ((eshell-mode vterm-mode shell-mode term-mode treemacs-mode) . hide-mode-line-mode))
    #+end_src
-   
+
    Solaire mode is awesome for introducing a few extra shades of gray
 
    #+begin_src emacs-lisp :tangle yes
