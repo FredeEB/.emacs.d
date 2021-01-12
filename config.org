@@ -59,7 +59,7 @@
 
 	 (use-package evil
 	   :after evil-collection
-	   :custom (evil-undo-system 'undo-redo)
+	   :custom (evil-undo-system 'undo-tree)
 	   :init
 	   (evil-mode 1))
 
@@ -97,6 +97,9 @@
 				   tramp-smb-conf nil
 				   windmove-wrap-around t
 				   c-basic-offset 4)
+
+  (use-package undo-tree
+	:config (global-undo-tree-mode))
 
 	 (defvaralias 'c-basic-offset 'tab-width)
 	 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -1136,5 +1139,5 @@
 	  (kbd "C-j") 'cider-repl-forward-input)
 
 	(evil-define-key 'normal global-map
-	  (kbd "U") 'helm-multi-swoop-projectile)
+	  (kbd "U") 'undo-tree-visualize)
   #+end_src
