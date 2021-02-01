@@ -76,14 +76,16 @@
 	   :init
 	   (evil-owl-mode))
 
-	 (use-package evil-numbers)
 	 (use-package evil-matchit)
+
+	 (use-package evil-avy
+	   :mode (prog-mode . evil-avy-mode))
    #+end_src
 ** misc
    misc default settings
    #+begin_src emacs-lisp :tangle yes
 	 (setq-default scroll-conservatively 100
-				   scroll-margin 0
+				   scroll-margin 20
 				   inhibit-startup-message t
 				   initial-scratch-message ""
 				   ring-bell-function 'ignore
@@ -98,8 +100,8 @@
 				   windmove-wrap-around t
 				   c-basic-offset 4)
 
-  (use-package undo-tree
-	:config (global-undo-tree-mode))
+     (use-package undo-tree
+	   :config (global-undo-tree-mode))
 
 	 (defvaralias 'c-basic-offset 'tab-width)
 	 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -120,10 +122,6 @@
 	 ;; Autorevert buffers
 	 (global-auto-revert-mode)
 
-	 ;; environments
-	 (use-package exec-path-from-shell
-	   :config (exec-path-from-shell-initialize))
-
 	 ;; File beautification
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -140,9 +138,6 @@
 	 ;; File beautification
 	 (setq delete-trailing-lines t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-	 ;; Electricity!!
-	 (add-hook 'prog-mode-hook 'electric-pair-mode)
 
 	 ;; font
 	 (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 12"))
@@ -164,7 +159,13 @@
 	 (use-package helm-posframe
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
-  (straight-use-package '(helm-fzf :type git :repo "https://github.com/ibmandura/helm-fzf"))
+	 (use-package helm-make
+	   :custom
+	   (helm-make-build-dir "build"))
+	 (use-package helm-flyspell)
+	 (add-hook 'org-mode-hook 'flyspell-mode)
+	 (add-hook 'markdown-mode-hook 'flyspell-mode)
+	 (use-package helm-lsp)
    #+end_src
 * utils
 ** elfeed
@@ -231,7 +232,6 @@
     #+begin_src emacs-lisp :tangle yes
 	  (use-package forge)
 	  (use-package ssh-agency)
-	  (use-package orgit)
     #+end_src
 
     Tools for more git integration. Git timemachine let's you check the git log in the buffer and is extremely useful
@@ -245,10 +245,6 @@
     #+end_src
 ** dired
    #+begin_src emacs-lisp :tangle yes
-	 (use-package dired-git-info
-	   :custom (dgi-auto-hide-details-p nil)
-	   :hook (dired-after-readin-hook . dired-git-info-auto-enable))
-
 	 (defun dired-run-at-point ()
 	   (interactive)
 	   (let ((process (dired-file-name-at-point)))
@@ -258,24 +254,6 @@
    #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
-** iedit
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package evil-iedit-state)
-	 ;; temp fix for cleanup
-	 (defalias 'iedit-cleanup 'iedit-lib-cleanup)
-   #+end_src
-** COMMENT edwina
-   dwm like window management
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package edwina
-	   :custom (display-buffer-base-action '(display-buffer-below-selected))
-	   (edwina-mode 1))
-   #+end_src
-** grugru
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package grugru
-	   :config (grugru-default-setup))
-   #+end_src
 ** engine
    used to search web resources.
    #+begin_src emacs-lisp :tangle yes
@@ -302,10 +280,6 @@
 ** utilities
    #+begin_src emacs-lisp :tangle yes
 	 (use-package sudo-edit)
-   #+end_src
-** kubernetes
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package kubel-evil)
    #+end_src
 ** docker
    #+begin_src emacs-lisp :tangle yes
@@ -432,20 +406,6 @@
 			 ("n" "Note" entry (file+headline journal "NOTES")
 			  "** %?\n\n")))
    #+end_src
-** export
-   settings and packages for exportng to different formats
-   #+begin_src emacs-lisp :tangle yes
-     (use-package ox-reveal)
-
-	 (setq org-src-fontify-natively t)
-
-	 (setq org-latex-listings 'minted
-		   org-latex-packages-alist '(("" "minted") ("AUTO" "babel"))
-		   org-latex-pdf-process
-		   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-			 "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-		   org-export-latex-listings 'minted org-src-fontify-natively t)
-   #+end_src
 ** sourceblocks
    Modes and settings for org source blocks
    #+begin_src emacs-lisp :tangle yes
@@ -457,24 +417,18 @@
 		   org-startup-with-latex-preview t
 		   org-export-babel-evaluate nil)
 
-	 (org-babel-do-load-languages 'org-babel-load-languages
-								  '((C . t)
-									(calc . t)
-									(clojure . t)
-									(emacs-lisp . t)
-									(js . t)
-									(makefile . t)
-									(plantuml . t)
-									(python . t)
-									(rust . t)
-									(shell . t)))
-   #+end_src
-** tables
-   Functions for tables
-   #+begin_src emacs-lisp :tangle yes
-	 (defmath uconvert (v u)
-	   "Convert value V into compatible unit U"
-	   (math-convert-units v u))
+	 (org-babel-do-load-languages
+	  'org-babel-load-languages
+	  '((C . t)
+		(calc . t)
+		(clojure . t)
+		(emacs-lisp . t)
+		(js . t)
+		(makefile . t)
+		(plantuml . t)
+		(python . t)
+		(rust . t)
+		(shell . t)))
    #+end_src
 ** misc
    pretty things
@@ -488,65 +442,7 @@
    #+end_src
 ** flyspell
    #+begin_src emacs-lisp :tangle yes
-	 (use-package helm-flyspell)
-	 (add-hook 'org-mode-hook 'flyspell-mode)
-	 (add-hook 'markdown-mode-hook 'flyspell-mode)
    #+end_src
-** org-extras
-   A set of macros to include Revealjs headers, latex headers, latex meta data and so on
-   #+begin_src emacs-lisp :tangle yes
-	 (defun export-and-find ()
-	   (interactive)
-	   (org-latex-export-to-pdf)
-	   (when (not (process-status "openwith-process"))
-		 (find-file
-		  (format "%s.pdf" (file-name-base (buffer-name))))))
-
-	 (defun org-latex-include-header (packages)
-	   "Add a latex header with PACKAGES to the current document."
-	   (interactive
-		(list (split-string (read-string "Package(s): "))))
-	   (save-excursion
-		 (if (not (search-backward "#+LATEX_HEADER: \\usepackage" nil t))
-			 (if (not (search-backward "#+AUTHOR:" nil t))
-				 (goto-char 0)))
-		 (forward-line)
-		 (dolist (package packages)
-		   (insert (concat "#+LATEX_HEADER: \\usepackage{" package "}\n")))))
-
-	 (defun org-latex-insert-meta (title author)
-	   "Insert TITLE and AUTHOR headers for latex."
-	   (interactive "sTitle: \nsAuthor: ")
-	   (save-excursion
-		 (goto-char (point-min))
-		 (insert "#+TITLE: " title "\n#+AUTHOR: " author "\n#+DATE:" (shell-command-to-string "date \"+%d/%m/%Y\"") "\n")))
-
-	 (defun org-reveal-add-root ()
-	   "Insert Reveal root tag for org-re-reveal exports"
-	   (interactive)
-	   (save-excursion
-		 (goto-char (point-min))
-		 (insert
-		  (format
-		   "#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/%s/\n"
-		   (cdr
-			(assoc 'version
-				   (with-current-buffer
-					   (url-retrieve-synchronously
-						"https://api.cdnjs.com/libraries/reveal.js")
-					 (goto-char (+ url-http-end-of-headers 1))
-					 (json-read-object))))))))
-
-	 (defun org-macros-src-block-add-name (name)
-	   "Add a NAME to the current sourceblock."
-	   (interactive "sName: ")
-	   (save-excursion
-		 (if (not (search-backward "#+begin_src" nil t))
-			 (message "Src block not found"))
-		 (newline)
-		 (forward-line -1)
-		 (insert (concat "#+NAME: " name))))
-#+end_src
 * programming
 ** company
    company completes anything and it works wonderfully
@@ -575,29 +471,6 @@
 	   :custom
 	   (company-posframe-quickhelp-delay nil))
    #+end_src
-
-   Completion by number
-   #+begin_src emacs-lisp :tangle yes
-	 (let ((map company-active-map))
-	   (mapc
-		(lambda (x)
-		  (define-key map (format "%d" x) 'or-a-company-number))
-		(number-sequence 0 9))
-	   (define-key map " " (lambda ()
-							 (interactive)
-							 (company-abort)
-							 (self-insert-command 1)))
-	   (define-key map (kbd "<return>") nil))
-
-	 (defun or-a-company-number ()
-	   (interactive)
-	   (let* ((k (this-command-keys))
-			  (re (concat "^" company-prefix k)))
-		 (if (cl-find-if (lambda (s) (string-match re s))
-						 company-candidates)
-			 (self-insert-command 1)
-		   (company-complete-number (string-to-number k)))))
-   #+end_src
 ** lsp
    #+begin_src emacs-lisp :tangle yes
 	 (use-package lsp-mode
@@ -607,13 +480,11 @@
 	   :custom
 	   (lsp-diagnostic-package :flycheck)
 	   (lsp-prefer-capf t)
-	   (read-process-output-max (* 1024 1024))
-	   (lsp-rust-server 'rust-analyzer))
+	   (read-process-output-max (* 1024 1024)))
 	 (use-package lsp-ui
 	   :custom
 	   (lsp-ui-doc-max-width 80)
 	   (lsp-ui-doc-position 'top))
-	 (use-package helm-lsp)
 	 (use-package lsp-treemacs)
 	 (use-package dap-mode
 	   :init
@@ -623,61 +494,19 @@
 	   (when (not (file-exists-p (expand-file-name ".extension" user-emacs-directory)))
 		 (dap-gdb-lldb-setup t)
 		 (dap-go-setup t)))
-
-	 (lsp-register-client
-	  (make-lsp-client :new-connection (lsp-tramp-connection "clangd")
-					   :major-modes '(c++-mode)
-					   :remote? t
-					   :server-id 'clangd-remote
-					   :multi-root t))
-	 (lsp-register-client
-	  (make-lsp-client :new-connection (lsp-tramp-connection "nimlsp")
-					   :major-modes '(nim-mode)
-					   :server-id 'nimlsp
-					   :multi-root t))
-
-	 (defun clang-ide ()
-	   (interactive)
-	   (treemacs)
-	   (lsp-treemacs-symbols)
-	   (lsp-treemacs-errors-list))
    #+end_src
 ** lisp
    All the lispy things
    #+begin_src emacs-lisp :tangle yes
-	 (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-	 (add-hook 'lisp-mode-hook 'paredit-mode)
-	 (add-hook 'clojure-mode-hook 'paredit-mode)
-	 (add-hook 'clojurescript-mode-hook 'paredit-mode)
-
 	 (use-package evil-paredit
 	   :hook
-	   ((emacs-lisp-mode-hook lisp-mode-hook clojure-mode-hook clojurescript-mode-hook) . evil-paredit-mode))
+	   (emacs-lisp-mode-hook . evil-paredit-mode)
+	   (emacs-lisp-mode-hook . paredit-mode))
 
 	 ;; elisp
 	 (use-package elsa)
 	 (use-package eros
 	   :hook (eros-mode . emacs-lisp-mode))
-
-	 ;; clojure
-	 (use-package clojure-mode)
-	 (use-package cider
-	   :custom
-	   (cider-lein-parameters "repl :headless :host localhost")
-	   :hook (cider-enlighten-mode . cider-mode))
-
-	 (setq nrepl-use-ssh-fallback-for-remote-hosts t)
-
-	 (use-package flycheck-clojure)
-	 (use-package helm-clojuredocs)
-	 (use-package cljr-helm)
-
-	 ;; racket
-	 (use-package racket-mode)
-
-	 (use-package slime
-	   :custom
-	   (inferior-lisp-program "sbcl"))
    #+end_src
 ** python
    #+begin_src emacs-lisp :tangle yes
@@ -685,8 +514,6 @@
 	   :hook (python-mode . pipenv-mode)
 	   :custom
 	   (pipenv-projectile-after-switch-function #'pipenv-projectile-after-switch-extended))
-
-	 (use-package jedi)
    #+end_src
 ** c++
    this is what I use most in this configuration
@@ -708,28 +535,16 @@
 	 (use-package modern-cpp-font-lock
 	   :config
 	   (modern-c++-font-lock-global-mode))
-	 (use-package flycheck-clang-tidy
-	   :after flycheck
-	   :hook
-	   (flycheck-mode . flycheck-clang-tidy-setup)
-	   :custom
-	   (flycheck-clang-language-standard "c++17"))
 
 	 (use-package cmake-mode)
-	 (use-package helm-ctest)
-	 (use-package helm-make
-	   :custom
-	   (helm-make-build-dir "build"))
    #+end_src
 ** rust
    #+begin_src emacs-lisp :tangle yes
 	 (use-package cargo
-	   :hook (rust-mode . cargo-minor-mode))
+	   :hook (rust-mode . cargo-minor-mode)
+	   :custom
+	   (lsp-rust-server 'rust-analyzer))
 	 (use-package toml-mode)
-   #+end_src
-** haskell
-   #+begin_src emacs-lisp :tangle yes
-     (use-package haskell-mode)
    #+end_src
 ** lua
    #+begin_src emacs-lisp :tangle yes
@@ -753,9 +568,6 @@
    #+end_src
 ** web
    #+begin_src emacs-lisp :tangle yes
-	 (use-package npm-mode)
-	 (use-package impatient-mode)
-	 (use-package lorem-ipsum)
 	 (use-package emmet-mode
 	   :custom
 	   (emmet-expand-jsx-className t))
@@ -790,38 +602,6 @@
 						   'company-yasnippet-or-completion
 						   company-active-map)))
    #+end_src
-** octave
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package octave
-	   :mode ("\\.m\\'" . octave-mode))
-   #+end_src
-** csharp
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package csharp-mode)
-   #+end_src
-** plant
-   requires [[https://plantuml.com][plantuml]]
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package plantuml-mode
-	   :magic ("@startuml" . plantuml-mode))
-
-	 (when (executable-find "plantuml")
-	   (let ((executable (executable-find "plantuml")))
-		 (setq plantuml-jar-path
-			   (replace-regexp-in-string
-				"bin"
-				"share/java/plantuml"
-				(format "%s%s" executable ".jar")))))
-
-	 (use-package flycheck-plantuml)
-
-	 ;; recompiles plantuml diagrams on save
-	 (defun recompile-plantuml ()
-	   (add-hook 'after-save-hook
-				 (lambda () (call-process "plantuml" nil nil nil (buffer-name)))))
-
-	 (add-hook 'plantuml-mode-hook 'recompile-plantuml)
-   #+end_src
 ** others
    #+begin_src emacs-lisp :tangle yes
 	 (use-package yaml-mode)
@@ -851,18 +631,6 @@
 	   :custom
 	   (shell-pop-shell-type '("terminal" "*Terminal*" 'eshell))
 	   (shell-pop-window-position "bottom"))
-   #+end_src
-** COMMENT calctex
-   Calctex is really cool for calc mode, although it's currently broken
-   #+begin_src emacs-lisp :tangle yes
-     (straight-use-package '(calctex :type git :repo "https://github.com/johnbcoughlin/calctex"))
-     (add-hook 'calc-mode-hook 'calctex-mode)
-   #+end_src
-** avy
-   Avy makes jumping to visible places very fast
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package evil-avy
-	   :mode (prog-mode . evil-avy-mode))
    #+end_src
 ** polymode
    #+begin_src emacs-lisp :tangle yes
@@ -901,14 +669,6 @@
 	   (doom-modeline-major-mode-color-icon nil))
    #+end_src
 
-   ... Most of the time
-
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package hide-mode-line
-	   :hook
-	   ((eshell-mode vterm-mode shell-mode term-mode treemacs-mode) . hide-mode-line-mode))
-   #+end_src
-
    Solaire mode is awesome for introducing a few extra shades of gray
 
    #+begin_src emacs-lisp :tangle yes
@@ -922,11 +682,6 @@
 	 (use-package which-key
 	   :init
 	   (which-key-mode))
-   #+end_src
-** treemacs
-   Treemacs makes emacs look like vscode... Not really, but it adds a filebrowser and some very nifty LSP integrations
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package treemacs-evil)
    #+end_src
 * hotkeys
   #+begin_src emacs-lisp :tangle yes
@@ -975,14 +730,8 @@
 	  "g r" 'git-gutter+-revert-hunk
 	  "g m" 'magit-blame-addition
 
-	  ;;Kubernetes
-	  "g k" 'kubel
-
 	  ;;elfeed
 	  "n" 'elfeed
-
-	  ;;iedit
-	  "m" 'iedit-mode
 
 	  ;;lsp
 	  "r d" 'lsp-ui-peek-find-definitions
@@ -1039,23 +788,13 @@
 	  "w k" 'windmove-swap-states-up
 	  "w l" 'windmove-swap-states-right)
 
-	(evil-leader/set-key-for-mode 'cider-mode
-	  "r r" 'cider-eval-last-sexp
-	  "r k" 'cider-eval-buffer
-	  "e" 'cider-eval-last-sexp)
-
 	(evil-leader/set-key-for-mode 'dired-mode
 	  "d i" '(lambda () (interactive) (start-process "sxiv" "*sxiv*" "sxiv" (dired-filename-at-point)))
-	  "d g" 'dired-git-info-mode
-	  "d e" 'dired-run-at-point
-	  "Y" 'dired-copy-filename-as-kill nil)
+	  "d e" 'dired-run-at-point)
 
 	(evil-leader/set-key-for-mode 'emacs-lisp-mode
 	  "e" 'eval-last-sexp
 	  "k" 'eval-buffer)
-
-	(evil-leader/set-key-for-mode 'c++-mode
-	  "u" 'clang-ide)
 
 	(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
 	;;global state
@@ -1072,8 +811,7 @@
 	  (kbd "C-c a") 'org-todo-list
 	  (kbd "C-k") 'kill-buffer-and-window
 	  (kbd "C-c c") 'org-capture
-	  (kbd "C-;") 'shell-pop
-	  (kbd "C-'") 'grugru)
+	  (kbd "C-;") 'shell-pop)
 
 	(evil-define-key nil org-mode-map
 	  (kbd "M-H") 'org-shiftleft
