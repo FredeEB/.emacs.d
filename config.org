@@ -760,9 +760,9 @@
 	   :custom
 	   (emmet-expand-jsx-className t))
 
-     (use-package typescript-mode
+     (use-package web-mode
 	   :mode ("\\.ts\\'" "\\.tsx\\'")
-	   :hook (typescript-mode . lsp))
+	   :hook (web-mode . lsp))
 	 (use-package restclient)
 	 (use-package ob-restclient)
 #+end_src
