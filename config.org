@@ -147,31 +147,6 @@
 	 ;; font
 	 (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 12"))
    #+end_src
-** exwm
-   #+begin_src emacs-lisp :tangle yes
-	 (use-package exwm
-	   :custom
-	   (exwm-workspace-number 9)
-	   (exwm-input-global-keys
-		`(
-		  ([?\s-e] . exwm-reset)
-
-		  ([?\s-h] . windmove-left)
-		  ([?\s-j] . windmove-down)
-		  ([?\s-k] . windmove-up)
-		  ([?\s-l] . windmove-right)
-
-		  ,@(mapcar (lambda (i) `(,(kbd (format "s-%d" (+ 1 i))) . (lambda () (interactive) (exwm-workspace-switch-create ,i))))
-					(number-sequence 0 8))))
-
-	   :init
-	   (require 'exwm-randr)
-	   (require 'exwm-config)
-	   :config
-	   (exwm-randr-enable)
-	   (exwm-config-default)
-	   (exwm-enable))
-   #+end_src
 ** helm
    #+begin_src emacs-lisp :tangle yes
 	 (use-package helm
