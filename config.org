@@ -155,7 +155,6 @@
 	 (use-package helm-company)
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
-	 (use-package helm-swoop)
 	 (use-package helm-posframe
 	   :custom
 	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
@@ -755,6 +754,9 @@
 
 	  ;;compile
 	  "c" 'helm-make-projectile
+
+	  ;;find stuff
+	  "p a" 'helm-projectile-rg
 
 	  ;;Docker
 	  "g d" 'docker
