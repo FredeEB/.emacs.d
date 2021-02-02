@@ -140,7 +140,7 @@
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 	 ;; font
-	 (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 12"))
+	 (add-to-list 'default-frame-alist '(font . "Iosevka Nerd Font 10"))
    #+end_src
 ** helm
    #+begin_src emacs-lisp :tangle yes
