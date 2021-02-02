@@ -471,6 +471,10 @@
 	   :custom
 	   (company-posframe-quickhelp-delay nil))
    #+end_src
+** flycheck
+#+begin_src emacs-lisp :tangle yes
+     (use-package flycheck)
+#+end_src
 ** lsp
    #+begin_src emacs-lisp :tangle yes
 	 (use-package lsp-mode
