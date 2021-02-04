@@ -248,6 +248,36 @@
 
 	 (dired-async-mode 1)
    #+end_src
+* p4
+  As long as it lasts
+  #+begin_src emacs-lisp :tangle yes
+	(defun p4-edit-file ()
+	  (interactive)
+	  (call-process-shell-command (format "p4 edit %s" (buffer-file-name)))
+	  (revert-buffer t t nil))
+
+	(defun p4-revert-file ()
+	  (interactive)
+	  (call-process-shell-command (format "p4 revert %s" (buffer-file-name)))
+	  (revert-buffer t t nil))
+
+	(defun p4-add-file ()
+	  (interactive)
+	  (call-process-shell-command (format "p4 add %s" (buffer-file-name)))
+	  (revert-buffer t t nil))
+
+	(defun p4-integrate-file ()
+	  (interactive)
+	  (call-process-shell-command (format "p4 integrate %s" (buffer-file-name)))
+	  (revert-buffer t t nil))
+
+    (defun p4-diff-file ()
+	  (interactive)
+	  (let ((buffer "*p4-diff*"))
+		(call-process-shell-command (format "p4 diff %s" (buffer-file-name)) nil buffer)
+		(switch-to-buffer buffer)
+		(diff-mode)))
+  #+end_src
 * qol
   Quality of life packages. many require external software. Look at each package for dependecies
 ** engine
@@ -769,6 +799,11 @@
 	  "p f" 'helm-projectile-find-file-dwim
 	  "p s" 'projectile-add-known-project
 	  "p c" 'projectile-compile-project
+	  "p e" 'p4-edit-file
+	  "p r" 'p4-revert-file
+	  "p a" 'p4-add-file
+	  "p i" 'p4-integrate-file
+	  "p d" 'p4-diff-file
 	  "v m" '(lambda () (interactive) (find-file "./CMakeLists.txt"))
 	  "v d" '(lambda () (interactive) (find-file "./Dockerfile"))
 	  "v c" '(lambda () (interactive) (find-file "./docker-compose.yml"))
