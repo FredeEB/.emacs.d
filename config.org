@@ -155,9 +155,6 @@
 	 (use-package helm-company)
 	 (use-package helm-projectile)
 	 (use-package helm-rg)
-	 (use-package helm-posframe
-	   :custom
-	   (helm-posframe-poshandler #'posframe-poshandler-frame-center))
 	 (use-package helm-make
 	   :custom
 	   (helm-make-build-dir "build"))
