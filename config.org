@@ -594,7 +594,7 @@
 	   (emmet-expand-jsx-className t))
 
      (use-package web-mode
-	   :mode ("\\.ts\\'" "\\.tsx\\'")
+	   :mode ("\\.ts\\'" "\\.tsx\\'" "\\.js\\'" "\\.jsx\\'")
 	   :hook (web-mode . lsp))
 	 (use-package restclient)
 	 (use-package ob-restclient)
