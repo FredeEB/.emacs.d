@@ -149,6 +149,12 @@
 	   :custom
 	   (elfeed-feeds
 		'(
+		  ;;dr.dk
+		  "https://www.dr.dk/nyheder/service/feeds/allenyheder"
+
+		  ;;ing.dk
+		  "https://ing.dk/rss/nyheder"
+
 		  ;;dev.to
 		  "http://dev.to/feed"
 
@@ -162,6 +168,11 @@
 
 		  ;;hackernews
 		  "https://news.ycombinator.com/rss"
+
+		  ;;medium
+		  "https://medium.com/feed/topic/technology"
+		  "https://medium.com/feed/topic/programming"
+		  "https://medium.com/feed/topic/gaming"
 
 		  ;;other blogs
 		  "https://cestlaz.github.io/rss.xml"
