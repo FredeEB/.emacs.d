@@ -15,28 +15,7 @@
   #+PROPERTY: header-args :results silent
 ** package manager
   I use straight for managing packages. It's a very painless process to spin up a new machine, just by downloading the repo and starting up emacs.
-  some use-package syntactic suger.
-   #+begin_src emacs-lisp :tangle yes
-	 (defvar bootstrap-version)
-	 (let ((bootstrap-file
-			(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-		   (bootstrap-version 5))
-	   (unless (file-exists-p bootstrap-file)
-		 (with-current-buffer
-			 (url-retrieve-synchronously
-			  "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-			  'silent 'inhibit-cookies)
-		   (goto-char (point-max))
-		   (eval-print-last-sexp)))
-	   (load bootstrap-file nil 'nomessage))
-
-	 (straight-use-package 'use-package)
-   #+end_src
-    This allows the use-package syntax while using straight on the backend.
-    The first line should be enough to convert a convetional usepackage config to a straight one.
-   #+begin_src emacs-lisp :tangle yes
-     (setq straight-use-package-by-default t)
-   #+end_src
+  The config for this can be found in [[file:init.el::defvar bootstrap-version][init.el]].
 ** evil-mode
    Yes, I also came from [neo]vi[m], so ofc evil is gonna be in here.
    These are some nice packages that relate to evil, however there are "evil-*" packages more throughout the file
