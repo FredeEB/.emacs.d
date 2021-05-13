@@ -318,12 +318,11 @@
    #+end_src
 ** vterm
    #+begin_src emacs-lisp :tangle yes
-	 (use-package vterm-toggle
+	 (use-package vterm
 	   :custom
 	   (vterm-shell "zsh")
-	   :config
-	   (vterm-always-compile-module t)
-	   (evil-set-initial-state 'vterm-mode 'emacs))
+	   :custom
+	   (vterm-always-compile-module t))
    #+end_src
 ** compilation
    #+begin_src emacs-lisp :tangle yes
