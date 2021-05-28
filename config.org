@@ -64,7 +64,6 @@
    misc default settings
    #+begin_src emacs-lisp :tangle yes
 	 (setq-default scroll-conservatively 100
-				   scroll-margin 20
 				   inhibit-startup-message t
 				   initial-scratch-message ""
 				   ring-bell-function 'ignore
@@ -79,6 +78,11 @@
 				   windmove-wrap-around t
 				   c-basic-offset 4)
 
+     (add-hook 'prog-mode-hook
+			(lambda ()
+			  (make-local-variable 'scroll-margin)
+			  (setq scroll-margin 20)))
+     
      (use-package undo-tree
 	   :config (global-undo-tree-mode))
 
