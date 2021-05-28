@@ -726,7 +726,7 @@
 	  "f t" '(lambda () (interactive) (find-file "/tmp"))
 	  "f e" '(lambda () (interactive) (find-file (expand-file-name "config.org" user-emacs-directory)))
 	  "f z" '(lambda () (interactive) (find-file (expand-file-name "~/.zshrc")))
-	  "f p" '(lambda () (interactive) (find-file (expand-file-name "~/git/")))
+	  "f p" '(lambda () (interactive) (find-file (expand-file-name "~/src/")))
 	  "f i" '(lambda () (interactive) (find-file (expand-file-name "~/.config/")))
 	  "f h" '(lambda () (interactive) (find-file (expand-file-name "~/")))
 	  "f n" '(lambda () (interactive) (find-file (expand-file-name "notes.org" (vc-root-dir))))
