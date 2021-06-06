@@ -493,7 +493,6 @@
 	 (use-package lsp-mode
 	   :hook
 	   ((c++-mode c-mode rust-mode go-mode csharp-mode python-mode cmake-mode) . lsp)
-	   (before-save . lsp-format-buffer)
 	   :custom
 	   (lsp-diagnostic-package :flycheck)
 	   (lsp-prefer-capf t)
@@ -542,6 +541,7 @@
 
 	 (setq lsp-clients-clangd-args
 		   '("-j=8"
+			 "--header-insertion=never"
 			 "--all-scopes-completion"
 			 "--background-index"
 			 "--clang-tidy"
@@ -757,6 +757,8 @@
 	  "r r" 'lsp-ui-peek-find-references
 	  "r s" 'helm-lsp-workspace-symbol
 	  "r l" 'lsp-treemacs-errors-list
+	  "r i" 'lsp-format-region
+	  "r b" 'lsp-format-buffer
 
 	  ;;dap
 	  "d r" 'dap-debug-restart
