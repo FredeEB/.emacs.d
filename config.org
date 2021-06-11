@@ -66,6 +66,7 @@
 	 (setq-default scroll-conservatively 100
 				   inhibit-startup-message t
 				   initial-scratch-message ""
+				   indent-tabs-mode nil
 				   ring-bell-function 'ignore
 				   tab-width 4
 				   create-lockfiles nil
